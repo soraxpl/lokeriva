@@ -122,5 +122,13 @@ Aplikasi ini sudah dikonfigurasi menggunakan standar Serverless WSGI Vercel Pyth
 
 ---
 
+## ☕ Dukung Developer & Pemeliharaan Server
+Jika proyek ini bermanfaat untuk Anda atau komunitas pencari kerja, dukung pemeliharaan cloud server dan kuota agregasi data 24/7 melalui:
+- **Trakteer**: [trakteer.id/xnuvers007](https://trakteer.id/xnuvers007)
+- **Saweria**: [saweria.co/xnuvers007](https://saweria.co/xnuvers007)
+
+---
+
 ## 📄 Lisensi & Kredit
-Created with ❤️ by **Xnuvers007** • Free and Open Source for community use.
+Created by **Xnuvers007** • Free and Open Source for community use.
+

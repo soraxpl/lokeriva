@@ -1291,3 +1291,243 @@ tr:hover td {
 .btn-copy-action:hover {
   background: var(--primary-hover);
 }
+
+/* ==============================================================================
+ * 10. DONATION BUTTON & MODAL
+ * ============================================================================== */
+.btn-donate-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(245, 158, 11, 0.15));
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #ef4444;
+  padding: 7px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.1);
+  text-decoration: none;
+}
+
+.btn-donate-nav:hover {
+  background: linear-gradient(135deg, #ef4444, #f59e0b);
+  color: #ffffff;
+  border-color: transparent;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-donate-nav i {
+  transition: transform 0.2s ease;
+}
+
+.btn-donate-nav:hover i {
+  transform: scale(1.15);
+}
+
+.footer-badge-donate {
+  cursor: pointer;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+  background: var(--bg-card);
+  transition: var(--transition);
+}
+
+.footer-badge-donate:hover {
+  border-color: #ef4444 !important;
+  color: #ef4444 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.15);
+}
+
+.donate-modal-card {
+  max-width: 520px;
+}
+
+.donate-header-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(245, 158, 11, 0.2));
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.donate-desc-box {
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  font-size: 0.86rem;
+  color: var(--text-main);
+  line-height: 1.5;
+}
+
+.donate-platforms-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 520px) {
+  .donate-platforms-grid {
+    grid-template-columns: 1fr;
+  }
+  .btn-donate-nav {
+    padding: 6px 10px;
+    font-size: 0.78rem;
+  }
+}
+
+.donate-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  text-decoration: none;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.donate-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.donate-card-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 10px;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  width: fit-content;
+}
+
+.donate-card-saweria {
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.donate-card-saweria:hover {
+  border-color: #f59e0b;
+}
+
+.donate-card-saweria .donate-card-badge {
+  background: rgba(245, 158, 11, 0.12);
+  color: #d97706;
+}
+
+[data-theme="dark"] .donate-card-saweria .donate-card-badge {
+  color: #fbbf24;
+}
+
+.donate-card-trakteer {
+  border-color: rgba(225, 29, 72, 0.3);
+}
+
+.donate-card-trakteer:hover {
+  border-color: #e11d48;
+}
+
+.donate-card-trakteer .donate-card-badge {
+  background: rgba(225, 29, 72, 0.12);
+  color: #be123c;
+}
+
+[data-theme="dark"] .donate-card-trakteer .donate-card-badge {
+  color: #fb7185;
+}
+
+.donate-card-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.donate-platform-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.saweria-icon {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.trakteer-icon {
+  background: rgba(225, 29, 72, 0.15);
+  color: #e11d48;
+}
+
+.donate-platform-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.donate-platform-user {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.donate-card-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+  transition: var(--transition);
+}
+
+.saweria-btn {
+  background: linear-gradient(135deg, #f59e0b, #ea580c);
+}
+
+.donate-card-saweria:hover .saweria-btn {
+  filter: brightness(1.08);
+}
+
+.trakteer-btn {
+  background: linear-gradient(135deg, #e11d48, #be123c);
+}
+
+.donate-card-trakteer:hover .trakteer-btn {
+  filter: brightness(1.08);
+}
+
+.donate-footer-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  padding: 0 8px;
+}
+

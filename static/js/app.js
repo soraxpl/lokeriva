@@ -326,8 +326,28 @@ function setupEventListeners() {
   const btnCopyShare = document.getElementById("btnCopyShareUrl");
   if (btnCopyShare) btnCopyShare.addEventListener("click", copyShareUrl);
 
+  // Donation Modal Event Listeners
+  const btnOpenDonate = document.getElementById("btnOpenDonateModal");
+  if (btnOpenDonate) btnOpenDonate.addEventListener("click", openDonateModal);
+
+  const btnFooterDonate = document.getElementById("btnFooterDonate");
+  if (btnFooterDonate) btnFooterDonate.addEventListener("click", openDonateModal);
+
+  const btnCloseDonate = document.getElementById("btnCloseDonateModal");
+  if (btnCloseDonate) btnCloseDonate.addEventListener("click", closeDonateModal);
+
+  const donateModal = document.getElementById("donateModal");
+  if (donateModal) {
+    donateModal.addEventListener("click", (e) => {
+      if (e.target === donateModal) closeDonateModal();
+    });
+  }
+
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeShareModal();
+    if (e.key === "Escape") {
+      closeShareModal();
+      closeDonateModal();
+    }
   });
 }
 
@@ -961,3 +981,23 @@ function initLiveClock() {
   updateClock();
   setInterval(updateClock, 1000);
 }
+
+// ==============================================================================
+// 9. MODAL DUKUNGAN / DONASI DEVELOPER
+// ==============================================================================
+function openDonateModal() {
+  const modal = document.getElementById("donateModal");
+  if (modal) {
+    modal.style.display = "flex";
+    modal.setAttribute("aria-hidden", "false");
+  }
+}
+
+function closeDonateModal() {
+  const modal = document.getElementById("donateModal");
+  if (modal) {
+    modal.style.display = "none";
+    modal.setAttribute("aria-hidden", "true");
+  }
+}
+

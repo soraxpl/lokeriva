@@ -189,6 +189,9 @@
                 <a href="/" class="nav-link"><i class="fa-solid fa-list-check"></i> Lowongan</a>
                 <a href="/docs" class="nav-link active"><i class="fa-solid fa-book-bookmark"></i> Dokumentasi API</a>
                 <a href="/api/openapi.json" target="_blank" class="nav-link"><i class="fa-solid fa-code"></i> OpenAPI Spec</a>
+                <button class="btn-donate-nav" id="btnOpenDonateModal" type="button" title="Dukung Developer & Server">
+                    <i class="fa-solid fa-heart"></i> <span>Donasi</span>
+                </button>
                 <button class="btn-icon" id="themeToggleBtn" title="Ganti Mode Gelap/Terang">
                     <i class="fa-solid fa-moon"></i>
                 </button>
@@ -433,7 +436,81 @@
         </div>
     </footer>
 
-    <!-- SCRIPT FOR LIVE API TESTING & THEME -->
+    <!-- DONATION MODAL -->
+    <div id="donateModal" class="share-modal-overlay" style="display: none;" aria-hidden="true" role="dialog" aria-labelledby="donateModalTitle">
+        <div class="share-modal-card donate-modal-card">
+            <div class="share-modal-header donate-modal-header">
+                <div class="share-header-title">
+                    <div class="donate-header-icon">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                    <div>
+                        <h3 id="donateModalTitle">Dukung Lokeriva & Developer</h3>
+                        <p class="share-subtitle">Bantu menjaga server tetap aktif, cepat, & 100% gratis</p>
+                    </div>
+                </div>
+                <button class="share-modal-close" id="btnCloseDonateModal" type="button" title="Tutup">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="share-modal-body">
+                <div class="donate-desc-box">
+                    <p>
+                        <b>Lokeriva REST API</b> disediakan bebas dan terbuka untuk integrasi aplikasi mobile, bot, dan sistem karir oleh <b>Xnuvers007</b>.
+                    </p>
+                    <p style="margin-top: 6px; font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;">
+                        Dukungan donasi Anda membantu membiayai operasional cloud server, kuota request, dan pemeliharaan server agar API tetap cepat dan handal.
+                    </p>
+                </div>
+
+                <div class="donate-platforms-grid">
+                    <!-- Saweria -->
+                    <a href="https://saweria.co/xnuvers007" target="_blank" rel="noopener noreferrer" class="donate-card donate-card-saweria">
+                        <div class="donate-card-badge">QRIS • GoPay • OVO • DANA • ShopeePay</div>
+                        <div class="donate-card-content">
+                            <div class="donate-platform-icon saweria-icon">
+                                <i class="fa-solid fa-qrcode"></i>
+                            </div>
+                            <div class="donate-platform-info">
+                                <div class="donate-platform-name">Saweria</div>
+                                <div class="donate-platform-user">saweria.co/xnuvers007</div>
+                            </div>
+                        </div>
+                        <div class="donate-card-btn saweria-btn">
+                            <span>Dukung via Saweria</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </div>
+                    </a>
+
+                    <!-- Trakteer -->
+                    <a href="https://trakteer.id/xnuvers007" target="_blank" rel="noopener noreferrer" class="donate-card donate-card-trakteer">
+                        <div class="donate-card-badge">Traktir Kopi • QRIS • E-Wallet • Bank</div>
+                        <div class="donate-card-content">
+                            <div class="donate-platform-icon trakteer-icon">
+                                <i class="fa-solid fa-mug-hot"></i>
+                            </div>
+                            <div class="donate-platform-info">
+                                <div class="donate-platform-name">Trakteer</div>
+                                <div class="donate-platform-user">trakteer.id/xnuvers007</div>
+                            </div>
+                        </div>
+                        <div class="donate-card-btn trakteer-btn">
+                            <span>Dukung di Trakteer</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="donate-footer-note">
+                    <i class="fa-solid fa-shield-heart" style="color: #ef4444;"></i>
+                    <span>Setiap rupiah donasi Anda menjadi energi besar untuk keberlangsungan layanan publik ini. Terima kasih!</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT FOR LIVE API TESTING, THEME, & DONATION MODAL -->
     <script>
         async function testEndpoint(url, targetId) {
             const pre = document.getElementById(targetId);
@@ -459,6 +536,38 @@
         const saved = localStorage.getItem("loker_theme") || "light";
         document.documentElement.setAttribute("data-theme", saved);
         document.getElementById("themeToggleBtn").innerHTML = saved === "dark" ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+
+        // Donation Modal
+        const btnOpenDonate = document.getElementById("btnOpenDonateModal");
+        const btnCloseDonate = document.getElementById("btnCloseDonateModal");
+        const donateModal = document.getElementById("donateModal");
+
+        if (btnOpenDonate && donateModal) {
+            btnOpenDonate.addEventListener("click", () => {
+                donateModal.style.display = "flex";
+                donateModal.setAttribute("aria-hidden", "false");
+            });
+        }
+        if (btnCloseDonate && donateModal) {
+            btnCloseDonate.addEventListener("click", () => {
+                donateModal.style.display = "none";
+                donateModal.setAttribute("aria-hidden", "true");
+            });
+        }
+        if (donateModal) {
+            donateModal.addEventListener("click", (e) => {
+                if (e.target === donateModal) {
+                    donateModal.style.display = "none";
+                    donateModal.setAttribute("aria-hidden", "true");
+                }
+            });
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    donateModal.style.display = "none";
+                    donateModal.setAttribute("aria-hidden", "true");
+                }
+            });
+        }
 
         // Service Worker Registration for Offline Docs
         if ('serviceWorker' in navigator) {
