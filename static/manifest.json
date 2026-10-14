@@ -1,7 +1,7 @@
 {
-  "name": "Lokeriva.id - Platform Lowongan Kerja",
+  "name": "Lokeriva.vercel.app - Platform Lowongan Kerja",
   "short_name": "Lokeriva",
-  "description": "Lokeriva.id - Platform Lowongan Kerja Terpercaya Indonesia & WFH Remote Global",
+  "description": "Lokeriva.vercel.app - Platform Lowongan Kerja Terpercaya Indonesia & WFH Remote Global",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f8fafc",

@@ -1,4 +1,4 @@
-# 💼 Lokeriva.id — Platform Agregator Lowongan Kerja Modern (Flask & Vercel)
+# 💼 Lokeriva.vercel.app — Platform Agregator Lowongan Kerja Modern (Flask & Vercel)
 > **Created by Xnuvers007**  
 > 🌐 **Live Website**: [https://lokeriva.vercel.app/](https://lokeriva.vercel.app/) • **API Docs**: [https://lokeriva.vercel.app/docs](https://lokeriva.vercel.app/docs)
 

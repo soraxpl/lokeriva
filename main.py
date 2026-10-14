@@ -801,7 +801,7 @@ if __name__ == "__main__":
     else:
         try:
             print("=" * 65)
-            print("[LOKERIVA.ID] AGREGATOR LOWONGAN KERJA OTOMATIS (MULTI-SUMBER)")
+            print("[LOKERIVA.VERCEL.APP] AGREGATOR LOWONGAN KERJA OTOMATIS (MULTI-SUMBER)")
             print("Created by Xnuvers007")
             print("=" * 65)
             print("Masukkan kata kunci pencarian (contoh: Makassar, Bidan, Admin, Python, BUMN)")

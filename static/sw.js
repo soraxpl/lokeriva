@@ -1,5 +1,5 @@
 /**
- * Lokeriva.id — Service Worker with True Offline Support
+ * Lokeriva.vercel.app — Service Worker with True Offline Support
  * Created by Xnuvers007
  */
 

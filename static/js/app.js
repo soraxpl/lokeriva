@@ -69,7 +69,7 @@ function initPWA() {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       if (outcome === "accepted") {
-        showToast("Aplikasi Lokeriva.id berhasil dipasang!");
+        showToast("Aplikasi Lokeriva.vercel.app berhasil dipasang!");
         dismissBanner();
       }
       deferredPrompt = null;
@@ -128,7 +128,7 @@ function initPWA() {
   }
 
   window.addEventListener("appinstalled", () => {
-    showToast("Aplikasi Lokeriva.id telah terpasang di perangkat Anda.");
+    showToast("Aplikasi Lokeriva.vercel.app telah terpasang di perangkat Anda.");
     deferredPrompt = null;
     dismissBanner();
     if (installBtn) installBtn.style.display = "none";
@@ -835,7 +835,7 @@ function openShareModal(job) {
   if (!job) return;
   currentShareJob = job;
   const title = job.posisi || "Lowongan Kerja";
-  const company = job.perusahaan || "Lokeriva.id";
+  const company = job.perusahaan || "Lokeriva.vercel.app";
   const msg = buildJobShareMessage(job);
   const link = job.link && job.link !== "#" ? job.link : "https://lokeriva.vercel.app/";
 

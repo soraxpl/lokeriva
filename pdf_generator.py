@@ -93,12 +93,12 @@ def generate_jobs_pdf(jobs, query="", source_filter="", location_filter=""):
     story = []
 
     # Header Document
-    story.append(Paragraph("Katalog Lowongan Kerja — Lokeriva.id", style_title))
+    story.append(Paragraph("Katalog Lowongan Kerja — Lokeriva.vercel.app", style_title))
     
     info_parts = [
         f"Total: <b>{len(jobs)} lowongan</b>",
         f"Diunduh: {datetime.now().strftime('%d-%m-%Y %H:%M WIB')}",
-        "Platform: <b>Lokeriva.id</b>",
+        "Platform: <b>Lokeriva.vercel.app</b>",
         "Created by <b>Xnuvers007</b>"
     ]
     if query:

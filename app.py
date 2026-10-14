@@ -440,9 +440,9 @@ def openapi_spec():
     spec = {
         "openapi": "3.0.0",
         "info": {
-            "title": "Lokeriva.id REST API",
+            "title": "Lokeriva.vercel.app REST API",
             "version": "1.0.0",
-            "description": "API Agregasi Lowongan Kerja Multi-Sumber Real-Time di Indonesia dan Global WFH oleh Lokeriva.id. Created by Xnuvers007.",
+            "description": "API Agregasi Lowongan Kerja Multi-Sumber Real-Time di Indonesia dan Global WFH oleh Lokeriva.vercel.app. Created by Xnuvers007.",
             "contact": {
                 "name": "Xnuvers007"
             }
@@ -513,7 +513,7 @@ def openapi_spec():
 # ==============================================================================
 if __name__ == "__main__":
     print("=" * 60)
-    print("🚀 MENJALANKAN LOKERIVA.ID FLASK SERVER")
+    print("🚀 MENJALANKAN LOKERIVA.VERCEL.APP FLASK SERVER")
     print("=" * 60)
     print("Akses Website  : http://localhost:5000 (Production: https://lokeriva.vercel.app)")
     print("Dokumentasi API: http://localhost:5000/docs")

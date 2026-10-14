@@ -1,5 +1,5 @@
 # ==============================================================================
-# robots.txt for Lokeriva.id - Platform Agregator Lowongan Kerja Indonesia & WFH
+# robots.txt for Lokeriva.vercel.app - Platform Agregator Lowongan Kerja Indonesia & WFH
 # Created by Xnuvers007
 # ==============================================================================
 
