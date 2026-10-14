@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kebijakan Privasi (Privacy Policy) — Lokeriva & @lokeriva_bot</title>
+    <meta name="description" content="Kebijakan Privasi resmi Lokeriva.vercel.app dan Telegram Bot @lokeriva_bot terkait pemrosesan data, transparansi, dan keamanan informasi pengguna.">
+    <link rel="canonical" href="{{ canonical_url }}">
+    
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome 6 Free CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v={{ sw_build_hash }}">
+
+    <style>
+        .privacy-container {
+            max-width: 860px;
+            margin: 40px auto 80px auto;
+            padding: 0 20px;
+        }
+        .privacy-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 40px;
+            box-shadow: var(--shadow-sm);
+        }
+        .privacy-header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 24px;
+        }
+        .privacy-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+        .privacy-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16, 185, 129, 0.12);
+            color: #10b981;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            margin-bottom: 12px;
+        }
+        .privacy-section {
+            margin-bottom: 28px;
+        }
+        .privacy-section h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .privacy-section h2 i {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        .privacy-section p, .privacy-section li {
+            color: var(--text-muted);
+            font-size: 0.94rem;
+            line-height: 1.7;
+        }
+        .privacy-section ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        .privacy-section li {
+            margin-bottom: 6px;
+        }
+        .highlight-box {
+            background: var(--bg-main);
+            border-left: 4px solid var(--primary);
+            padding: 16px 20px;
+            border-radius: var(--radius-sm);
+            margin: 16px 0;
+        }
+        @media (max-width: 768px) {
+            .privacy-card {
+                padding: 24px 18px;
+            }
+            .privacy-header h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="brand-link">
+                <div class="brand-icon"><i class="fa-solid fa-briefcase"></i></div>
+                <span class="brand-name">Lokeriva</span><span class="brand-domain">.vercel.app</span>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link"><i class="fa-solid fa-list-check"></i> <span class="nav-text-full">Lowongan</span><span class="nav-text-short">Loker</span></a>
+                <a href="/docs" class="nav-link"><i class="fa-solid fa-book-bookmark"></i> <span class="nav-text-full">Dokumentasi API</span><span class="nav-text-short">Docs</span></a>
+                <a href="https://t.me/lokeriva_bot" target="_blank" rel="noopener noreferrer" class="btn-telegram-nav" title="Bot Notifikasi Telegram @lokeriva_bot"><i class="fa-brands fa-telegram"></i> <span class="nav-text-full">Bot Telegram</span><span class="nav-text-short">Bot</span></a>
+                <button class="btn-icon" id="themeToggleBtn" title="Ganti Mode Gelap/Terang">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <main class="privacy-container">
+        <div class="privacy-card">
+            <header class="privacy-header">
+                <div class="privacy-badge">
+                    <i class="fa-solid fa-shield-check"></i> Transparan & Bebas Pelacakan
+                </div>
+                <h1>Kebijakan Privasi (Privacy Policy)</h1>
+                <p style="color: var(--text-muted); font-size: 0.88rem;">
+                    Berlaku untuk Website <b>Lokeriva.vercel.app</b> dan Layanan Bot Telegram resmi <b>@lokeriva_bot</b>.<br>
+                    Terakhir diperbarui: 14 Oktober 2026.
+                </p>
+            </header>
+
+            <section class="privacy-section">
+                <h2><i class="fa-solid fa-circle-info"></i> 1. Pendahuluan</h2>
+                <p>
+                    Lokeriva (termasuk bot Telegram <b>@lokeriva_bot</b>) adalah layanan independen nirlaba yang dibuat oleh <b>Xnuvers007</b> untuk memudahkan masyarakat Indonesia dalam mencari informasi lowongan pekerjaan terverifikasi secara gratis, cepat, dan transparan.
+                </p>
+                <p>
+                    Kami berkomitmen penuh untuk menghormati dan melindungi privasi setiap pengguna sesuai dengan ketentuan <b>Undang-Undang Perlindungan Data Pribadi (UU PDP No. 27 Tahun 2022)</b> dan standar privasi internasional.
+                </p>
+            </section>
+
+            <section class="privacy-section">
+                <h2><i class="fa-solid fa-database"></i> 2. Data yang Kami Proses pada Bot Telegram</h2>
+                <p>Saat Anda berinteraksi dengan <b>@lokeriva_bot</b> di Telegram, kami hanya memproses data teknis minimal yang mutlak dibutuhkan untuk membalas pesan Anda:</p>
+                <ul>
+                    <li><b>Chat ID Telegram:</b> Diperlukan untuk mengirimkan balasan hasil pencarian lowongan kerja ke percakapan Anda.</li>
+                    <li><b>Nama Depan / Username:</b> Digunakan secara ramah untuk menyapa Anda dalam pesan pembuka bot (misal: <i>"Halo, [Nama]!"</i>).</li>
+                    <li><b>Kata Kunci Pencarian (Search Query):</b> Kata atau kota yang Anda ketik (misal: <i>"Jakarta"</i>, <i>"Admin"</i>, <i>"Python"</i>) hanya diproses secara instan di memori sementara (RAM) untuk mencocokkan data lowongan.</li>
+                </ul>
+                <div class="highlight-box">
+                    <p style="margin: 0; color: var(--text-main); font-size: 0.88rem;">
+                        <b>🔒 Komitmen Nol Penyimpanan Sensitif:</b> Kami <u>tidak pernah</u> meminta, menyimpan, atau mencatat nomor telepon pribadi, kata sandi, lokasi GPS presisi, foto pribadi, maupun data identitas resmi (KTP/KK) Anda di server kami.
+                    </p>
+                </div>
+            </section>
+
+            <section class="privacy-section">
+                <h2><i class="fa-solid fa-user-shield"></i> 3. Data pada Website & Generator Surat Lamaran</h2>
+                <p>
+                    Pada website <b>Lokeriva.vercel.app</b>:
+                </p>
+                <ul>
+                    <li><b>Fitur Generator Surat Lamaran:</b> Data diri yang Anda masukkan (Nama, No. HP, Email, Riwayat Pendidikan) diproses dan disimpan <b>100% secara lokal di browser perangkat Anda</b> (menggunakan teknologi <code>localStorage</code>). Data tersebut tidak pernah dikirimkan atau disimpan ke database server kami.</li>
+                    <li><b>Cookie & Pelacakan:</b> Website Lokeriva tidak menggunakan cookie pihak ketiga pelacak perilaku (*third-party advertising trackers*).</li>
+                </ul>
+            </section>
+
+            <section class="privacy-section">
+                <h2><i class="fa-solid fa-arrow-up-right-from-square"></i> 4. Tautan ke Portal Pihak Ketiga</h2>
+                <p>
+                    Lokeriva mengagregasi lowongan kerja dari portal publik resmi (seperti Glints, Jobstreet, Kalibrr, BUMN, dll). Ketika Anda menekan tautan <i>"Lamar Lowongan"</i>, Anda akan dialihkan ke situs web resmi pemberi kerja/portal terkait. Kebijakan privasi situs tujuan diatur oleh masing-masing pihak ketiga tersebut.
+                </p>
+            </section>
+
+            <section class="privacy-section">
+                <h2><i class="fa-solid fa-handshake-slash"></i> 5. Pembagian Data kepada Pihak Ketiga</h2>
+                <p>
+                    Kami <b>tidak pernah dan tidak akan pernah menjual, menyewakan, atau memperdagangkan data pengguna</b> kepada pengiklan, broker data, atau pihak ketiga mana pun untuk tujuan komersial.
+                </p>
+            </section>
+
+            <section class="privacy-section">
+                <h2><i class="fa-solid fa-envelope-open-text"></i> 6. Kontak & Narahubung Pengembang</h2>
+                <p>
+                    Jika Anda memiliki pertanyaan, saran, atau permintaan terkait privasi dan penghapusan data, silakan hubungi pengembang melalui:
+                </p>
+                <ul>
+                    <li><b>Pengembang:</b> Xnuvers007</li>
+                    <li><b>Website Resmi:</b> <a href="https://lokeriva.vercel.app" style="color: var(--primary); text-decoration: none; font-weight: 600;">https://lokeriva.vercel.app</a></li>
+                    <li><b>Bot Telegram:</b> <a href="https://t.me/lokeriva_bot" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none; font-weight: 600;">@lokeriva_bot</a></li>
+                </ul>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-copy">© 2026 Lokeriva.vercel.app • Dikelola oleh <b>Xnuvers007</b> • Layanan Terbuka Karir Indonesia & Global WFH</p>
+        </div>
+    </footer>
+
+    <script>
+        const themeBtn = document.getElementById("themeToggleBtn");
+        const savedTheme = localStorage.getItem("loker_theme") || "light";
+        document.documentElement.setAttribute("data-theme", savedTheme);
+        if (themeBtn) {
+            themeBtn.innerHTML = savedTheme === "dark" ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+            themeBtn.addEventListener("click", () => {
+                const cur = document.documentElement.getAttribute("data-theme") || "light";
+                const next = cur === "light" ? "dark" : "light";
+                document.documentElement.setAttribute("data-theme", next);
+                localStorage.setItem("loker_theme", next);
+                themeBtn.innerHTML = next === "dark" ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+            });
+        }
+    </script>
+</body>
+</html>

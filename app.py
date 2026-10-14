@@ -187,6 +187,12 @@ def documentation():
     return render_template("docs.html")
 
 
+@app.route("/privacy")
+def privacy_policy():
+    """Halaman Kebijakan Privasi resmi untuk Website & Telegram Bot @lokeriva_bot."""
+    return render_template("privacy.html")
+
+
 # ==============================================================================
 # REST API ENDPOINTS
 # ==============================================================================
