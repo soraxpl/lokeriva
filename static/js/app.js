@@ -28,6 +28,18 @@ document.addEventListener("DOMContentLoaded", () => {
   loadSources();
   loadJobs();
   setupEventListeners();
+
+  // Buka otomatis jika tautan memiliki parameter ?modal=cover_letter
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("modal") === "cover_letter") {
+      const qPos = urlParams.get("pos") || "";
+      const qComp = urlParams.get("comp") || "";
+      setTimeout(() => {
+        window.openCoverLetterGenerator(qPos, qComp);
+      }, 150);
+    }
+  } catch (e) {}
 });
 
 // ==============================================================================
@@ -348,6 +360,7 @@ function setupEventListeners() {
     if (e.key === "Escape") {
       closeShareModal();
       closeDonateModal();
+      window.closeCoverLetterModal();
     }
   });
 }
@@ -1046,235 +1059,269 @@ Hormat saya,
 WhatsApp : {telepon}
 Email    : {email}`;
 
+// Helper penyimpanan aman (Anti-Crash saat cookies/storage diblokir atau private mode)
+function safeStorageGet(key, fallback = "") {
+  try {
+    return localStorage.getItem(key) || fallback;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+function safeStorageSet(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch (e) {}
+}
+
+function safeStorageRemove(key) {
+  try {
+    localStorage.removeItem(key);
+  } catch (e) {}
+}
+
 function initCoverLetterGenerator() {
-  // Muat data pelamar yang tersimpan di localStorage
-  const savedName = localStorage.getItem("lokeriva_cl_name") || "";
-  const savedEmail = localStorage.getItem("lokeriva_cl_email") || "";
-  const savedPhone = localStorage.getItem("lokeriva_cl_phone") || "";
-  const savedCity = localStorage.getItem("lokeriva_cl_city") || "";
-  const savedEdu = localStorage.getItem("lokeriva_cl_edu") || "";
-  const savedSkills = localStorage.getItem("lokeriva_cl_skills") || "";
-  const savedExp = localStorage.getItem("lokeriva_cl_exp") || "fresh";
-  const savedRecipient = localStorage.getItem("lokeriva_cl_recipient") || "";
-  const savedTone = localStorage.getItem("lokeriva_cl_tone") || "formal";
-  const savedAchievements = localStorage.getItem("lokeriva_cl_achievements") || "";
+  try {
+    // Muat data pelamar yang tersimpan di localStorage dengan fallback aman
+    const savedName = safeStorageGet("lokeriva_cl_name", "");
+    const savedEmail = safeStorageGet("lokeriva_cl_email", "");
+    const savedPhone = safeStorageGet("lokeriva_cl_phone", "");
+    const savedCity = safeStorageGet("lokeriva_cl_city", "");
+    const savedEdu = safeStorageGet("lokeriva_cl_edu", "");
+    const savedSkills = safeStorageGet("lokeriva_cl_skills", "");
+    const savedExp = safeStorageGet("lokeriva_cl_exp", "fresh");
+    const savedRecipient = safeStorageGet("lokeriva_cl_recipient", "");
+    const savedTone = safeStorageGet("lokeriva_cl_tone", "formal");
+    const savedAchievements = safeStorageGet("lokeriva_cl_achievements", "");
 
-  const nameInput = document.getElementById("clApplicantName");
-  const emailInput = document.getElementById("clApplicantEmail");
-  const phoneInput = document.getElementById("clApplicantPhone");
-  const cityInput = document.getElementById("clApplicantCity");
-  const eduInput = document.getElementById("clApplicantEdu");
-  const skillsInput = document.getElementById("clSkills");
-  const expSelect = document.getElementById("clExperienceLevel");
-  const recipientInput = document.getElementById("clRecipientName");
-  const toneSelect = document.getElementById("clTone");
-  const achInput = document.getElementById("clAchievements");
+    const nameInput = document.getElementById("clApplicantName");
+    const emailInput = document.getElementById("clApplicantEmail");
+    const phoneInput = document.getElementById("clApplicantPhone");
+    const cityInput = document.getElementById("clApplicantCity");
+    const eduInput = document.getElementById("clApplicantEdu");
+    const skillsInput = document.getElementById("clSkills");
+    const expSelect = document.getElementById("clExperienceLevel");
+    const recipientInput = document.getElementById("clRecipientName");
+    const toneSelect = document.getElementById("clTone");
+    const achInput = document.getElementById("clAchievements");
 
-  if (nameInput && savedName) nameInput.value = savedName;
-  if (emailInput && savedEmail) emailInput.value = savedEmail;
-  if (phoneInput && savedPhone) phoneInput.value = savedPhone;
-  if (cityInput && savedCity) cityInput.value = savedCity;
-  if (eduInput && savedEdu) eduInput.value = savedEdu;
-  if (skillsInput && savedSkills) skillsInput.value = savedSkills;
-  if (expSelect && savedExp) expSelect.value = savedExp;
-  if (recipientInput && savedRecipient) recipientInput.value = savedRecipient;
-  if (toneSelect && savedTone) toneSelect.value = savedTone;
-  if (achInput && savedAchievements) achInput.value = savedAchievements;
+    if (nameInput && savedName) nameInput.value = savedName;
+    if (emailInput && savedEmail) emailInput.value = savedEmail;
+    if (phoneInput && savedPhone) phoneInput.value = savedPhone;
+    if (cityInput && savedCity) cityInput.value = savedCity;
+    if (eduInput && savedEdu) eduInput.value = savedEdu;
+    if (skillsInput && savedSkills) skillsInput.value = savedSkills;
+    if (expSelect && savedExp) expSelect.value = savedExp;
+    if (recipientInput && savedRecipient) recipientInput.value = savedRecipient;
+    if (toneSelect && savedTone) toneSelect.value = savedTone;
+    if (achInput && savedAchievements) achInput.value = savedAchievements;
 
-  // Real-time update listeners saat mengetik di input form
-  const allInputs = [
-    "clApplicantName",
-    "clApplicantEmail",
-    "clApplicantPhone",
-    "clApplicantCity",
-    "clApplicantEdu",
-    "clJobPosition",
-    "clJobCompany",
-    "clRecipientName",
-    "clSkills",
-    "clAchievements",
-    "clExperienceLevel",
-    "clTone"
-  ];
+    // Real-time update listeners saat mengetik di input form
+    const allInputs = [
+      "clApplicantName",
+      "clApplicantEmail",
+      "clApplicantPhone",
+      "clApplicantCity",
+      "clApplicantEdu",
+      "clJobPosition",
+      "clJobCompany",
+      "clRecipientName",
+      "clSkills",
+      "clAchievements",
+      "clExperienceLevel",
+      "clTone"
+    ];
 
-  allInputs.forEach((id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener("input", () => {
-        saveApplicantData();
-        if (!isCustomizedManually || currentLetterTab === "custom_template") {
-          updateCoverLetterPreview();
-        }
+    allInputs.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener("input", () => {
+          saveApplicantData();
+          if (!isCustomizedManually || currentLetterTab === "custom_template") {
+            updateCoverLetterPreview();
+          }
+        });
+        el.addEventListener("change", () => {
+          saveApplicantData();
+          if (!isCustomizedManually || currentLetterTab === "custom_template") {
+            updateCoverLetterPreview();
+          }
+        });
+      }
+    });
+
+    // Listener untuk Textarea Preview (Pengguna bebas mengetik / mengedit langsung)
+    const outputText = document.getElementById("clOutputText");
+    if (outputText) {
+      outputText.addEventListener("input", () => {
+        isCustomizedManually = true;
+        updateMailtoLink();
       });
-      el.addEventListener("change", () => {
-        saveApplicantData();
-        if (!isCustomizedManually || currentLetterTab === "custom_template") {
-          updateCoverLetterPreview();
+    }
+
+    // Listener untuk Subjek Email jika diedit manual
+    const subjectInput = document.getElementById("clSubjectInput");
+    if (subjectInput) {
+      subjectInput.addEventListener("input", () => {
+        updateMailtoLink();
+      });
+    }
+
+    // Tombol Reset Teks / Generate Ulang ke default template
+    const btnRegen = document.getElementById("btnRegenerateLetter");
+    if (btnRegen) {
+      btnRegen.addEventListener("click", () => {
+        isCustomizedManually = false;
+        updateCoverLetterPreview();
+        showToast("Teks surat di-generate ulang dari form.");
+      });
+    }
+
+    // Tab switching (Cold Email vs Surat Formal ID vs Cover Letter EN vs Kustom Bebas)
+    document.querySelectorAll(".letter-tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".letter-tab-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentLetterTab = btn.dataset.tab;
+        isCustomizedManually = false;
+
+        // Tampilkan helper variabel jika di tab Kustom Bebas
+        const helper = document.getElementById("clCustomTemplateHelper");
+        if (helper) {
+          helper.style.display = currentLetterTab === "custom_template" ? "block" : "none";
+        }
+
+        updateCoverLetterPreview();
+      });
+    });
+
+    // Chip variabel untuk memasukkan placeholder ke textarea saat di tab Kustom Bebas
+    document.querySelectorAll(".tag-chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const tag = chip.dataset.tag;
+        if (!tag) return;
+        insertTagIntoTextarea(tag);
+      });
+    });
+
+    // Tombol Simpan Template Kustom Saya
+    const btnSaveCustom = document.getElementById("btnSaveCustomTemplate");
+    if (btnSaveCustom) {
+      btnSaveCustom.addEventListener("click", () => {
+        const text = document.getElementById("clOutputText")?.value || "";
+        if (!text.trim()) {
+          showToast("Teks template masih kosong.");
+          return;
+        }
+        safeStorageSet("lokeriva_cl_custom_template", text);
+        showToast("Template kustom Anda berhasil disimpan!");
+      });
+    }
+
+    // Tombol Muat Contoh Template Kustom
+    const btnLoadCustom = document.getElementById("btnLoadDefaultCustomTemplate");
+    if (btnLoadCustom) {
+      btnLoadCustom.addEventListener("click", () => {
+        const output = document.getElementById("clOutputText");
+        if (output) {
+          output.value = DEFAULT_CUSTOM_TEMPLATE;
+          isCustomizedManually = true;
+          updateMailtoLink();
+          showToast("Contoh template kustom berhasil dimuat.");
         }
       });
     }
-  });
 
-  // Listener untuk Textarea Preview (Pengguna bebas mengetik / mengedit langsung)
-  const outputText = document.getElementById("clOutputText");
-  if (outputText) {
-    outputText.addEventListener("input", () => {
-      isCustomizedManually = true;
-      updateMailtoLink();
-    });
-  }
+    // Reset form button
+    const btnReset = document.getElementById("btnResetLetterForm");
+    if (btnReset) {
+      btnReset.addEventListener("click", () => {
+        if (confirm("Reset data form? Profil tersimpan Anda akan dikosongkan.")) {
+          safeStorageRemove("lokeriva_cl_name");
+          safeStorageRemove("lokeriva_cl_email");
+          safeStorageRemove("lokeriva_cl_phone");
+          safeStorageRemove("lokeriva_cl_city");
+          safeStorageRemove("lokeriva_cl_edu");
+          safeStorageRemove("lokeriva_cl_skills");
+          safeStorageRemove("lokeriva_cl_exp");
+          safeStorageRemove("lokeriva_cl_recipient");
+          safeStorageRemove("lokeriva_cl_tone");
+          safeStorageRemove("lokeriva_cl_achievements");
 
-  // Listener untuk Subjek Email jika diedit manual
-  const subjectInput = document.getElementById("clSubjectInput");
-  if (subjectInput) {
-    subjectInput.addEventListener("input", () => {
-      updateMailtoLink();
-    });
-  }
+          if (nameInput) nameInput.value = "";
+          if (emailInput) emailInput.value = "";
+          if (phoneInput) phoneInput.value = "";
+          if (cityInput) cityInput.value = "";
+          if (eduInput) eduInput.value = "";
+          if (skillsInput) skillsInput.value = "";
+          if (recipientInput) recipientInput.value = "";
+          if (achInput) achInput.value = "";
+          const jobPos = document.getElementById("clJobPosition");
+          const jobComp = document.getElementById("clJobCompany");
+          if (jobPos) jobPos.value = "";
+          if (jobComp) jobComp.value = "";
+          if (expSelect) expSelect.value = "fresh";
+          if (toneSelect) toneSelect.value = "formal";
 
-  // Tombol Reset Teks / Generate Ulang ke default template
-  const btnRegen = document.getElementById("btnRegenerateLetter");
-  if (btnRegen) {
-    btnRegen.addEventListener("click", () => {
-      isCustomizedManually = false;
-      updateCoverLetterPreview();
-      showToast("Teks surat di-generate ulang dari form.");
-    });
-  }
+          isCustomizedManually = false;
+          updateCoverLetterPreview();
+          showToast("Form berhasil di-reset.");
+        }
+      });
+    }
 
-  // Tab switching (Cold Email vs Surat Formal ID vs Cover Letter EN vs Kustom Bebas)
-  document.querySelectorAll(".letter-tab-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".letter-tab-btn").forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      currentLetterTab = btn.dataset.tab;
-      isCustomizedManually = false;
+    // Copy button
+    const btnCopy = document.getElementById("btnCopyCoverLetter");
+    if (btnCopy) {
+      btnCopy.addEventListener("click", copyCoverLetter);
+    }
 
-      // Tampilkan helper variabel jika di tab Kustom Bebas
-      const helper = document.getElementById("clCustomTemplateHelper");
-      if (helper) {
-        helper.style.display = currentLetterTab === "custom_template" ? "block" : "none";
-      }
+    // Download .txt button
+    const btnDl = document.getElementById("btnDownloadTxtCoverLetter");
+    if (btnDl) {
+      btnDl.addEventListener("click", downloadCoverLetterTxt);
+    }
 
-      updateCoverLetterPreview();
-    });
-  });
+    // Close modal button
+    const btnClose = document.getElementById("btnCloseCoverLetterModal");
+    if (btnClose) {
+      btnClose.addEventListener("click", window.closeCoverLetterModal);
+    }
 
-  // Chip variabel untuk memasukkan placeholder ke textarea saat di tab Kustom Bebas
-  document.querySelectorAll(".tag-chip").forEach((chip) => {
-    chip.addEventListener("click", () => {
-      const tag = chip.dataset.tag;
-      if (!tag) return;
-      insertTagIntoTextarea(tag);
-    });
-  });
+    // Overlay click to close
+    const modal = document.getElementById("coverLetterModal");
+    if (modal) {
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          window.closeCoverLetterModal();
+        }
+      });
+    }
 
-  // Tombol Simpan Template Kustom Saya
-  const btnSaveCustom = document.getElementById("btnSaveCustomTemplate");
-  if (btnSaveCustom) {
-    btnSaveCustom.addEventListener("click", () => {
-      const text = document.getElementById("clOutputText")?.value || "";
-      if (!text.trim()) {
-        showToast("Teks template masih kosong.");
-        return;
-      }
-      localStorage.setItem("lokeriva_cl_custom_template", text);
-      showToast("Template kustom Anda berhasil disimpan!");
-    });
-  }
-
-  // Tombol Muat Contoh Template Kustom
-  const btnLoadCustom = document.getElementById("btnLoadDefaultCustomTemplate");
-  if (btnLoadCustom) {
-    btnLoadCustom.addEventListener("click", () => {
-      const output = document.getElementById("clOutputText");
-      if (output) {
-        output.value = DEFAULT_CUSTOM_TEMPLATE;
-        isCustomizedManually = true;
-        updateMailtoLink();
-        showToast("Contoh template kustom berhasil dimuat.");
-      }
-    });
-  }
-
-  // Reset form button
-  const btnReset = document.getElementById("btnResetLetterForm");
-  if (btnReset) {
-    btnReset.addEventListener("click", () => {
-      if (confirm("Reset data form? Profil tersimpan Anda akan dikosongkan.")) {
-        localStorage.removeItem("lokeriva_cl_name");
-        localStorage.removeItem("lokeriva_cl_email");
-        localStorage.removeItem("lokeriva_cl_phone");
-        localStorage.removeItem("lokeriva_cl_city");
-        localStorage.removeItem("lokeriva_cl_edu");
-        localStorage.removeItem("lokeriva_cl_skills");
-        localStorage.removeItem("lokeriva_cl_exp");
-        localStorage.removeItem("lokeriva_cl_recipient");
-        localStorage.removeItem("lokeriva_cl_tone");
-        localStorage.removeItem("lokeriva_cl_achievements");
-
-        if (nameInput) nameInput.value = "";
-        if (emailInput) emailInput.value = "";
-        if (phoneInput) phoneInput.value = "";
-        if (cityInput) cityInput.value = "";
-        if (eduInput) eduInput.value = "";
-        if (skillsInput) skillsInput.value = "";
-        if (recipientInput) recipientInput.value = "";
-        if (achInput) achInput.value = "";
-        const jobPos = document.getElementById("clJobPosition");
-        const jobComp = document.getElementById("clJobCompany");
-        if (jobPos) jobPos.value = "";
-        if (jobComp) jobComp.value = "";
-        if (expSelect) expSelect.value = "fresh";
-        if (toneSelect) toneSelect.value = "formal";
-
-        isCustomizedManually = false;
-        updateCoverLetterPreview();
-        showToast("Form berhasil di-reset.");
-      }
-    });
-  }
-
-  // Copy button
-  const btnCopy = document.getElementById("btnCopyCoverLetter");
-  if (btnCopy) {
-    btnCopy.addEventListener("click", copyCoverLetter);
-  }
-
-  // Download .txt button
-  const btnDl = document.getElementById("btnDownloadTxtCoverLetter");
-  if (btnDl) {
-    btnDl.addEventListener("click", downloadCoverLetterTxt);
-  }
-
-  // Close modal button
-  const btnClose = document.getElementById("btnCloseCoverLetterModal");
-  if (btnClose) {
-    btnClose.addEventListener("click", closeCoverLetterModal);
-  }
-
-  // Overlay click to close
-  const modal = document.getElementById("coverLetterModal");
-  if (modal) {
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) {
-        closeCoverLetterModal();
-      }
-    });
-  }
-
-  // Navbar, Hero, and Footer trigger buttons
-  const btnNav = document.getElementById("btnNavCoverLetter");
-  if (btnNav) {
-    btnNav.addEventListener("click", () => openCoverLetterGenerator("", ""));
-  }
-  const btnHero = document.getElementById("btnHeroCoverLetter");
-  if (btnHero) {
-    btnHero.addEventListener("click", () => openCoverLetterGenerator("", ""));
-  }
-  const btnFooter = document.getElementById("btnFooterCoverLetter");
-  if (btnFooter) {
-    btnFooter.addEventListener("click", () => openCoverLetterGenerator("", ""));
+    // Navbar, Hero, and Footer trigger buttons
+    const btnNav = document.getElementById("btnNavCoverLetter");
+    if (btnNav) {
+      btnNav.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.openCoverLetterGenerator("", "");
+      });
+    }
+    const btnHero = document.getElementById("btnHeroCoverLetter");
+    if (btnHero) {
+      btnHero.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.openCoverLetterGenerator("", "");
+      });
+    }
+    const btnFooter = document.getElementById("btnFooterCoverLetter");
+    if (btnFooter) {
+      btnFooter.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.openCoverLetterGenerator("", "");
+      });
+    }
+  } catch (err) {
+    console.warn("[CoverLetter] Init error:", err);
   }
 }
 
@@ -1293,21 +1340,28 @@ function insertTagIntoTextarea(tag) {
 
 function saveApplicantData() {
   const getVal = (id) => (document.getElementById(id)?.value || "").trim();
-  localStorage.setItem("lokeriva_cl_name", getVal("clApplicantName"));
-  localStorage.setItem("lokeriva_cl_email", getVal("clApplicantEmail"));
-  localStorage.setItem("lokeriva_cl_phone", getVal("clApplicantPhone"));
-  localStorage.setItem("lokeriva_cl_city", getVal("clApplicantCity"));
-  localStorage.setItem("lokeriva_cl_edu", getVal("clApplicantEdu"));
-  localStorage.setItem("lokeriva_cl_skills", getVal("clSkills"));
-  localStorage.setItem("lokeriva_cl_exp", getVal("clExperienceLevel"));
-  localStorage.setItem("lokeriva_cl_recipient", getVal("clRecipientName"));
-  localStorage.setItem("lokeriva_cl_tone", getVal("clTone") || "formal");
-  localStorage.setItem("lokeriva_cl_achievements", getVal("clAchievements"));
+  safeStorageSet("lokeriva_cl_name", getVal("clApplicantName"));
+  safeStorageSet("lokeriva_cl_email", getVal("clApplicantEmail"));
+  safeStorageSet("lokeriva_cl_phone", getVal("clApplicantPhone"));
+  safeStorageSet("lokeriva_cl_city", getVal("clApplicantCity"));
+  safeStorageSet("lokeriva_cl_edu", getVal("clApplicantEdu"));
+  safeStorageSet("lokeriva_cl_skills", getVal("clSkills"));
+  safeStorageSet("lokeriva_cl_exp", getVal("clExperienceLevel"));
+  safeStorageSet("lokeriva_cl_recipient", getVal("clRecipientName"));
+  safeStorageSet("lokeriva_cl_tone", getVal("clTone") || "formal");
+  safeStorageSet("lokeriva_cl_achievements", getVal("clAchievements"));
 }
 
-function openCoverLetterGenerator(posisi = "", perusahaan = "") {
+// Ekspor ke window agar dapat dipanggil dari mana pun (termasuk inline onclick)
+window.openCoverLetterGenerator = function(posisi = "", perusahaan = "") {
   const modal = document.getElementById("coverLetterModal");
-  if (!modal) return;
+  if (!modal) {
+    // Jika user berada di halaman lain (misal /docs), arahkan ke homepage dengan modal terbuka
+    const p = encodeURIComponent(posisi || "");
+    const c = encodeURIComponent(perusahaan || "");
+    window.location.href = `/?modal=cover_letter&pos=${p}&comp=${c}`;
+    return;
+  }
 
   const jobPosInput = document.getElementById("clJobPosition");
   const jobCompInput = document.getElementById("clJobCompany");
@@ -1316,20 +1370,29 @@ function openCoverLetterGenerator(posisi = "", perusahaan = "") {
   if (jobCompInput && perusahaan) jobCompInput.value = perusahaan;
 
   isCustomizedManually = false;
-  updateCoverLetterPreview();
+  try {
+    updateCoverLetterPreview();
+  } catch (e) {
+    console.warn("Cover letter preview error:", e);
+  }
 
   modal.style.display = "flex";
   modal.setAttribute("aria-hidden", "false");
   document.body.style.overflow = "hidden";
-}
+};
 
-function closeCoverLetterModal() {
+// Alias fungsi lokal
+const openCoverLetterGenerator = window.openCoverLetterGenerator;
+
+window.closeCoverLetterModal = function() {
   const modal = document.getElementById("coverLetterModal");
   if (!modal) return;
   modal.style.display = "none";
   modal.setAttribute("aria-hidden", "true");
   document.body.style.overflow = "";
-}
+};
+
+const closeCoverLetterModal = window.closeCoverLetterModal;
 
 function getLetterData() {
   const getVal = (id, fallback) => {

@@ -95,7 +95,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=2.5">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v={{ sw_build_hash }}">
 </head>
 <body>
 
@@ -111,7 +111,7 @@
             <div class="nav-links">
                 <a href="/" class="nav-link active"><i class="fa-solid fa-list-check"></i> <span class="nav-text-full">Lowongan</span><span class="nav-text-short">Loker</span></a>
                 <a href="/docs" class="nav-link"><i class="fa-solid fa-book-bookmark"></i> <span class="nav-text-full">Dokumentasi API</span><span class="nav-text-short">Docs</span></a>
-                <button class="btn-letter-nav" id="btnNavCoverLetter" type="button" title="Generator Surat Lamaran & Email Kerja">
+                <button class="btn-letter-nav" id="btnNavCoverLetter" type="button" onclick="openCoverLetterGenerator()" title="Generator Surat Lamaran & Email Kerja">
                     <i class="fa-solid fa-file-signature"></i> <span class="nav-text-full">Surat Lamaran</span><span class="nav-text-short">Surat</span>
                 </button>
                 <a href="https://t.me/lokeriva_bot" target="_blank" rel="noopener noreferrer" class="btn-telegram-nav" title="Bot Notifikasi & Pencarian Telegram @lokeriva_bot">
@@ -147,7 +147,7 @@
                     Menggabungkan ratusan lowongan kerja aktif dari 20+ portal karir Indonesia (BUMN, Medis, Admin, Startup) dan platform Remote WFH Global terverifikasi.
                 </p>
                 <div class="hero-feature-badges">
-                    <button type="button" class="hero-badge-item" id="btnHeroCoverLetter">
+                    <button type="button" class="hero-badge-item" id="btnHeroCoverLetter" onclick="openCoverLetterGenerator()">
                         <i class="fa-solid fa-file-signature" style="color: #6366f1;"></i>
                         <span>Generator Surat Lamaran & Email Kerja</span>
                         <span class="badge-tag-new">Baru</span>
@@ -325,7 +325,7 @@
                 <span class="footer-badge">
                     <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> Lowongan Terverifikasi
                 </span>
-                <button type="button" class="footer-badge" id="btnFooterCoverLetter" title="Buka Generator Surat Lamaran & Email">
+                <button type="button" class="footer-badge" id="btnFooterCoverLetter" onclick="openCoverLetterGenerator()" title="Buka Generator Surat Lamaran & Email">
                     <i class="fa-solid fa-file-signature" style="color: #6366f1;"></i> Surat Lamaran
                 </button>
                 <a href="https://t.me/lokeriva_bot" target="_blank" rel="noopener noreferrer" class="footer-badge" style="text-decoration:none;" title="Akses Bot Telegram @lokeriva_bot">
@@ -697,6 +697,6 @@
     <div id="toast" class="toast"><i class="fa-solid fa-circle-info"></i> <span id="toastMsg">Notifikasi</span></div>
 
     <!-- Script Logic -->
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}?v={{ sw_build_hash }}"></script>
 </body>
 </html>

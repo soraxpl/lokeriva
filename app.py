@@ -97,7 +97,8 @@ def inject_site_meta():
 
     return {
         "site_url": site_root,
-        "canonical_url": f"{site_root}{request.path}"
+        "canonical_url": f"{site_root}{request.path}",
+        "sw_build_hash": SW_BUILD_HASH
     }
 
 
