@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initPWA();
   initOfflineDetection();
   initTheme();
+  initLiveClock();
   loadStats();
   loadSources();
   loadJobs();
@@ -677,16 +678,16 @@ function renderJobs(jobs) {
       <td>${escapeHtml(job.perusahaan)}</td>
       <td><span class="badge badge-source">${escapeHtml(job.sumber)}</span></td>
       <td><i class="fa-solid fa-location-dot" style="color: var(--accent);"></i> ${escapeHtml(job.lokasi)}</td>
-      <td>
-        <div style="display: flex; gap: 6px; align-items: center;">
-          <button class="btn-share-wa btn-share-wa-table" style="width: 28px; height: 28px; font-size: 0.82rem;" title="Bagikan ke WhatsApp">
+      <td class="table-actions-cell">
+        <div class="table-actions-group">
+          <button class="btn-share-wa btn-share-wa-table" title="Bagikan ke WhatsApp">
             <i class="fa-brands fa-whatsapp"></i>
           </button>
-          <button class="btn-share-more btn-share-more-table" style="width: 28px; height: 28px; font-size: 0.78rem;" title="Bagikan ke Media Sosial">
+          <button class="btn-share-more btn-share-more-table" title="Bagikan ke Media Sosial">
             <i class="fa-solid fa-share-nodes"></i>
           </button>
-          <a href="${safeLink}" target="_blank" rel="noopener noreferrer" class="btn-apply" style="padding: 4px 10px; font-size: 0.75rem;">
-            Lamar <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          <a href="${safeLink}" target="_blank" rel="noopener noreferrer" class="btn-apply btn-apply-table">
+            <span>Lamar</span> <i class="fa-solid fa-arrow-up-right-from-square"></i>
           </a>
         </div>
       </td>
@@ -930,4 +931,33 @@ function copyShareUrl() {
   if (urlInput && urlInput.value) {
     copyLink(urlInput.value);
   }
+}
+
+// ==============================================================================
+// 8. JAM DIGITAL REAL-TIME (WIB / JAKARTA)
+// ==============================================================================
+function initLiveClock() {
+  const clockEl = document.getElementById("footerClock");
+  if (!clockEl) return;
+
+  const updateClock = () => {
+    try {
+      const now = new Date();
+      const timeStr = new Intl.DateTimeFormat("id-ID", {
+        timeZone: "Asia/Jakarta",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      }).format(now);
+      clockEl.innerText = `${timeStr} WIB`;
+    } catch (e) {
+      const now = new Date();
+      const pad = (n) => String(n).padStart(2, "0");
+      clockEl.innerText = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())} WIB`;
+    }
+  };
+
+  updateClock();
+  setInterval(updateClock, 1000);
 }

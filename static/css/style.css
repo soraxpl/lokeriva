@@ -378,30 +378,54 @@ body {
 }
 
 .view-toggle {
-  display: flex;
-  background: var(--bg-main);
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 2px;
+  padding: 3px;
+  gap: 3px;
 }
 
 .toggle-btn {
   background: transparent;
-  border: none;
-  padding: 6px 10px;
+  border: 1px solid transparent;
+  padding: 6px 14px;
   border-radius: var(--radius-sm);
   color: var(--text-muted);
   cursor: pointer;
-  font-size: 0.85rem;
-  display: flex;
+  font-size: 0.84rem;
+  font-weight: 500;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition: var(--transition);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.toggle-btn i {
+  font-size: 0.88rem;
+}
+
+.toggle-btn:hover {
+  color: var(--text-main);
+  background: var(--bg-main);
 }
 
 .toggle-btn.active {
-  background: var(--bg-card);
-  color: var(--primary);
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
   font-weight: 600;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+}
+
+[data-theme="dark"] .toggle-btn.active {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
 }
 
 /* JOB CARDS GRID */
@@ -601,17 +625,62 @@ body {
 .btn-apply {
   background: var(--accent);
   color: white;
-  padding: 6px 14px;
+  padding: 7px 14px;
   border-radius: var(--radius-sm);
   font-size: 0.8rem;
   font-weight: 600;
   text-decoration: none;
   transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 .btn-apply:hover {
   background: var(--accent-hover);
   transform: translateY(-1px);
+}
+
+.table-actions-cell {
+  white-space: nowrap !important;
+  width: 1%;
+  text-align: center;
+  padding: 10px 14px;
+}
+
+.table-actions-group {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap !important;
+}
+
+.btn-apply-table {
+  padding: 6px 14px !important;
+  font-size: 0.78rem !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  flex-shrink: 0;
+}
+
+.btn-share-wa-table, .btn-share-more-table {
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  font-size: 0.86rem !important;
+  border-radius: var(--radius-sm) !important;
+  flex-shrink: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 /* TABLE VIEW */
@@ -691,10 +760,56 @@ tr:hover td {
   margin-top: auto;
   background: var(--bg-card);
   border-top: 1px solid var(--border);
-  padding: 24px 0;
+  padding: 32px 0 24px 0;
   text-align: center;
-  font-size: 0.82rem;
+}
+
+.footer-quote {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--text-main);
+  max-width: 640px;
+  margin: 0 auto 16px auto;
+  line-height: 1.6;
+  font-style: italic;
+  padding: 0 16px;
+}
+
+.footer-quote i {
+  color: var(--primary);
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.footer-badges {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 0 16px;
+}
+
+.footer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 600;
   color: var(--text-muted);
+  box-shadow: var(--shadow-sm);
+}
+
+.footer-copy {
+  font-size: 0.8rem;
+  color: var(--text-subtle);
+  margin: 0;
+  padding: 0 16px;
 }
 
 /* OFFLINE STATUS ALERT BAR */
@@ -902,7 +1017,35 @@ tr:hover td {
   .hero-title { font-size: 1.5rem; }
   .jobs-grid { grid-template-columns: 1fr; }
   .filter-row { flex-direction: column; align-items: stretch; }
-  .actions-bar { flex-direction: column; align-items: stretch; }
+  .actions-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+  .btn-export {
+    flex: 1 1 calc(50% - 6px);
+    justify-content: center;
+    text-align: center;
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+  .view-toggle {
+    width: 100%;
+    display: flex;
+    margin-top: 2px;
+  }
+  .toggle-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 8px 12px;
+  }
 }
 
 /* ==============================================================================

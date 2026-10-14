@@ -244,9 +244,13 @@
                 </a>
                 
                 <!-- View Mode Toggle -->
-                <div class="view-toggle">
-                    <button class="toggle-btn active" id="btnGridView" title="Tampilan Kartu"><i class="fa-solid fa-grip"></i> Kartu</button>
-                    <button class="toggle-btn" id="btnTableView" title="Tampilan Tabel"><i class="fa-solid fa-table-list"></i> Tabel</button>
+                <div class="view-toggle" role="group" aria-label="Pilihan Tampilan Lowongan">
+                    <button class="toggle-btn active" id="btnGridView" type="button" title="Tampilan Kartu">
+                        <i class="fa-solid fa-grip"></i> <span>Kartu</span>
+                    </button>
+                    <button class="toggle-btn" id="btnTableView" type="button" title="Tampilan Tabel">
+                        <i class="fa-solid fa-table-list"></i> <span>Tabel</span>
+                    </button>
                 </div>
             </div>
         </section>
@@ -261,12 +265,12 @@
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 40px;">No</th>
-                        <th>Posisi</th>
+                        <th style="width: 48px; text-align: center;">No</th>
+                        <th>Posisi Lowongan</th>
                         <th>Perusahaan</th>
                         <th>Sumber</th>
-                        <th>Lokasi</th>
-                        <th style="width: 100px;">Aksi</th>
+                        <th>Lokasi Kerja</th>
+                        <th style="width: 175px; text-align: center;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -285,10 +289,23 @@
     <!-- FOOTER -->
     <footer class="footer">
         <div class="container">
-            <p>© 2026 Lokeriva.id • Created by <b>Xnuvers007</b> • Agregator Lowongan Kerja Otomatis Multi-Sumber (PWA Ready)</p>
-            <p style="margin-top: 4px; font-size: 0.75rem; color: var(--text-subtle);">
-                Data dikumpulkan secara agregat dari Kalibrr, Jobicy, Remotive, Himalayas, Arbeitnow, The Muse, Loker.id, Greenhouse ATS, dan Portal WordPress Terverifikasi.
+            <p class="footer-quote">
+                <i class="fa-solid fa-quote-left"></i> 
+                Setiap langkah kecil dalam mencari peluang adalah awal dari pencapaian besar. Raih karir impian Anda bersama Lokeriva.
+                <i class="fa-solid fa-quote-right"></i>
             </p>
+            <div class="footer-badges">
+                <span class="footer-badge" id="footerClockBadge">
+                    <i class="fa-regular fa-clock"></i> <span id="footerClock">--:--:-- WIB</span>
+                </span>
+                <span class="footer-badge">
+                    <i class="fa-solid fa-shield-halved" style="color: #10b981;"></i> 100% Bebas Biaya & Transparan
+                </span>
+                <span class="footer-badge">
+                    <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> Lowongan Terverifikasi
+                </span>
+            </div>
+            <p class="footer-copy">© 2026 Lokeriva.id • Created by <b>Xnuvers007</b> • Platform Agregator Karir Indonesia & Global Remote</p>
         </div>
     </footer>
 
