@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 import ssl
 import re
 import time
+import os
 import threading
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
@@ -345,23 +346,43 @@ def fetch_wordpress_indo(kata_kunci="", output_list=None):
         ("https://lokerpintar.id", "LokerPintar"),
         ("https://jakartakerja.com", "JakartaKerja")
     ]
-    keywords = [kata_kunci] if kata_kunci else ["Makassar", "Admin", "BUMN", "Kesehatan", "Bidan"]
 
-    for domain, nama_label in daftar_portal:
-        for kw in keywords:
+    if not kata_kunci:
+        # Mode general: ambil 8 post terbaru dari tiap portal secara cepat (hanya 8 request, bukan 40)
+        for domain, nama_label in daftar_portal:
             try:
-                url = f"{domain}/wp-json/wp/v2/posts?search={urllib.parse.quote(kw)}&per_page=6"
-                posts = json.loads(panggil_url(url, timeout=5))
+                url = f"{domain}/wp-json/wp/v2/posts?per_page=8"
+                posts = json.loads(panggil_url(url, timeout=3))
                 if isinstance(posts, list):
                     for p in posts:
                         judul = bersihkan_teks_html(p.get("title", {}).get("rendered", "-"))
                         output_list.append({
                             "id": f"wp-{p.get('id', hash(p.get('link', '')))}",
                             "sumber": f"{nama_label} (WP)",
-                            "kategori": f"Loker Indo ({kw})",
+                            "kategori": "Loker Indonesia",
                             "posisi": judul,
                             "perusahaan": "Lihat di situs sumber",
-                            "lokasi": kw if kw.lower() in ["makassar", "sulawesi selatan", "bandung", "jakarta", "jogja"] else f"Indonesia ({nama_label})",
+                            "lokasi": f"Indonesia ({nama_label})",
+                            "tanggal": str(p.get("date", "-"))[:10],
+                            "link": sanitasi_link(p.get("link", ""))
+                        })
+            except Exception:
+                continue
+    else:
+        for domain, nama_label in daftar_portal:
+            try:
+                url = f"{domain}/wp-json/wp/v2/posts?search={urllib.parse.quote(kata_kunci)}&per_page=6"
+                posts = json.loads(panggil_url(url, timeout=3))
+                if isinstance(posts, list):
+                    for p in posts:
+                        judul = bersihkan_teks_html(p.get("title", {}).get("rendered", "-"))
+                        output_list.append({
+                            "id": f"wp-{p.get('id', hash(p.get('link', '')))}",
+                            "sumber": f"{nama_label} (WP)",
+                            "kategori": f"Loker Indo ({kata_kunci})",
+                            "posisi": judul,
+                            "perusahaan": "Lihat di situs sumber",
+                            "lokasi": kata_kunci if kata_kunci.lower() in ["makassar", "sulawesi selatan", "bandung", "jakarta", "jogja"] else f"Indonesia ({nama_label})",
                             "tanggal": str(p.get("date", "-"))[:10],
                             "link": sanitasi_link(p.get("link", ""))
                         })
@@ -464,8 +485,10 @@ def fetch_loker_id(kata_kunci="", output_list=None):
 
 
 # ==============================================================================
-# CACHE MANAGER THREAD-SAFE DENGAN TTL
+# CACHE MANAGER THREAD-SAFE DENGAN SEED PRELOAD & BACKGROUND REFRESH
 # ==============================================================================
+SEED_CACHE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "seed_jobs.json")
+
 class JobCacheManager:
     """Mengelola cache in-memory untuk efisiensi serverless & performa tinggi."""
     def __init__(self, ttl_seconds=900): # 15 menit TTL
@@ -475,13 +498,44 @@ class JobCacheManager:
         self.lock = threading.Lock()
         self.is_fetching = False
 
+        # Preload instant dari seed_jobs.json agar respons serverless Vercel secepat kilat (<50ms)
+        self._load_seed_cache()
+
+    def _load_seed_cache(self):
+        if os.path.exists(SEED_CACHE_PATH):
+            try:
+                with open(SEED_CACHE_PATH, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    if isinstance(data, list) and len(data) > 0:
+                        self.cache_pool = data
+                        self.last_updated = os.path.getmtime(SEED_CACHE_PATH)
+            except Exception as e:
+                print(f"[CACHE] Gagal membaca seed cache: {e}")
+
     def get_all_jobs(self, force_refresh=False):
         now = time.time()
         with self.lock:
+            # Jika sudah ada data dan belum expired, langsung kembalikan dalam 1ms
             if not force_refresh and self.cache_pool and (now - self.last_updated < self.ttl):
                 return list(self.cache_pool), self.last_updated
+            # Stale-While-Revalidate: Jika data ada tapi expired, kembalikan data instan dan refresh background
+            if not force_refresh and self.cache_pool:
+                if not self.is_fetching:
+                    threading.Thread(target=self._background_refresh, daemon=True).start()
+                return list(self.cache_pool), self.last_updated
 
-        # Ambil data baru secara paralel
+        return self._fetch_fresh_jobs()
+
+    def _background_refresh(self):
+        if self.is_fetching:
+            return
+        self.is_fetching = True
+        try:
+            self._fetch_fresh_jobs()
+        finally:
+            self.is_fetching = False
+
+    def _fetch_fresh_jobs(self):
         raw_results = []
         tasks = [
             lambda: fetch_jobicy("", raw_results),
@@ -498,11 +552,11 @@ class JobCacheManager:
             lambda: fetch_loker_id("", raw_results),
         ]
 
-        with ThreadPoolExecutor(max_workers=8) as executor:
+        with ThreadPoolExecutor(max_workers=12) as executor:
             futures = [executor.submit(fn) for fn in tasks]
             for f in futures:
                 try:
-                    f.result()
+                    f.result(timeout=5)
                 except Exception:
                     pass
 
@@ -517,6 +571,13 @@ class JobCacheManager:
             if unique_map:
                 self.cache_pool = list(unique_map.values())
                 self.last_updated = time.time()
+                try:
+                    with open(SEED_CACHE_PATH, "w", encoding="utf-8") as f:
+                        json.dump(self.cache_pool, f, ensure_ascii=False)
+                except Exception:
+                    pass
+            elif not self.cache_pool:
+                self._load_seed_cache()
             return list(self.cache_pool), self.last_updated
 
     def search_jobs(self, query=""):

@@ -174,6 +174,324 @@
         .try-btn:hover {
             background: var(--primary-hover);
         }
+
+        /* API CONSOLE & PLAYGROUND */
+        .console-card {
+            background: var(--bg-card);
+            border: 2px solid var(--primary);
+            border-radius: var(--radius-xl);
+            margin-bottom: 32px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+        .console-header {
+            padding: 18px 24px;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(56, 189, 248, 0.08));
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .console-title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .console-title-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+        }
+        .console-title h2 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0 0 2px 0;
+        }
+        .console-title p {
+            margin: 0;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+        .console-body {
+            padding: 22px;
+        }
+        .console-input-row {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+            margin-bottom: 14px;
+        }
+        @media (max-width: 680px) {
+            .console-input-row {
+                flex-direction: column;
+            }
+        }
+        .console-method-select {
+            padding: 11px 16px;
+            font-family: 'Fira Code', monospace;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            background: var(--bg-main);
+            color: var(--text-main);
+            cursor: pointer;
+            outline: none;
+            transition: var(--transition);
+        }
+        .console-url-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        .console-url-wrapper:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+        .console-base-host {
+            padding: 0 12px;
+            color: var(--text-subtle);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.82rem;
+            user-select: none;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+        @media (max-width: 768px) {
+            .console-base-host {
+                display: none;
+            }
+        }
+        .console-url-input {
+            flex: 1;
+            padding: 11px 14px;
+            border: none;
+            background: transparent;
+            color: var(--text-main);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.88rem;
+            outline: none;
+            width: 100%;
+        }
+        .console-btn-send {
+            padding: 11px 22px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .console-btn-send:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        .console-presets {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+        .presets-label {
+            font-size: 0.76rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-subtle);
+            margin-right: 4px;
+        }
+        .preset-chip {
+            padding: 5px 12px;
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-full);
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .preset-chip:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+            background: var(--primary-light);
+            transform: translateY(-1px);
+        }
+        .console-payload-section {
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            margin-bottom: 18px;
+        }
+        .console-payload-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .console-payload-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .payload-actions {
+            display: flex;
+            gap: 6px;
+        }
+        .btn-mini-action {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-mini-action:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        .console-payload-textarea {
+            width: 100%;
+            padding: 10px 12px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.82rem;
+            color: #f8fafc;
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: var(--radius-sm);
+            outline: none;
+            resize: vertical;
+            min-height: 80px;
+            box-sizing: border-box;
+        }
+        .console-response-box {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+        .console-response-header {
+            padding: 10px 16px;
+            background: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 1px solid #334155;
+        }
+        .response-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .resp-badge {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: var(--radius-sm);
+        }
+        .resp-status-idle { background: #334155; color: #94a3b8; }
+        .resp-status-ok { background: #15803d; color: #dcfce7; }
+        .resp-status-err { background: #b91c1c; color: #fee2e2; }
+        .resp-time, .resp-size {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            font-family: 'Fira Code', monospace;
+        }
+        .response-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-copy-code {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #e2e8f0;
+            font-size: 0.76rem;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+        .btn-copy-code:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .btn-copy-code.copied {
+            background: #10b981 !important;
+            border-color: #10b981 !important;
+            color: white !important;
+        }
+        .console-output-pre {
+            padding: 16px;
+            margin: 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.82rem;
+            color: #f8fafc;
+            line-height: 1.5;
+            max-height: 380px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .code-box-wrapper {
+            position: relative;
+            margin: 12px 0;
+        }
+        .code-box-wrapper .code-box {
+            margin: 0;
+            padding-right: 90px;
+        }
+        .code-box-wrapper .btn-copy-code {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 2;
+        }
     </style>
 </head>
 <body>
@@ -222,6 +540,83 @@
                 API menggunakan rate limiting yang ramah dan bersahabat: <b>120 permintaan / menit</b> untuk penelusuran JSON, dan <b>30 permintaan / menit</b> untuk ekspor PDF. Jika limit terlampaui, server akan mengembalikan status <code>HTTP 429 Too Many Requests</code> dengan header <code>Retry-After</code>.
             </p>
         </div>
+
+        <!-- INTERACTIVE API CONSOLE & PLAYGROUND (GET & POST TESTER) -->
+        <section class="console-card" aria-label="API Request Console & Tester">
+            <div class="console-header">
+                <div class="console-title-group">
+                    <div class="console-title-icon">
+                        <i class="fa-solid fa-terminal"></i>
+                    </div>
+                    <div class="console-title">
+                        <h2>API Request Console & Live Tester</h2>
+                        <p>Kirim permintaan GET atau POST dengan kustom payload JSON secara interaktif & salin response/cURL</p>
+                    </div>
+                </div>
+                <div class="console-header-badges">
+                    <span class="docs-badge" style="margin-bottom:0;"><i class="fa-solid fa-bolt"></i> Real-time Live Sandbox</span>
+                </div>
+            </div>
+            <div class="console-body">
+                <!-- Baris Input Endpoint & Method -->
+                <div class="console-input-row">
+                    <select id="consoleMethod" class="console-method-select" title="Pilih Metode HTTP">
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                    </select>
+                    <div class="console-url-wrapper">
+                        <span class="console-base-host" id="consoleBaseHost">https://lokeriva.vercel.app</span>
+                        <input type="text" id="consoleUrl" class="console-url-input" value="/api/jobs?limit=5" placeholder="/api/jobs?q=Admin" />
+                    </div>
+                    <button type="button" id="btnSendConsole" class="console-btn-send">
+                        <i class="fa-solid fa-paper-plane"></i> <span>Kirim Request</span>
+                    </button>
+                </div>
+
+                <!-- Preset Cepat -->
+                <div class="console-presets">
+                    <span class="presets-label"><i class="fa-solid fa-wand-magic-sparkles"></i> Preset:</span>
+                    <button type="button" class="preset-chip" onclick="applyConsolePreset('GET', '/api/jobs?limit=5', '')">GET 5 Loker Terbaru</button>
+                    <button type="button" class="preset-chip" onclick="applyConsolePreset('GET', '/api/jobs?q=Admin&location=Makassar&limit=5', '')">GET Filter Admin Makassar</button>
+                    <button type="button" class="preset-chip" onclick="applyConsolePreset('GET', '/api/jobs?location_type=remote&limit=5', '')">GET Khusus WFH Remote</button>
+                    <button type="button" class="preset-chip" onclick="applyConsolePreset('POST', '/api/jobs', '{\n  \"q\": \"Python\",\n  \"location_type\": \"remote\",\n  \"limit\": 5\n}')">POST Loker via Payload</button>
+                    <button type="button" class="preset-chip" onclick="applyConsolePreset('GET', '/api/stats', '')">GET Statistik API</button>
+                    <button type="button" class="preset-chip" onclick="applyConsolePreset('GET', '/api/sources', '')">GET Sumber Loker</button>
+                    <button type="button" class="preset-chip" onclick="applyConsolePreset('POST', '/api/refresh', '')">POST Refresh Cache</button>
+                </div>
+
+                <!-- Bagian Request Body / JSON Payload (Bisa dibuka untuk POST atau kustom GET) -->
+                <div class="console-payload-section" id="consolePayloadSection">
+                    <div class="console-payload-header">
+                        <div class="console-payload-title">
+                            <i class="fa-solid fa-code"></i> Request Body / Payload (JSON):
+                        </div>
+                        <div class="payload-actions">
+                            <button type="button" class="btn-mini-action" onclick="formatConsoleJson()"><i class="fa-solid fa-align-left"></i> Rapikan JSON</button>
+                            <button type="button" class="btn-mini-action" onclick="loadSamplePayload()"><i class="fa-solid fa-file-code"></i> Contoh Payload</button>
+                            <button type="button" class="btn-mini-action" onclick="clearConsolePayload()"><i class="fa-solid fa-trash"></i> Kosongkan</button>
+                        </div>
+                    </div>
+                    <textarea id="consolePayload" class="console-payload-textarea" rows="3" placeholder='{\n  "q": "Staff Admin",\n  "location": "Jakarta",\n  "limit": 5\n}'></textarea>
+                </div>
+
+                <!-- Respon Viewer -->
+                <div class="console-response-box">
+                    <div class="console-response-header">
+                        <div class="response-meta">
+                            <span id="consoleStatusBadge" class="resp-badge resp-status-idle">STATUS: IDLE</span>
+                            <span id="consoleTimeBadge" class="resp-time"><i class="fa-regular fa-clock"></i> -- ms</span>
+                            <span id="consoleSizeBadge" class="resp-size"><i class="fa-solid fa-database"></i> -- KB</span>
+                        </div>
+                        <div class="response-actions">
+                            <button type="button" class="btn-copy-code" id="btnCopyConsoleCurl" onclick="copyConsoleCurl()"><i class="fa-solid fa-terminal"></i> Salin cURL</button>
+                            <button type="button" class="btn-copy-code" id="btnCopyConsoleResp" onclick="copyConsoleResponse()"><i class="fa-solid fa-copy"></i> Salin Response</button>
+                        </div>
+                    </div>
+                    <pre id="consoleOutput" class="console-output-pre">// Klik tombol "Kirim Request" di atas untuk menguji endpoint secara langsung...</pre>
+                </div>
+            </div>
+        </section>
 
         <!-- ENDPOINT 1: GET /api/jobs -->
         <div class="api-card">
@@ -300,10 +695,21 @@
                 </table>
 
                 <h4 style="font-size: 0.9rem; margin-top: 16px;">Contoh Permintaan (cURL):</h4>
-                <div class="code-box">curl -X GET "https://your-domain.vercel.app/api/jobs?q=Admin&location=Makassar&limit=5"</div>
+                <div class="code-box-wrapper">
+                    <button class="btn-copy-code" onclick="copySnippet(this)"><i class="fa-solid fa-copy"></i> Salin</button>
+                    <div class="code-box"># Metode GET (Query String)
+curl -X GET "https://lokeriva.vercel.app/api/jobs?q=Admin&location=Makassar&limit=5"
+
+# Metode POST (JSON Body Payload)
+curl -X POST "https://lokeriva.vercel.app/api/jobs" \
+     -H "Content-Type: application/json" \
+     -d '{"q": "Admin", "location": "Makassar", "limit": 5}'</div>
+                </div>
 
                 <h4 style="font-size: 0.9rem; margin-top: 16px;">Contoh Respon JSON (200 OK):</h4>
-                <div class="code-box">{
+                <div class="code-box-wrapper">
+                    <button class="btn-copy-code" onclick="copySnippet(this)"><i class="fa-solid fa-copy"></i> Salin</button>
+                    <div class="code-box">{
   "status": "success",
   "query": "Admin",
   "filters": {
@@ -335,11 +741,15 @@
     }
   ]
 }</div>
+                </div>
 
                 <!-- Live Test -->
                 <div class="try-box">
                     <button class="try-btn" onclick="testEndpoint('/api/jobs?limit=3', 'resJobs')"><i class="fa-solid fa-play"></i> Coba Live Request (GET /api/jobs)</button>
-                    <pre class="code-box" id="resJobs" style="display:none; margin-top: 12px;"></pre>
+                    <div class="code-box-wrapper" id="wrapResJobs" style="display:none; margin-top: 12px;">
+                        <button class="btn-copy-code" onclick="copySnippet(this)"><i class="fa-solid fa-copy"></i> Salin</button>
+                        <pre class="code-box" id="resJobs" style="margin: 0;"></pre>
+                    </div>
                 </div>
             </div>
         </div>
@@ -357,10 +767,16 @@
                 <p style="font-size: 0.9rem; margin-bottom: 12px;">
                     Mendapatkan ringkasan jumlah lowongan kerja, sumber aktif, rasio loker remote vs lokal, dan waktu pembaruan terakhir.
                 </p>
-                <div class="code-box">curl -X GET "https://your-domain.vercel.app/api/stats"</div>
+                <div class="code-box-wrapper">
+                    <button class="btn-copy-code" onclick="copySnippet(this)"><i class="fa-solid fa-copy"></i> Salin</button>
+                    <div class="code-box">curl -X GET "https://lokeriva.vercel.app/api/stats"</div>
+                </div>
                 <div class="try-box">
                     <button class="try-btn" onclick="testEndpoint('/api/stats', 'resStats')"><i class="fa-solid fa-play"></i> Coba Live Request (GET /api/stats)</button>
-                    <pre class="code-box" id="resStats" style="display:none; margin-top: 12px;"></pre>
+                    <div class="code-box-wrapper" id="wrapResStats" style="display:none; margin-top: 12px;">
+                        <button class="btn-copy-code" onclick="copySnippet(this)"><i class="fa-solid fa-copy"></i> Salin</button>
+                        <pre class="code-box" id="resStats" style="margin: 0;"></pre>
+                    </div>
                 </div>
             </div>
         </div>
@@ -378,9 +794,16 @@
                 <p style="font-size: 0.9rem; margin-bottom: 12px;">
                     Mendapatkan daftar semua portal loker, API, dan ATS yang saat ini aktif menyumbang data beserta jumlah itemnya.
                 </p>
+                <div class="code-box-wrapper">
+                    <button class="btn-copy-code" onclick="copySnippet(this)"><i class="fa-solid fa-copy"></i> Salin</button>
+                    <div class="code-box">curl -X GET "https://lokeriva.vercel.app/api/sources"</div>
+                </div>
                 <div class="try-box">
                     <button class="try-btn" onclick="testEndpoint('/api/sources', 'resSources')"><i class="fa-solid fa-play"></i> Coba Live Request (GET /api/sources)</button>
-                    <pre class="code-box" id="resSources" style="display:none; margin-top: 12px;"></pre>
+                    <div class="code-box-wrapper" id="wrapResSources" style="display:none; margin-top: 12px;">
+                        <button class="btn-copy-code" onclick="copySnippet(this)"><i class="fa-solid fa-copy"></i> Salin</button>
+                        <pre class="code-box" id="resSources" style="margin: 0;"></pre>
+                    </div>
                 </div>
             </div>
         </div>
@@ -401,7 +824,10 @@
                 <p style="font-size: 0.85rem; color: var(--text-muted);">
                     Parameter opsional: <code>q</code> (kata kunci), <code>location</code> (wilayah), <code>location_type</code> (remote/onsite), dan <code>source</code>.
                 </p>
-                <div class="code-box">curl -O -J "https://your-domain.vercel.app/export/pdf?q=Admin&location=Makassar"</div>
+                <div class="code-box-wrapper">
+                    <button class="btn-copy-code" onclick="copySnippet(this)"><i class="fa-solid fa-copy"></i> Salin</button>
+                    <div class="code-box">curl -O -J "https://lokeriva.vercel.app/export/pdf?q=Admin&location=Makassar"</div>
+                </div>
                 <div style="margin-top: 14px;">
                     <a href="/export/pdf?limit=10" class="try-btn" style="text-decoration:none; display:inline-flex;">
                         <i class="fa-solid fa-file-pdf"></i> Unduh Contoh PDF
@@ -423,7 +849,37 @@
                 <p style="font-size: 0.9rem; margin-bottom: 12px;">
                     Mengunduh data lowongan dalam format CSV dengan encoding UTF-8 BOM dan delimiter semicolon (<code>;</code>) sehingga rapi saat dibuka langsung di Microsoft Excel PC atau Android.
                 </p>
-                <div class="code-box">curl -O -J "https://your-domain.vercel.app/export/csv"</div>
+                <div class="code-box-wrapper">
+                    <button class="btn-copy-code" onclick="copySnippet(this)"><i class="fa-solid fa-copy"></i> Salin</button>
+                    <div class="code-box">curl -O -J "https://lokeriva.vercel.app/export/csv"</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ENDPOINT 6: POST /api/refresh -->
+        <div class="api-card">
+            <div class="api-header">
+                <div>
+                    <span class="method-badge method-post">POST</span>
+                    <span class="endpoint-path">/api/refresh</span>
+                </div>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Pembaruan Cache Manual</span>
+            </div>
+            <div class="api-body">
+                <p style="font-size: 0.9rem; margin-bottom: 12px;">
+                    Memicu pembaruan pool lowongan kerja dari seluruh sumber secara manual (Rate limit: 15 per menit).
+                </p>
+                <div class="code-box-wrapper">
+                    <button class="btn-copy-code" onclick="copySnippet(this)"><i class="fa-solid fa-copy"></i> Salin</button>
+                    <div class="code-box">curl -X POST "https://lokeriva.vercel.app/api/refresh"</div>
+                </div>
+                <div class="try-box">
+                    <button class="try-btn" onclick="testEndpoint('/api/refresh', 'resRefresh', 'POST')"><i class="fa-solid fa-rotate"></i> Coba Live Request (POST /api/refresh)</button>
+                    <div class="code-box-wrapper" id="wrapResRefresh" style="display:none; margin-top: 12px;">
+                        <button class="btn-copy-code" onclick="copySnippet(this)"><i class="fa-solid fa-copy"></i> Salin</button>
+                        <pre class="code-box" id="resRefresh" style="margin: 0;"></pre>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -512,16 +968,235 @@
 
     <!-- SCRIPT FOR LIVE API TESTING, THEME, & DONATION MODAL -->
     <script>
-        async function testEndpoint(url, targetId) {
-            const pre = document.getElementById(targetId);
-            pre.style.display = "block";
-            pre.innerText = "Mengambil data...";
+        // Update hostname secara dinamis sesuai peramban
+        if (typeof window !== 'undefined') {
+            const hostEl = document.getElementById("consoleBaseHost");
+            if (hostEl) hostEl.innerText = window.location.origin;
+        }
+
+        // ==============================================================================
+        // 1. INTERACTIVE API CONSOLE & PLAYGROUND
+        // ==============================================================================
+        const methodSelect = document.getElementById("consoleMethod");
+        if (methodSelect) {
+            methodSelect.addEventListener("change", (e) => {
+                const method = e.target.value;
+                const payloadSec = document.getElementById("consolePayloadSection");
+                if (method === "POST" && payloadSec) {
+                    payloadSec.style.display = "block";
+                    if (!document.getElementById("consolePayload").value.trim()) {
+                        loadSamplePayload();
+                    }
+                }
+            });
+        }
+
+        function applyConsolePreset(method, endpoint, payload) {
+            const methodEl = document.getElementById("consoleMethod");
+            const urlEl = document.getElementById("consoleUrl");
+            const payloadEl = document.getElementById("consolePayload");
+            const payloadSec = document.getElementById("consolePayloadSection");
+
+            if (methodEl) methodEl.value = method;
+            if (urlEl) urlEl.value = endpoint;
+            if (payloadEl && payload) payloadEl.value = payload;
+            if (payloadSec) payloadSec.style.display = method === "POST" || payload ? "block" : "block";
+
+            // Scroll ke konsol
+            const consoleCard = document.querySelector(".console-card");
+            if (consoleCard) consoleCard.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        function formatConsoleJson() {
+            const ta = document.getElementById("consolePayload");
+            if (!ta || !ta.value.trim()) return;
             try {
-                const res = await fetch(url);
-                const data = await res.json();
-                pre.innerText = JSON.stringify(data, null, 2);
+                const parsed = JSON.parse(ta.value);
+                ta.value = JSON.stringify(parsed, null, 2);
             } catch (err) {
-                pre.innerText = "Error: " + err;
+                alert("Format JSON tidak valid: " + err.message);
+            }
+        }
+
+        function loadSamplePayload() {
+            const ta = document.getElementById("consolePayload");
+            if (ta) {
+                ta.value = JSON.stringify({
+                    q: "Admin",
+                    location: "Makassar",
+                    location_type: "all",
+                    limit: 5
+                }, null, 2);
+            }
+        }
+
+        function clearConsolePayload() {
+            const ta = document.getElementById("consolePayload");
+            if (ta) ta.value = "";
+        }
+
+        async function sendConsoleRequest() {
+            const method = (document.getElementById("consoleMethod")?.value || "GET").toUpperCase();
+            let urlInput = (document.getElementById("consoleUrl")?.value || "/api/jobs").trim();
+            const payloadText = document.getElementById("consolePayload")?.value.trim() || "";
+            const outputPre = document.getElementById("consoleOutput");
+            const statusBadge = document.getElementById("consoleStatusBadge");
+            const timeBadge = document.getElementById("consoleTimeBadge");
+            const sizeBadge = document.getElementById("consoleSizeBadge");
+            const btnSend = document.getElementById("btnSendConsole");
+
+            if (!urlInput.startsWith("/")) urlInput = "/" + urlInput;
+
+            if (outputPre) {
+                outputPre.innerText = "// Mengirim permintaan " + method + " " + urlInput + "...";
+            }
+            if (statusBadge) {
+                statusBadge.className = "resp-badge resp-status-idle";
+                statusBadge.innerText = "MENGIRIM...";
+            }
+            if (btnSend) {
+                btnSend.disabled = true;
+                btnSend.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Memproses...</span>';
+            }
+
+            const startTime = performance.now();
+
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                };
+
+                if (method === "POST" && payloadText) {
+                    try {
+                        JSON.parse(payloadText); // Validasi JSON
+                        options.headers["Content-Type"] = "application/json";
+                        options.body = payloadText;
+                    } catch (e) {
+                        throw new Error("Payload JSON tidak valid. Klik 'Rapikan JSON' untuk memeriksa sintaks.");
+                    }
+                }
+
+                const res = await fetch(urlInput, options);
+                const duration = Math.round(performance.now() - startTime);
+
+                const contentType = res.headers.get("content-type") || "";
+                let responseText = "";
+                let jsonParsed = null;
+
+                if (contentType.includes("application/json")) {
+                    jsonParsed = await res.json();
+                    responseText = JSON.stringify(jsonParsed, null, 2);
+                } else {
+                    responseText = await res.text();
+                }
+
+                const byteSize = new Blob([responseText]).size;
+                const sizeStr = (byteSize / 1024).toFixed(2) + " KB";
+
+                if (statusBadge) {
+                    statusBadge.innerText = res.status + " " + (res.statusText || "OK");
+                    statusBadge.className = "resp-badge " + (res.ok ? "resp-status-ok" : "resp-status-err");
+                }
+                if (timeBadge) timeBadge.innerHTML = '<i class="fa-regular fa-clock"></i> ' + duration + " ms";
+                if (sizeBadge) sizeBadge.innerHTML = '<i class="fa-solid fa-database"></i> ' + sizeStr;
+                if (outputPre) outputPre.innerText = responseText;
+
+            } catch (err) {
+                const duration = Math.round(performance.now() - startTime);
+                if (statusBadge) {
+                    statusBadge.innerText = "CLIENT ERROR";
+                    statusBadge.className = "resp-badge resp-status-err";
+                }
+                if (timeBadge) timeBadge.innerHTML = '<i class="fa-regular fa-clock"></i> ' + duration + " ms";
+                if (outputPre) {
+                    outputPre.innerText = "Error Permintaan API:\n" + err.message + "\n\nTips: Pastikan URL dan payload JSON sudah benar.";
+                }
+            } finally {
+                if (btnSend) {
+                    btnSend.disabled = false;
+                    btnSend.innerHTML = '<i class="fa-solid fa-paper-plane"></i> <span>Kirim Request</span>';
+                }
+            }
+        }
+
+        const btnSend = document.getElementById("btnSendConsole");
+        if (btnSend) btnSend.addEventListener("click", sendConsoleRequest);
+
+        function copyConsoleResponse() {
+            const out = document.getElementById("consoleOutput");
+            if (!out) return;
+            navigator.clipboard.writeText(out.innerText).then(() => {
+                const btn = document.getElementById("btnCopyConsoleResp");
+                if (btn) {
+                    btn.classList.add("copied");
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Tersalin!';
+                    setTimeout(() => {
+                        btn.classList.remove("copied");
+                        btn.innerHTML = '<i class="fa-solid fa-copy"></i> Salin Response';
+                    }, 2000);
+                }
+            }).catch(() => alert("Gagal menyalin."));
+        }
+
+        function copyConsoleCurl() {
+            const method = (document.getElementById("consoleMethod")?.value || "GET").toUpperCase();
+            let urlInput = (document.getElementById("consoleUrl")?.value || "/api/jobs").trim();
+            const payload = document.getElementById("consolePayload")?.value.trim() || "";
+            const host = window.location.origin || "https://lokeriva.vercel.app";
+            if (!urlInput.startsWith("/")) urlInput = "/" + urlInput;
+
+            let curlCmd = `curl -X ${method} "${host}${urlInput}"`;
+            if (method === "POST" && payload) {
+                curlCmd += ` \\\n     -H "Content-Type: application/json" \\\n     -d '${payload.replace(/'/g, "'\\''")}'`;
+            }
+
+            navigator.clipboard.writeText(curlCmd).then(() => {
+                const btn = document.getElementById("btnCopyConsoleCurl");
+                if (btn) {
+                    btn.classList.add("copied");
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Tersalin!';
+                    setTimeout(() => {
+                        btn.classList.remove("copied");
+                        btn.innerHTML = '<i class="fa-solid fa-terminal"></i> Salin cURL';
+                    }, 2000);
+                }
+            }).catch(() => alert("Gagal menyalin cURL."));
+        }
+
+        function copySnippet(btn) {
+            const wrapper = btn.closest(".code-box-wrapper") || btn.parentElement;
+            const target = wrapper.querySelector(".code-box");
+            if (!target) return;
+            navigator.clipboard.writeText(target.innerText).then(() => {
+                btn.classList.add("copied");
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Tersalin!';
+                setTimeout(() => {
+                    btn.classList.remove("copied");
+                    btn.innerHTML = '<i class="fa-solid fa-copy"></i> Salin';
+                }, 2000);
+            }).catch(() => alert("Gagal menyalin cuplikan."));
+        }
+
+        // ==============================================================================
+        // 2. ENDPOINT TESTER KHUSUS TIAP KARTU
+        // ==============================================================================
+        async function testEndpoint(url, targetId, method = "GET") {
+            const pre = document.getElementById(targetId);
+            const wrapper = document.getElementById("wrap" + targetId.charAt(0).toUpperCase() + targetId.slice(1));
+            if (wrapper) wrapper.style.display = "block";
+            if (pre) {
+                pre.style.display = "block";
+                pre.innerText = "// Mengambil data " + method + " " + url + "...";
+            }
+            try {
+                const res = await fetch(url, { method: method });
+                const data = await res.json();
+                if (pre) pre.innerText = JSON.stringify(data, null, 2);
+            } catch (err) {
+                if (pre) pre.innerText = "Error: " + err.message + "\nPeriksa koneksi atau coba melalui API Console di atas.";
             }
         }
 

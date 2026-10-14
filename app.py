@@ -175,31 +175,33 @@ def documentation():
 # ==============================================================================
 # REST API ENDPOINTS
 # ==============================================================================
-@app.route("/api/jobs", methods=["GET"])
+@app.route("/api/jobs", methods=["GET", "POST"])
 @rate_limit(limit=120, per=60)
 def get_jobs():
     """
     Endpoint utama pencarian dan filtering lowongan kerja.
-    Parameter Query:
-      - q: Kata kunci pencarian (judul, perusahaan, lokasi, dll)
-      - source: Filter spesifik sumber (misal: 'Kalibrr Indonesia', 'Jobicy API')
-      - category: Filter kategori (misal: 'Remote', 'Medis', 'Admin')
-      - location: Filter kota/negara (misal: 'Makassar', 'Jakarta')
-      - page: Nomor halaman (default 1)
-      - limit: Jumlah per halaman (default 20, max 100)
-      - sort: 'newest' | 'title' | 'company'
+    Mendukung GET (Query Params) dan POST (JSON Request Body).
     """
-    query = sanitize_query(request.args.get("q", ""))
-    source = sanitize_query(request.args.get("source", ""))
-    category = sanitize_query(request.args.get("category", ""))
-    location = sanitize_query(request.args.get("location", ""))
-    location_type = sanitize_query(request.args.get("location_type", "all")) # 'all' | 'remote' | 'onsite'
-    sort_by = sanitize_query(request.args.get("sort", "newest"))
+    body = {}
+    if request.is_json:
+        try:
+            body = request.get_json(silent=True) or {}
+        except Exception:
+            body = {}
+
+    query = sanitize_query(request.args.get("q", body.get("q", body.get("query", ""))))
+    source = sanitize_query(request.args.get("source", body.get("source", "")))
+    category = sanitize_query(request.args.get("category", body.get("category", body.get("kategori", ""))))
+    location = sanitize_query(request.args.get("location", body.get("location", body.get("lokasi", ""))))
+    location_type = sanitize_query(request.args.get("location_type", body.get("location_type", "all")))
+    sort_by = sanitize_query(request.args.get("sort", body.get("sort", "newest")))
 
     try:
-        page = max(1, int(request.args.get("page", 1)))
-        limit = min(100, max(1, int(request.args.get("limit", 20))))
-    except ValueError:
+        raw_page = request.args.get("page", body.get("page", 1))
+        raw_limit = request.args.get("limit", body.get("limit", 20))
+        page = max(1, int(raw_page))
+        limit = min(100, max(1, int(raw_limit)))
+    except (ValueError, TypeError):
         page = 1
         limit = 20
 
