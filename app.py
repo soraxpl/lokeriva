@@ -30,7 +30,7 @@ def add_security_headers(response):
         "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; "
         "img-src 'self' data: https:; "
         "manifest-src 'self'; "
-        "connect-src 'self'; "
+        "connect-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com; "
         "object-src 'none'; "
         "base-uri 'self'; "
         "form-action 'self'; "

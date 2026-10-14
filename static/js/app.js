@@ -20,6 +20,7 @@ let deferredPrompt = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   initPWA();
+  initOfflineDetection();
   initTheme();
   loadStats();
   loadSources();
@@ -131,6 +132,34 @@ function initPWA() {
     dismissBanner();
     if (installBtn) installBtn.style.display = "none";
   });
+}
+
+// ==============================================================================
+// 1.1 DETEKSI JARINGAN OFFLINE & ONLINE
+// ==============================================================================
+function initOfflineDetection() {
+  const statusBar = document.getElementById("offlineStatusBar");
+  const updateOfflineUI = () => {
+    if (!navigator.onLine) {
+      if (statusBar) statusBar.style.display = "flex";
+    } else {
+      if (statusBar) statusBar.style.display = "none";
+    }
+  };
+
+  window.addEventListener("online", () => {
+    updateOfflineUI();
+    showToast("Koneksi internet terhubung kembali! Memperbarui lowongan...");
+    loadStats();
+    loadJobs();
+  });
+
+  window.addEventListener("offline", () => {
+    updateOfflineUI();
+    showToast("Perangkat dalam Mode Offline. Menampilkan data tersimpan.");
+  });
+
+  updateOfflineUI();
 }
 
 // ==============================================================================
@@ -365,9 +394,23 @@ async function loadStats() {
       document.getElementById("statRemoteJobs").innerText = data.stats.remote_jobs.toLocaleString();
       document.getElementById("statLocalJobs").innerText = data.stats.local_indo_jobs.toLocaleString();
       document.getElementById("lastUpdatedText").innerHTML = `<i class="fa-solid fa-clock-rotate-left"></i> Pembaruan data: ${escapeHtml(data.stats.last_updated)}`;
+      try {
+        localStorage.setItem("lokeriva_cached_stats", JSON.stringify(data.stats));
+      } catch (e) {}
     }
   } catch (err) {
-    console.error("Gagal memuat stats:", err);
+    console.warn("Gagal memuat stats online, memuat cache offline...", err);
+    const saved = localStorage.getItem("lokeriva_cached_stats");
+    if (saved) {
+      try {
+        const stats = JSON.parse(saved);
+        document.getElementById("statTotalJobs").innerText = stats.total_jobs.toLocaleString();
+        document.getElementById("statActiveSources").innerText = stats.active_sources;
+        document.getElementById("statRemoteJobs").innerText = stats.remote_jobs.toLocaleString();
+        document.getElementById("statLocalJobs").innerText = stats.local_indo_jobs.toLocaleString();
+        document.getElementById("lastUpdatedText").innerHTML = `<i class="fa-solid fa-clock-rotate-left"></i> Data tersimpan offline: ${escapeHtml(stats.last_updated)}`;
+      } catch (e) {}
+    }
   }
 }
 
@@ -377,15 +420,34 @@ async function loadSources() {
     const data = await res.json();
     if (data.status === "success") {
       const select = document.getElementById("sourceSelect");
+      // Simpan pilihan pertama
+      select.innerHTML = '<option value="">Semua Sumber Karir</option>';
       data.sources.forEach((s) => {
         const opt = document.createElement("option");
         opt.value = s.name;
         opt.innerText = `${s.name} (${s.count})`;
         select.appendChild(opt);
       });
+      try {
+        localStorage.setItem("lokeriva_cached_sources", JSON.stringify(data.sources));
+      } catch (e) {}
     }
   } catch (err) {
-    console.error("Gagal memuat sources:", err);
+    console.warn("Gagal memuat sources online, memuat cache offline...", err);
+    const saved = localStorage.getItem("lokeriva_cached_sources");
+    if (saved) {
+      try {
+        const sources = JSON.parse(saved);
+        const select = document.getElementById("sourceSelect");
+        select.innerHTML = '<option value="">Semua Sumber Karir</option>';
+        sources.forEach((s) => {
+          const opt = document.createElement("option");
+          opt.value = s.name;
+          opt.innerText = `${s.name} (${s.count})`;
+          select.appendChild(opt);
+        });
+      } catch (e) {}
+    }
   }
 }
 
@@ -406,7 +468,14 @@ async function loadJobs() {
     const res = await fetch(`/api/jobs?${params.toString()}`);
     const result = await res.json();
 
-    if (result.status === "success") {
+    if (result.status === "success" && result.data) {
+      // Simpan data pencarian default ke cache lokal perangkat
+      if (!state.query && !state.source && !state.location && state.page === 1) {
+        try {
+          localStorage.setItem("lokeriva_cached_jobs", JSON.stringify(result));
+        } catch (e) {}
+      }
+
       renderJobs(result.data);
       renderPagination(result.pagination);
       
@@ -414,18 +483,61 @@ async function loadJobs() {
       if (state.locationType === "remote") infoLokasi = " • Mode WFH Remote";
       if (state.locationType === "onsite") infoLokasi = " • Mode On-Site Kantor";
       if (state.location) infoLokasi += ` • Wilayah: ${escapeHtml(state.location)}`;
+      if (!navigator.onLine || result.is_offline) {
+        infoLokasi += " • <span style='color: #ea580c; font-weight: 600;'><i class='fa-solid fa-plane'></i> Mode Offline (Data Tersimpan)</span>";
+      }
 
       document.getElementById("resultsInfoText").innerHTML = 
         `<i class="fa-solid fa-briefcase"></i> Menampilkan <b>${Number(result.data.length)}</b> dari total <b>${Number(result.pagination.total_items)}</b> lowongan kerja${infoLokasi}`;
+    } else {
+      handleOfflineJobsFallback();
     }
   } catch (err) {
-    console.error("Gagal memuat lowongan:", err);
-    document.getElementById("jobsGrid").innerHTML = 
-      `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">
-        <i class="fa-solid fa-triangle-exclamation" style="font-size: 2rem; color: #f59e0b; margin-bottom: 8px;"></i><br/>
-        Terjadi kendala saat memuat data. Silakan coba beberapa saat lagi.
-      </div>`;
+    console.warn("Gagal memuat lowongan online, mengaktifkan penanganan offline:", err);
+    handleOfflineJobsFallback();
   }
+}
+
+function handleOfflineJobsFallback() {
+  // Coba tampilkan data tersimpan di localStorage jika ada
+  const cachedDataStr = localStorage.getItem("lokeriva_cached_jobs");
+  if (cachedDataStr) {
+    try {
+      const cachedObj = JSON.parse(cachedDataStr);
+      if (cachedObj.data && cachedObj.data.length > 0) {
+        renderJobs(cachedObj.data);
+        renderPagination(cachedObj.pagination);
+        document.getElementById("resultsInfoText").innerHTML = 
+          `<i class="fa-solid fa-plane" style="color: #ea580c;"></i> <b>Mode Offline:</b> Menampilkan <b>${Number(cachedObj.data.length)}</b> lowongan yang tersimpan di memori perangkat Anda`;
+        return;
+      }
+    } catch (e) {}
+  }
+
+  // Jika belum ada data lowongan tersimpan sama sekali, tampilkan kartu ramah offline dengan opsi ke Favorit
+  document.getElementById("jobsGrid").innerHTML = `
+    <div style="grid-column: 1/-1; text-align: center; padding: 50px 20px;">
+      <div style="font-size: 2.5rem; color: #ea580c; margin-bottom: 12px;"><i class="fa-solid fa-plane"></i></div>
+      <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 8px;">Aplikasi Lokeriva Terbuka Offline</h3>
+      <p style="color: var(--text-muted); font-size: 0.92rem; max-width: 480px; margin: 0 auto 20px auto; line-height: 1.6;">
+        Anda dapat menggunakan Lokeriva langsung dari layar utama perangkat. Untuk filter ini data belum tersimpan, namun lowongan yang Anda tandai bintang selalu tersedia di <b>Favorit Saya</b>.
+      </p>
+      <button class="pill-btn active" id="btnGoOfflineBookmarks" style="display: inline-flex; margin: 0 auto;">
+        <i class="fa-solid fa-star"></i> Buka Lowongan Favorit Saya (${state.bookmarks.length})
+      </button>
+    </div>`;
+
+  const btnBm = document.getElementById("btnGoOfflineBookmarks");
+  if (btnBm) {
+    btnBm.addEventListener("click", () => {
+      document.querySelectorAll(".pill-btn").forEach((p) => p.classList.remove("active"));
+      const bmPill = document.querySelector('[data-filter="bookmarks"]');
+      if (bmPill) bmPill.classList.add("active");
+      state.filterMode = "bookmarks";
+      renderBookmarksView();
+    });
+  }
+  document.getElementById("resultsInfoText").innerHTML = `<i class="fa-solid fa-plane" style="color: #ea580c;"></i> Mode Offline: Membuka data tersimpan`;
 }
 
 function showSkeletons() {

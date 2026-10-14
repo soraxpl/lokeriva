@@ -198,6 +198,12 @@
 
     <!-- CONTENT -->
     <div class="docs-container">
+        <!-- OFFLINE STATUS ALERT -->
+        <div id="offlineStatusBar" class="offline-alert" style="display: none; margin-bottom: 24px;">
+            <i class="fa-solid fa-plane"></i>
+            <span><b>Mode Offline Aktif</b> — Anda sedang tidak terhubung ke internet. Menampilkan dokumentasi offline tersimpan.</span>
+        </div>
+
         <header class="docs-header">
             <span class="docs-badge"><i class="fa-solid fa-circle-check"></i> REST API v1.0.0 Public & Open</span>
             <h1>Dokumentasi REST API Lokeriva.id</h1>
@@ -453,6 +459,22 @@
         const saved = localStorage.getItem("loker_theme") || "light";
         document.documentElement.setAttribute("data-theme", saved);
         document.getElementById("themeToggleBtn").innerHTML = saved === "dark" ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+
+        // Service Worker Registration for Offline Docs
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(() => {});
+            });
+        }
+
+        // Offline Network Detection
+        const offlineBar = document.getElementById("offlineStatusBar");
+        const updateNetwork = () => {
+            if (offlineBar) offlineBar.style.display = navigator.onLine ? "none" : "flex";
+        };
+        window.addEventListener("online", updateNetwork);
+        window.addEventListener("offline", updateNetwork);
+        updateNetwork();
     </script>
 </body>
 </html>
