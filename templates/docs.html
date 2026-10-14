@@ -576,13 +576,13 @@
                 <!-- Preset Cepat -->
                 <div class="console-presets">
                     <span class="presets-label"><i class="fa-solid fa-wand-magic-sparkles"></i> Preset:</span>
-                    <button type="button" class="preset-chip" onclick="applyConsolePreset('GET', '/api/jobs?limit=5', '')">GET 5 Loker Terbaru</button>
-                    <button type="button" class="preset-chip" onclick="applyConsolePreset('GET', '/api/jobs?q=Admin&location=Makassar&limit=5', '')">GET Filter Admin Makassar</button>
-                    <button type="button" class="preset-chip" onclick="applyConsolePreset('GET', '/api/jobs?location_type=remote&limit=5', '')">GET Khusus WFH Remote</button>
-                    <button type="button" class="preset-chip" onclick="applyConsolePreset('POST', '/api/jobs', '{\n  \"q\": \"Python\",\n  \"location_type\": \"remote\",\n  \"limit\": 5\n}')">POST Loker via Payload</button>
-                    <button type="button" class="preset-chip" onclick="applyConsolePreset('GET', '/api/stats', '')">GET Statistik API</button>
-                    <button type="button" class="preset-chip" onclick="applyConsolePreset('GET', '/api/sources', '')">GET Sumber Loker</button>
-                    <button type="button" class="preset-chip" onclick="applyConsolePreset('POST', '/api/refresh', '')">POST Refresh Cache</button>
+                    <button type="button" class="preset-chip" onclick="applyConsolePreset('GET', '/api/jobs?limit=5')">GET 5 Loker Terbaru</button>
+                    <button type="button" class="preset-chip" onclick="applyConsolePreset('GET', '/api/jobs?q=Admin&location=Makassar&limit=5')">GET Filter Admin Makassar</button>
+                    <button type="button" class="preset-chip" onclick="applyConsolePreset('GET', '/api/jobs?location_type=remote&limit=5')">GET Khusus WFH Remote</button>
+                    <button type="button" class="preset-chip" onclick="applyConsolePreset('POST', '/api/jobs', 'post_jobs')">POST Loker via Payload</button>
+                    <button type="button" class="preset-chip" onclick="applyConsolePreset('GET', '/api/stats')">GET Statistik API</button>
+                    <button type="button" class="preset-chip" onclick="applyConsolePreset('GET', '/api/sources')">GET Sumber Loker</button>
+                    <button type="button" class="preset-chip" onclick="applyConsolePreset('POST', '/api/refresh')">POST Refresh Cache</button>
                 </div>
 
                 <!-- Bagian Request Body / JSON Payload (Bisa dibuka untuk POST atau kustom GET) -->
@@ -597,7 +597,7 @@
                             <button type="button" class="btn-mini-action" onclick="clearConsolePayload()"><i class="fa-solid fa-trash"></i> Kosongkan</button>
                         </div>
                     </div>
-                    <textarea id="consolePayload" class="console-payload-textarea" rows="3" placeholder='{\n  "q": "Staff Admin",\n  "location": "Jakarta",\n  "limit": 5\n}'></textarea>
+                    <textarea id="consolePayload" class="console-payload-textarea" rows="3" placeholder='{"q": "Staff Admin", "location": "Jakarta", "limit": 5}'></textarea>
                 </div>
 
                 <!-- Respon Viewer -->
@@ -991,7 +991,7 @@ curl -X POST "https://lokeriva.vercel.app/api/jobs" \
             });
         }
 
-        function applyConsolePreset(method, endpoint, payload) {
+        function applyConsolePreset(method, endpoint, presetKey = "") {
             const methodEl = document.getElementById("consoleMethod");
             const urlEl = document.getElementById("consoleUrl");
             const payloadEl = document.getElementById("consolePayload");
@@ -999,8 +999,24 @@ curl -X POST "https://lokeriva.vercel.app/api/jobs" \
 
             if (methodEl) methodEl.value = method;
             if (urlEl) urlEl.value = endpoint;
-            if (payloadEl && payload) payloadEl.value = payload;
-            if (payloadSec) payloadSec.style.display = method === "POST" || payload ? "block" : "block";
+
+            let payload = "";
+            if (presetKey === "post_jobs") {
+                payload = JSON.stringify({
+                    q: "Python",
+                    location_type: "remote",
+                    limit: 5
+                }, null, 2);
+            } else if (presetKey && typeof presetKey === "string") {
+                payload = presetKey;
+            }
+
+            if (payloadEl) {
+                payloadEl.value = payload;
+            }
+            if (payloadSec) {
+                payloadSec.style.display = (method === "POST" || payload) ? "block" : "block";
+            }
 
             // Scroll ke konsol
             const consoleCard = document.querySelector(".console-card");
