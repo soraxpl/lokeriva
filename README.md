@@ -43,8 +43,21 @@ Dilengkapi dengan antarmuka web modern, fitur ekspor PDF dengan **hyperlink akti
   - Proteksi CSV Formula Injection (CWE-1236) dan ReportLab PDF XML Injection.
 - **Rate Limiting**:
   - In-memory sliding window rate limiter: **120 req/menit** (Web & API), **30 req/menit** (PDF).
+- **Generator Surat Lamaran & Email Kerja (Cover Letter Builder)**:
+  - Generator surat lamaran dan email instan profesional siap kirim.
+  - Mendukung 3 format:
+    1. *Email Lamaran (Cold Email)*: Ringkas & sopan dengan tombol otomatis buka di Gmail/Mail client.
+    2. *Surat Formal (Bahasa Indonesia)*: Standar resmi instansi, BUMN, dan korporasi.
+    3. *Cover Letter (English)*: Standar internasional untuk lowongan remote & global.
+  - Auto-fill dari kartu lowongan, live preview real-time saat mengetik, auto-save `localStorage`, salin ke clipboard, dan unduh `.txt`.
+- **Bot Notifikasi & Pencarian Telegram (@lokeriva_bot)**:
+  - Bot Telegram resmi terintegrasi via `@lokeriva_bot`.
+  - Mendukung perintah `/start`, `/terbaru`, `/wfh`, `/stats`, `/web`, serta pencarian bebas kata kunci lowongan (contoh: `Admin`, `Makassar`, `Python`, `Surabaya`).
+  - Webhook live terhubung langsung ke REST server di `/api/telegram/webhook`.
+- **Dukungan / Donasi Developer**:
+  - Modal donasi terintegrasi untuk mendukung biaya server & operasional: Saweria ([saweria.co/xnuvers007](https://saweria.co/xnuvers007)) dan Trakteer ([trakteer.id/xnuvers007](https://trakteer.id/xnuvers007)).
 - **Siap Deploy ke Vercel**:
-  - Dilengkapi `vercel.json`, `api/index.py`, `.vercelignore`, dan `requirements.txt`.
+  - Dilengkapi `vercel.json` versi modern (*clean rewrites*, tanpa *deprecated builds*), `api/index.py`, `.vercelignore`, dan `requirements.txt`.
 
 ---
 

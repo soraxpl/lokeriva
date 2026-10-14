@@ -1947,3 +1947,446 @@ tr:hover td {
   padding: 0 8px;
 }
 
+/* ==============================================================================
+ * 11. COVER LETTER BUILDER & TELEGRAM BOT ENHANCEMENTS
+ * ============================================================================== */
+
+/* Navbar Buttons */
+.btn-letter-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(168, 85, 247, 0.15));
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  color: #6366f1;
+  padding: 7px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.1);
+  text-decoration: none;
+}
+
+.btn-letter-nav:hover {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #ffffff;
+  border-color: transparent;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.btn-telegram-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(34, 158, 217, 0.12);
+  border: 1px solid rgba(34, 158, 217, 0.35);
+  color: #229ed9;
+  padding: 7px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+}
+
+.btn-telegram-nav:hover {
+  background: #229ed9;
+  color: #ffffff;
+  border-color: transparent;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 158, 217, 0.3);
+}
+
+/* Hero Feature Badges */
+.hero-feature-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+  margin-bottom: 22px;
+}
+
+.hero-badge-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-main);
+  text-decoration: none;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.hero-badge-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary);
+}
+
+.hero-badge-tg:hover {
+  border-color: #229ed9;
+}
+
+.badge-tag-new {
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  color: white;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* Card & Table Action Buttons */
+.btn-letter-card {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: #6366f1;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.95rem;
+}
+
+.btn-letter-card:hover {
+  background: #6366f1;
+  color: white;
+  border-color: #6366f1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.25);
+}
+
+.btn-letter-table {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: #6366f1;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.85rem;
+}
+
+.btn-letter-table:hover {
+  background: #6366f1;
+  color: white;
+  border-color: #6366f1;
+}
+
+/* Cover Letter Modal */
+.letter-modal-card {
+  max-width: 960px;
+  width: 95%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.letter-modal-header {
+  border-bottom: 1px solid var(--border);
+  padding: 18px 24px;
+}
+
+.letter-header-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.2));
+  color: #6366f1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.letter-modal-body {
+  padding: 20px 24px 24px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Format Tabs */
+.letter-tabs-bar {
+  display: flex;
+  gap: 8px;
+  background: var(--bg-main);
+  padding: 6px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.letter-tab-btn {
+  flex: 1;
+  min-width: 140px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 14px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.letter-tab-btn:hover {
+  color: var(--text-main);
+  background: rgba(148, 163, 184, 0.1);
+}
+
+.letter-tab-btn.active {
+  background: var(--bg-card);
+  color: #6366f1;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+}
+
+[data-theme="dark"] .letter-tab-btn.active {
+  color: #818cf8;
+}
+
+/* Layout Grid */
+.letter-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 20px;
+  align-items: stretch;
+}
+
+.letter-section-subtitle {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.letter-form-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.letter-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.letter-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.letter-form-group label {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.letter-input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-size: 0.82rem;
+  outline: none;
+  transition: var(--transition);
+}
+
+.letter-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.letter-form-actions-inline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.btn-letter-reset {
+  background: transparent;
+  border: none;
+  color: var(--text-subtle);
+  font-size: 0.76rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: var(--transition);
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.btn-letter-reset:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.letter-storage-hint {
+  font-size: 0.72rem;
+  color: var(--text-subtle);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Preview Column */
+.letter-preview-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.letter-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.letter-badge-format {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  background: rgba(99, 102, 241, 0.12);
+  color: #6366f1;
+}
+
+.letter-preview-box {
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.letter-subject-line {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  color: var(--text-main);
+  word-break: break-word;
+}
+
+.letter-textarea-preview {
+  width: 100%;
+  min-height: 280px;
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-main);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  font-family: inherit;
+  resize: vertical;
+  white-space: pre-wrap;
+}
+
+/* Action Toolbar */
+.letter-actions-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-letter-mailto {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #2563eb;
+  color: white;
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.btn-letter-mailto:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.btn-letter-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 9px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-letter-download:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
+/* Responsive Breakpoints for Letter Generator */
+@media (max-width: 768px) {
+  .letter-layout-grid {
+    grid-template-columns: 1fr;
+  }
+  .letter-textarea-preview {
+    min-height: 220px;
+  }
+  .letter-form-row {
+    grid-template-columns: 1fr;
+  }
+  .btn-letter-nav, .btn-telegram-nav {
+    padding: 6px 10px;
+    font-size: 0.78rem;
+  }
+}
+
+

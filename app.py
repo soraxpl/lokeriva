@@ -1,9 +1,12 @@
 import io
 import csv
+import html
 import math
 import re
 import secrets
+import urllib.parse
 from datetime import datetime
+import requests
 from flask import Flask, render_template, request, jsonify, make_response, send_file
 from scraper import cache_manager, sanitasi_link
 from pdf_generator import generate_jobs_pdf
@@ -433,6 +436,255 @@ def export_csv():
 
 
 # ==============================================================================
+# TELEGRAM BOT WEBHOOK INTEGRATION (@lokeriva_bot)
+# ==============================================================================
+TELEGRAM_BOT_TOKEN = "8983682440:AAHg3gz-Zap30_e8Qkt9tPmNJM9iH_ka3nQ"
+
+
+def send_telegram_message(chat_id, text, reply_markup=None):
+    """Kirim pesan ke pengguna Telegram via REST Bot API."""
+    if not TELEGRAM_BOT_TOKEN:
+        return False
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    payload = {
+        "chat_id": chat_id,
+        "text": text,
+        "parse_mode": "HTML",
+        "disable_web_page_preview": True
+    }
+    if reply_markup:
+        payload["reply_markup"] = reply_markup
+    try:
+        resp = requests.post(url, json=payload, timeout=8)
+        return resp.status_code == 200
+    except Exception as e:
+        print(f"Error sending telegram message: {e}")
+        return False
+
+
+@app.route("/api/telegram/webhook", methods=["POST"])
+def telegram_webhook():
+    """Webhook handler untuk bot Telegram @lokeriva_bot."""
+    update = request.get_json(silent=True) or {}
+    
+    chat_id = None
+    text = ""
+    user_name = "Kawan"
+
+    if "callback_query" in update:
+        cb = update["callback_query"]
+        chat_id = cb.get("message", {}).get("chat", {}).get("id")
+        text = cb.get("data", "").strip()
+        user_name = cb.get("from", {}).get("first_name") or cb.get("from", {}).get("username") or "Kawan"
+        # Acknowledge callback query to stop loading spinner in Telegram
+        try:
+            requests.post(
+                f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/answerCallbackQuery",
+                json={"callback_query_id": cb.get("id")},
+                timeout=4
+            )
+        except Exception:
+            pass
+    elif "message" in update:
+        msg = update["message"]
+        chat_id = msg.get("chat", {}).get("id")
+        text = msg.get("text", "").strip()
+        user_name = msg.get("from", {}).get("first_name") or msg.get("from", {}).get("username") or "Kawan"
+
+    if not chat_id or not text:
+        return jsonify({"ok": True, "note": "no message/chat_id"})
+
+    clean_text = text.strip()
+    cmd = clean_text.lower().split()[0] if clean_text else ""
+
+    # Perintah /start atau /help
+    if cmd in ["/start", "/help", "help", "bantuan", "menu"]:
+        welcome_text = (
+            f"👋 <b>Halo, {html.escape(user_name)}! Selamat datang di Lokeriva Bot</b> 🚀\n\n"
+            "Bot resmi dari <b>Lokeriva.vercel.app</b> untuk mencari lowongan kerja teragregasi otomatis dari 20+ portal karir di Indonesia dan platform Remote WFH Global.\n\n"
+            "📌 <b>Cara Cepat Menggunakan:</b>\n"
+            "• Ketik langsung kata kunci pencarian, contoh:\n"
+            "  👉 <code>Jakarta</code>, <code>Makassar</code>, <code>Admin</code>, <code>Python</code>, <code>Akuntansi</code>\n"
+            "• /terbaru — 5 lowongan kerja paling baru hari ini\n"
+            "• /wfh — Lowongan kerja WFH / Remote\n"
+            "• /stats — Statistik agregasi loker & portal aktif\n"
+            "• /web — Kunjungi website Lokeriva\n\n"
+            "🌐 <i>Akses website lengkap dengan filter lokasi, unduh PDF/CSV, & Generator Surat Lamaran:</i>\n"
+            "👉 https://lokeriva.vercel.app"
+        )
+        reply_markup = {
+            "inline_keyboard": [
+                [
+                    {"text": "💼 Lowongan Terbaru", "callback_data": "/terbaru"},
+                    {"text": "💻 Remote / WFH", "callback_data": "/wfh"}
+                ],
+                [
+                    {"text": "🌐 Kunjungi Lokeriva.vercel.app", "url": "https://lokeriva.vercel.app"}
+                ]
+            ]
+        }
+        send_telegram_message(chat_id, welcome_text, reply_markup=reply_markup)
+        return jsonify({"ok": True})
+
+    jobs, updated_at = cache_manager.get_all_jobs()
+
+    # Perintah /terbaru
+    if cmd in ["/terbaru", "terbaru", "latest"]:
+        sorted_jobs = sorted(jobs, key=lambda x: x.get("tanggal", ""), reverse=True)[:5]
+        if not sorted_jobs:
+            send_telegram_message(chat_id, "⚠️ Belum ada data lowongan kerja tersedia saat ini.")
+            return jsonify({"ok": True})
+
+        lines = ["🔥 <b>5 Lowongan Kerja Terbaru Hari Ini:</b>\n"]
+        for i, j in enumerate(sorted_jobs, 1):
+            pos = html.escape(j.get("posisi", "Posisi"))
+            per = html.escape(j.get("perusahaan", "Perusahaan"))
+            lok = html.escape(j.get("lokasi", "Indonesia"))
+            sumb = html.escape(j.get("sumber", "Portal"))
+            link = j.get("link", "https://lokeriva.vercel.app")
+            tgl = html.escape(j.get("tanggal", ""))
+            tgl_str = f" • <i>{tgl}</i>" if tgl else ""
+            lines.append(
+                f"{i}. <b>{pos}</b>\n"
+                f"   🏢 {per}\n"
+                f"   📍 {lok} | 🏷️ {sumb}{tgl_str}\n"
+                f"   🔗 <a href=\"{link}\">Lamar / Detail Loker</a>\n"
+            )
+        lines.append("🔎 <i>Cari ratusan loker lainnya di: https://lokeriva.vercel.app</i>")
+
+        reply_markup = {
+            "inline_keyboard": [
+                [{"text": "🚀 Lihat Ratusan Loker di Web", "url": "https://lokeriva.vercel.app"}]
+            ]
+        }
+        send_telegram_message(chat_id, "\n".join(lines), reply_markup=reply_markup)
+        return jsonify({"ok": True})
+
+    # Perintah /wfh atau /remote
+    if cmd in ["/wfh", "/remote", "wfh", "remote"]:
+        remote_jobs = [j for j in jobs if any(k in j.get("kategori", "").lower() or k in j.get("lokasi", "").lower() for k in ["remote", "wfh", "anywhere", "worldwide"])]
+        sorted_remote = sorted(remote_jobs, key=lambda x: x.get("tanggal", ""), reverse=True)[:5]
+        if not sorted_remote:
+            send_telegram_message(chat_id, "⚠️ Saat ini belum ada loker remote tersimpan di cache.")
+            return jsonify({"ok": True})
+
+        lines = ["💻 <b>5 Lowongan Kerja WFH / Remote Pilihan:</b>\n"]
+        for i, j in enumerate(sorted_remote, 1):
+            pos = html.escape(j.get("posisi", "Posisi"))
+            per = html.escape(j.get("perusahaan", "Perusahaan"))
+            lok = html.escape(j.get("lokasi", "Remote"))
+            sumb = html.escape(j.get("sumber", "Portal"))
+            link = j.get("link", "https://lokeriva.vercel.app")
+            lines.append(
+                f"{i}. <b>{pos}</b>\n"
+                f"   🏢 {per}\n"
+                f"   📍 {lok} | 🏷️ {sumb}\n"
+                f"   🔗 <a href=\"{link}\">Lamar / Detail Loker</a>\n"
+            )
+        lines.append("🌐 <i>Semua lowongan remote: https://lokeriva.vercel.app</i>")
+
+        reply_markup = {
+            "inline_keyboard": [
+                [{"text": "💻 Buka Semua Loker Remote di Web", "url": "https://lokeriva.vercel.app/?location_type=remote"}]
+            ]
+        }
+        send_telegram_message(chat_id, "\n".join(lines), reply_markup=reply_markup)
+        return jsonify({"ok": True})
+
+    # Perintah /stats
+    if cmd in ["/stats", "stats", "statistik"]:
+        counts = {}
+        for j in jobs:
+            src = j.get("sumber", "Lainnya")
+            counts[src] = counts.get(src, 0) + 1
+        top_sources = sorted(counts.items(), key=lambda x: x[1], reverse=True)[:8]
+        src_text = "\n".join([f"• <b>{html.escape(k)}</b>: {v} loker" for k, v in top_sources])
+        last_up = datetime.fromtimestamp(updated_at).strftime("%d %b %Y %H:%M WIB") if updated_at else "-"
+        stats_msg = (
+            f"📊 <b>Statistik Portal Lokeriva:</b>\n\n"
+            f"💼 Total Lowongan Tersedia: <b>{len(jobs):,}</b> loker\n"
+            f"🌐 Total Portal Sumber: <b>{len(counts)}</b> portal\n\n"
+            f"<b>Portal Terbanyak:</b>\n{src_text}\n\n"
+            f"🕒 Pembaruan Terakhir: {last_up}\n"
+            f"🔗 https://lokeriva.vercel.app"
+        )
+        reply_markup = {
+            "inline_keyboard": [
+                [{"text": "🌐 Kunjungi Website", "url": "https://lokeriva.vercel.app"}]
+            ]
+        }
+        send_telegram_message(chat_id, stats_msg, reply_markup=reply_markup)
+        return jsonify({"ok": True})
+
+    # Perintah /web
+    if cmd in ["/web", "web", "website"]:
+        send_telegram_message(
+            chat_id,
+            "🌐 <b>Website Resmi Lokeriva:</b>\n👉 https://lokeriva.vercel.app\n\n"
+            "Gunakan fitur pencarian filter kota, tipe pekerjaan, unduh PDF/CSV, dan Generator Surat Lamaran Kerja!"
+        )
+        return jsonify({"ok": True})
+
+    # Pencarian bebas kata kunci
+    q_low = clean_text.lower()
+    matches = [
+        j for j in jobs
+        if q_low in j.get("posisi", "").lower()
+        or q_low in j.get("perusahaan", "").lower()
+        or q_low in j.get("lokasi", "").lower()
+        or q_low in j.get("kategori", "").lower()
+    ]
+
+    web_search_url = f"https://lokeriva.vercel.app/?q={urllib.parse.quote_plus(clean_text)}"
+
+    if not matches:
+        not_found_msg = (
+            f"❌ Belum ditemukan lowongan dengan kata kunci: <b>{html.escape(clean_text)}</b>\n\n"
+            "💡 <b>Tips Pencarian:</b>\n"
+            "• Gunakan kata yang lebih umum (misal: <code>Admin</code>, <code>Jakarta</code>, <code>Makassar</code>, <code>Sales</code>)\n"
+            "• Atau periksa langsung di website kami untuk filter lebih lengkap:\n"
+            f"👉 {web_search_url}"
+        )
+        reply_markup = {
+            "inline_keyboard": [
+                [{"text": "🔍 Cek di Website Lokeriva", "url": web_search_url}]
+            ]
+        }
+        send_telegram_message(chat_id, not_found_msg, reply_markup=reply_markup)
+        return jsonify({"ok": True})
+
+    total_found = len(matches)
+    top_5 = matches[:5]
+    lines = [
+        f"🔍 Ditemukan <b>{total_found}</b> lowongan untuk: <b>{html.escape(clean_text)}</b>\n",
+        "<i>Menampilkan 5 lowongan teratas:</i>\n"
+    ]
+    for i, j in enumerate(top_5, 1):
+        pos = html.escape(j.get("posisi", "Posisi"))
+        per = html.escape(j.get("perusahaan", "Perusahaan"))
+        lok = html.escape(j.get("lokasi", "Indonesia"))
+        sumb = html.escape(j.get("sumber", "Portal"))
+        link = j.get("link", "https://lokeriva.vercel.app")
+        lines.append(
+            f"{i}. <b>{pos}</b>\n"
+            f"   🏢 {per}\n"
+            f"   📍 {lok} | 🏷️ {sumb}\n"
+            f"   🔗 <a href=\"{link}\">Lamar / Detail Loker</a>\n"
+        )
+
+    if total_found > 5:
+        lines.append(f"\n✨ <i>Masih ada {total_found - 5} loker lainnya untuk kata kunci ini!</i>")
+
+    reply_markup = {
+        "inline_keyboard": [
+            [{"text": f"🔎 Buka Semua ({total_found}) Loker di Web", "url": web_search_url}]
+        ]
+    }
+    send_telegram_message(chat_id, "\n".join(lines), reply_markup=reply_markup)
+    return jsonify({"ok": True})
+
+
+# ==============================================================================
 # OPENAPI JSON SPECIFICATION
 # ==============================================================================
 @app.route("/api/openapi.json", methods=["GET"])
@@ -503,6 +755,13 @@ def openapi_spec():
                 "post": {
                     "summary": "Memperbarui data cache dari semua sumber",
                     "responses": {"200": {"description": "Status pembaruan cache"}}
+                }
+            },
+            "/api/telegram/webhook": {
+                "post": {
+                    "summary": "Telegram Bot Webhook (@lokeriva_bot)",
+                    "description": "Menerima update webhook dari server Telegram untuk interaksi bot pencarian lowongan kerja.",
+                    "responses": {"200": {"description": "Status proses webhook Telegram"}}
                 }
             }
         }

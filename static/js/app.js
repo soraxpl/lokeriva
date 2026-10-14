@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initOfflineDetection();
   initTheme();
   initLiveClock();
+  initCoverLetterGenerator();
   loadStats();
   loadSources();
   loadJobs();
@@ -650,6 +651,9 @@ function renderJobs(jobs) {
       <div class="job-footer">
         <span class="job-date"><i class="fa-regular fa-calendar-days"></i> ${escapeHtml(job.tanggal)}</span>
         <div class="job-actions">
+          <button class="btn-letter-card" title="Buat Surat Lamaran / Email Kerja">
+            <i class="fa-solid fa-file-signature"></i>
+          </button>
           <button class="btn-bookmark ${isBookmarked ? "active" : ""}" title="Simpan ke Favorit">
             <i class="${isBookmarked ? "fa-solid fa-star" : "fa-regular fa-star"}"></i>
           </button>
@@ -667,6 +671,14 @@ function renderJobs(jobs) {
     `;
 
     // Pasang Event Listener Aman (Bebas Inline String Injection)
+    const btnLetter = card.querySelector(".btn-letter-card");
+    if (btnLetter) {
+      btnLetter.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openCoverLetterGenerator(job.posisi, job.perusahaan);
+      });
+    }
+
     const btnBookmark = card.querySelector(".btn-bookmark");
     if (btnBookmark) {
       btnBookmark.addEventListener("click", () => toggleBookmark(job));
@@ -700,6 +712,9 @@ function renderJobs(jobs) {
       <td><i class="fa-solid fa-location-dot" style="color: var(--accent);"></i> ${escapeHtml(job.lokasi)}</td>
       <td class="table-actions-cell">
         <div class="table-actions-group">
+          <button class="btn-letter-table" title="Buat Surat Lamaran / Email">
+            <i class="fa-solid fa-file-signature"></i>
+          </button>
           <button class="btn-share-wa btn-share-wa-table" title="Bagikan ke WhatsApp">
             <i class="fa-brands fa-whatsapp"></i>
           </button>
@@ -713,6 +728,10 @@ function renderJobs(jobs) {
       </td>
     `;
 
+    const trLetter = tr.querySelector(".btn-letter-table");
+    if (trLetter) {
+      trLetter.addEventListener("click", () => openCoverLetterGenerator(job.posisi, job.perusahaan));
+    }
     const trWa = tr.querySelector(".btn-share-wa-table");
     if (trWa) {
       trWa.addEventListener("click", () => shareToWhatsApp(job));
@@ -999,5 +1018,418 @@ function closeDonateModal() {
     modal.style.display = "none";
     modal.setAttribute("aria-hidden", "true");
   }
+}
+
+// ==============================================================================
+// 10. GENERATOR SURAT LAMARAN & COLD EMAIL BUILDER
+// ==============================================================================
+let currentLetterTab = "cold_email";
+
+function initCoverLetterGenerator() {
+  // Muat data pelamar yang tersimpan di localStorage
+  const savedName = localStorage.getItem("lokeriva_cl_name") || "";
+  const savedEmail = localStorage.getItem("lokeriva_cl_email") || "";
+  const savedPhone = localStorage.getItem("lokeriva_cl_phone") || "";
+  const savedCity = localStorage.getItem("lokeriva_cl_city") || "";
+  const savedEdu = localStorage.getItem("lokeriva_cl_edu") || "";
+  const savedSkills = localStorage.getItem("lokeriva_cl_skills") || "";
+  const savedExp = localStorage.getItem("lokeriva_cl_exp") || "fresh";
+
+  const nameInput = document.getElementById("clApplicantName");
+  const emailInput = document.getElementById("clApplicantEmail");
+  const phoneInput = document.getElementById("clApplicantPhone");
+  const cityInput = document.getElementById("clApplicantCity");
+  const eduInput = document.getElementById("clApplicantEdu");
+  const skillsInput = document.getElementById("clSkills");
+  const expSelect = document.getElementById("clExperienceLevel");
+
+  if (nameInput && savedName) nameInput.value = savedName;
+  if (emailInput && savedEmail) emailInput.value = savedEmail;
+  if (phoneInput && savedPhone) phoneInput.value = savedPhone;
+  if (cityInput && savedCity) cityInput.value = savedCity;
+  if (eduInput && savedEdu) eduInput.value = savedEdu;
+  if (skillsInput && savedSkills) skillsInput.value = savedSkills;
+  if (expSelect && savedExp) expSelect.value = savedExp;
+
+  // Real-time update listeners saat mengetik
+  const allInputs = [
+    "clApplicantName",
+    "clApplicantEmail",
+    "clApplicantPhone",
+    "clApplicantCity",
+    "clApplicantEdu",
+    "clJobPosition",
+    "clJobCompany",
+    "clSkills",
+    "clExperienceLevel"
+  ];
+
+  allInputs.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("input", () => {
+        saveApplicantData();
+        updateCoverLetterPreview();
+      });
+      el.addEventListener("change", () => {
+        saveApplicantData();
+        updateCoverLetterPreview();
+      });
+    }
+  });
+
+  // Tab switching (Cold Email vs Surat Formal ID vs Cover Letter EN)
+  document.querySelectorAll(".letter-tab-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".letter-tab-btn").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentLetterTab = btn.dataset.tab;
+      updateCoverLetterPreview();
+    });
+  });
+
+  // Reset form button
+  const btnReset = document.getElementById("btnResetLetterForm");
+  if (btnReset) {
+    btnReset.addEventListener("click", () => {
+      if (confirm("Reset data form? Profil tersimpan Anda akan dikosongkan.")) {
+        localStorage.removeItem("lokeriva_cl_name");
+        localStorage.removeItem("lokeriva_cl_email");
+        localStorage.removeItem("lokeriva_cl_phone");
+        localStorage.removeItem("lokeriva_cl_city");
+        localStorage.removeItem("lokeriva_cl_edu");
+        localStorage.removeItem("lokeriva_cl_skills");
+        localStorage.removeItem("lokeriva_cl_exp");
+
+        if (nameInput) nameInput.value = "";
+        if (emailInput) emailInput.value = "";
+        if (phoneInput) phoneInput.value = "";
+        if (cityInput) cityInput.value = "";
+        if (eduInput) eduInput.value = "";
+        if (skillsInput) skillsInput.value = "";
+        const jobPos = document.getElementById("clJobPosition");
+        const jobComp = document.getElementById("clJobCompany");
+        if (jobPos) jobPos.value = "";
+        if (jobComp) jobComp.value = "";
+        if (expSelect) expSelect.value = "fresh";
+
+        updateCoverLetterPreview();
+        showToast("Form berhasil di-reset.");
+      }
+    });
+  }
+
+  // Copy button
+  const btnCopy = document.getElementById("btnCopyCoverLetter");
+  if (btnCopy) {
+    btnCopy.addEventListener("click", copyCoverLetter);
+  }
+
+  // Download .txt button
+  const btnDl = document.getElementById("btnDownloadTxtCoverLetter");
+  if (btnDl) {
+    btnDl.addEventListener("click", downloadCoverLetterTxt);
+  }
+
+  // Close modal button
+  const btnClose = document.getElementById("btnCloseCoverLetterModal");
+  if (btnClose) {
+    btnClose.addEventListener("click", closeCoverLetterModal);
+  }
+
+  // Overlay click to close
+  const modal = document.getElementById("coverLetterModal");
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        closeCoverLetterModal();
+      }
+    });
+  }
+
+  // Navbar, Hero, and Footer trigger buttons
+  const btnNav = document.getElementById("btnNavCoverLetter");
+  if (btnNav) {
+    btnNav.addEventListener("click", () => openCoverLetterGenerator("", ""));
+  }
+  const btnHero = document.getElementById("btnHeroCoverLetter");
+  if (btnHero) {
+    btnHero.addEventListener("click", () => openCoverLetterGenerator("", ""));
+  }
+  const btnFooter = document.getElementById("btnFooterCoverLetter");
+  if (btnFooter) {
+    btnFooter.addEventListener("click", () => openCoverLetterGenerator("", ""));
+  }
+}
+
+function saveApplicantData() {
+  const getVal = (id) => (document.getElementById(id)?.value || "").trim();
+  localStorage.setItem("lokeriva_cl_name", getVal("clApplicantName"));
+  localStorage.setItem("lokeriva_cl_email", getVal("clApplicantEmail"));
+  localStorage.setItem("lokeriva_cl_phone", getVal("clApplicantPhone"));
+  localStorage.setItem("lokeriva_cl_city", getVal("clApplicantCity"));
+  localStorage.setItem("lokeriva_cl_edu", getVal("clApplicantEdu"));
+  localStorage.setItem("lokeriva_cl_skills", getVal("clSkills"));
+  localStorage.setItem("lokeriva_cl_exp", getVal("clExperienceLevel"));
+}
+
+function openCoverLetterGenerator(posisi = "", perusahaan = "") {
+  const modal = document.getElementById("coverLetterModal");
+  if (!modal) return;
+
+  const jobPosInput = document.getElementById("clJobPosition");
+  const jobCompInput = document.getElementById("clJobCompany");
+
+  if (jobPosInput && posisi) jobPosInput.value = posisi;
+  if (jobCompInput && perusahaan) jobCompInput.value = perusahaan;
+
+  updateCoverLetterPreview();
+
+  modal.style.display = "flex";
+  modal.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+
+function closeCoverLetterModal() {
+  const modal = document.getElementById("coverLetterModal");
+  if (!modal) return;
+  modal.style.display = "none";
+  modal.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
+
+function getLetterData() {
+  const getVal = (id, fallback) => {
+    const v = (document.getElementById(id)?.value || "").trim();
+    return v || fallback;
+  };
+
+  return {
+    name: getVal("clApplicantName", "[Nama Lengkap Anda]"),
+    email: getVal("clApplicantEmail", "[Email Anda]"),
+    phone: getVal("clApplicantPhone", "[No. WhatsApp/HP]"),
+    city: getVal("clApplicantCity", "Indonesia"),
+    edu: getVal("clApplicantEdu", "Pendidikan Terakhir"),
+    posisi: getVal("clJobPosition", "Posisi Lowongan"),
+    perusahaan: getVal("clJobCompany", "Perusahaan"),
+    skills: getVal("clSkills", "komunikasi profesional, kerja sama tim, dan keahlian terkait"),
+    exp: document.getElementById("clExperienceLevel")?.value || "fresh"
+  };
+}
+
+function generateLetterContent() {
+  const d = getLetterData();
+  const today = new Date();
+  const dateOptions = { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Jakarta" };
+  const dateIndo = new Intl.DateTimeFormat("id-ID", dateOptions).format(today);
+  const dateEng = new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric" }).format(today);
+
+  let subject = "";
+  let body = "";
+
+  if (currentLetterTab === "cold_email") {
+    subject = `Lamaran Pekerjaan: ${d.posisi} - ${d.name}`;
+
+    let expParagraph = "";
+    if (d.exp === "fresh") {
+      expParagraph = `Sebagai lulusan dari ${d.edu} yang berdedikasi dan memiliki latar belakang relevan, saya memiliki pemahaman yang baik serta keahlian dalam ${d.skills}. Saya terbiasa belajar dengan cepat, adaptif dalam menghadapi tantangan baru, serta memiliki komitmen tinggi untuk memberikan kontribusi terbaik bagi kemajuan ${d.perusahaan}.`;
+    } else if (d.exp === "junior") {
+      expParagraph = `Dengan pengalaman kerja profesional selama 1–2 tahun di bidang terkait, saya telah mengasah kemampuan dalam ${d.skills}. Saya terbiasa menjalankan tanggung jawab dengan berorientasi pada pencapaian target, ketelitian, serta kolaborasi tim yang solid.`;
+    } else {
+      expParagraph = `Dengan rekam jejak profesional lebih dari 3 tahun, saya memiliki keahlian mendalam dalam ${d.skills}. Saya berpengalaman memimpin alur kerja, meningkatkan efisiensi operasional, serta menyelesaikan proyek strategis dengan hasil yang terukur.`;
+    }
+
+    body = `Yth. Tim Rekrutmen / HRD ${d.perusahaan},
+
+Perkenalkan, nama saya ${d.name}, berdomisili di ${d.city}. Melalui email ini, saya bermaksud untuk mengajukan lamaran pekerjaan untuk posisi ${d.posisi} di ${d.perusahaan} sebagaimana informasi lowongan yang saya temukan melalui platform Lokeriva.
+
+${expParagraph}
+
+Bersama email ini, saya melampirkan Curriculum Vitae (CV) dan dokumen pendukung saya untuk dijadikan bahan pertimbangan. Saya sangat menyambut baik kesempatan untuk berdiskusi lebih lanjut dalam sesi wawancara mengenai bagaimana kompetensi saya dapat selaras dengan kebutuhan tim di ${d.perusahaan}.
+
+Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih yang sebesar-besarnya.
+
+Hormat saya,
+
+${d.name}
+No. WhatsApp : ${d.phone}
+Email        : ${d.email}
+Domisili     : ${d.city}`;
+
+  } else if (currentLetterTab === "formal_id") {
+    subject = `Surat Lamaran Pekerjaan — ${d.posisi} — ${d.name}`;
+
+    let expDetail = "";
+    if (d.exp === "fresh") {
+      expDetail = `Sebagai lulusan baru, saya memiliki semangat kerja yang tinggi, integritas, dan penguasaan dalam ${d.skills}. Selama masa studi, saya aktif mengembangkan keahlian praktis dan memiliki daya adaptasi yang sangat baik dalam lingkungan kerja yang dinamis.`;
+    } else if (d.exp === "junior") {
+      expDetail = `Berbekal pengalaman kerja di bidang terkait selama 1–2 tahun, saya memiliki pemahaman yang kuat mengenai alur kerja dan keahlian di bidang ${d.skills}. Saya terbiasa bekerja mandiri maupun dalam tim dengan mengedepankan efektivitas dan ketepatan waktu.`;
+    } else {
+      expDetail = `Berbekal pengalaman lebih dari 3 tahun di industri, saya terbiasa mengemban tanggung jawab strategis, mengoptimalkan proses kerja, dan menguasai ${d.skills}. Saya siap membawa nilai tambah dan kontribusi nyata bagi pertumbuhan ${d.perusahaan}.`;
+    }
+
+    body = `${d.city}, ${dateIndo}
+
+Hal      : Lamaran Pekerjaan — ${d.posisi}
+Lampiran : 1 (Satu) Berkas
+
+Kepada Yth.
+Bapak/Ibu HRD / Pimpinan Perusahaan
+${d.perusahaan}
+di Tempat
+
+Dengan hormat,
+
+Sehubungan dengan informasi lowongan pekerjaan untuk posisi ${d.posisi} di ${d.perusahaan} yang saya peroleh melalui portal karir Lokeriva, melalui surat ini saya bermaksud untuk mengajukan diri guna bergabung dengan perusahaan yang Bapak/Ibu pimpin.
+
+Berikut adalah ringkasan data diri saya:
+Nama                : ${d.name}
+Pendidikan Terakhir : ${d.edu}
+Domisili            : ${d.city}
+Nomor WhatsApp/HP   : ${d.phone}
+Alamat Email        : ${d.email}
+
+${expDetail} Saya meyakini bahwa latar belakang dan kompetensi yang saya miliki dapat memberikan kontribusi positif dalam mendukung target dan visi ${d.perusahaan}.
+
+Sebagai bahan pertimbangan Bapak/Ibu, turut saya lampirkan:
+1. Curriculum Vitae (CV) Terkini
+2. Salinan Ijazah dan Transkrip Nilai
+3. Portofolio Kerja / Sertifikat Keahlian
+
+Besar harapan saya untuk diberikan kesempatan menghadiri sesi wawancara, agar saya dapat menjelaskan lebih lanjut mengenai kualifikasi, pengalaman, dan rencana kontribusi yang dapat saya berikan.
+
+Demikian surat lamaran ini saya sampaikan. Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.
+
+
+Hormat saya,
+
+
+
+${d.name}`;
+
+  } else {
+    // english_cl
+    subject = `Job Application: ${d.posisi} - ${d.name}`;
+
+    let expEng = "";
+    if (d.exp === "fresh") {
+      expEng = `As an enthusiastic graduate with a background in ${d.edu}, I have developed a strong foundation and practical capability in ${d.skills}. I am an eager learner, highly adaptable to fast-paced environments, and dedicated to delivering high-quality work for ${d.perusahaan}.`;
+    } else if (d.exp === "junior") {
+      expEng = `With 1-2 years of professional experience in related roles, I have honed my competencies in ${d.skills}. I am accustomed to meeting deadlines, solving problems proactively, and collaborating across multidisciplinary teams to achieve shared objectives.`;
+    } else {
+      expEng = `Bringing over 3 years of progressive professional experience, I offer specialized domain expertise in ${d.skills}. I have a proven track record of optimizing workflows, executing high-impact initiatives, and driving quantifiable value.`;
+    }
+
+    body = `${dateEng}
+
+Hiring Team / HR Department
+${d.perusahaan}
+
+Subject: Application for ${d.posisi} Position
+
+Dear Hiring Team,
+
+I am writing to express my strong enthusiasm for the ${d.posisi} position at ${d.perusahaan}, as advertised on Lokeriva. Given my background in ${d.edu} and my hands-on experience, I am confident in my ability to make an immediate and meaningful contribution to your organization.
+
+${expEng}
+
+I have attached my resume and portfolio for your review. I would welcome the opportunity to discuss how my skill set and background align with the goals and needs of ${d.perusahaan}.
+
+Thank you very much for your time and consideration. I look forward to the possibility of speaking with you soon.
+
+Sincerely,
+
+${d.name}
+Phone/WhatsApp : ${d.phone}
+Email          : ${d.email}
+Location       : ${d.city}, Indonesia`;
+  }
+
+  return { subject, body };
+}
+
+function updateCoverLetterPreview() {
+  const { subject, body } = generateLetterContent();
+
+  const subjectRow = document.getElementById("clSubjectLineRow");
+  const subjectText = document.getElementById("clSubjectLineText");
+  const outputText = document.getElementById("clOutputText");
+  const badgeEl = document.getElementById("clFormatBadge");
+  const mailtoBtn = document.getElementById("btnMailtoCoverLetter");
+
+  if (subjectRow && subjectText) {
+    if (currentLetterTab === "formal_id") {
+      subjectRow.style.display = "none";
+    } else {
+      subjectRow.style.display = "block";
+      subjectText.innerText = subject;
+    }
+  }
+
+  if (outputText) {
+    outputText.value = body;
+  }
+
+  if (badgeEl) {
+    if (currentLetterTab === "cold_email") badgeEl.innerText = "Email Lamaran";
+    else if (currentLetterTab === "formal_id") badgeEl.innerText = "Surat Formal (ID)";
+    else badgeEl.innerText = "Cover Letter (EN)";
+  }
+
+  // Update Mailto Link
+  if (mailtoBtn) {
+    const encSubject = encodeURIComponent(subject);
+    const encBody = encodeURIComponent(body);
+    mailtoBtn.href = `mailto:?subject=${encSubject}&body=${encBody}`;
+  }
+}
+
+function copyCoverLetter() {
+  const output = document.getElementById("clOutputText");
+  if (!output || !output.value) return;
+
+  const fullText = output.value;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(fullText).then(() => {
+      showToast("Surat lamaran berhasil disalin ke clipboard!");
+    }).catch(() => {
+      fallbackCopyText(fullText);
+    });
+  } else {
+    fallbackCopyText(fullText);
+  }
+}
+
+function fallbackCopyText(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand("copy");
+    showToast("Surat lamaran berhasil disalin!");
+  } catch (e) {
+    showToast("Gagal menyalin teks.");
+  }
+  document.body.removeChild(ta);
+}
+
+function downloadCoverLetterTxt() {
+  const { subject, body } = generateLetterContent();
+  const d = getLetterData();
+  const safeName = d.name.replace(/[^a-zA-Z0-9]/g, "_") || "Pelamar";
+  const safePos = d.posisi.replace(/[^a-zA-Z0-9]/g, "_") || "Loker";
+  const filename = `Surat_Lamaran_${safeName}_${safePos}.txt`;
+
+  const blob = new Blob([body], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast(`File ${filename} berhasil diunduh!`);
 }
 
