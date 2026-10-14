@@ -56,8 +56,8 @@ Dilengkapi dengan antarmuka web modern, fitur ekspor PDF dengan **hyperlink akti
   - Webhook live terhubung langsung ke REST server di `/api/telegram/webhook`.
 - **Dukungan / Donasi Developer**:
   - Modal donasi terintegrasi untuk mendukung biaya server & operasional: Saweria ([saweria.co/xnuvers007](https://saweria.co/xnuvers007)) dan Trakteer ([trakteer.id/xnuvers007](https://trakteer.id/xnuvers007)).
-- **Siap Deploy ke Vercel**:
-  - Dilengkapi `vercel.json` versi modern (*clean rewrites*, tanpa *deprecated builds*), `api/index.py`, `.vercelignore`, dan `requirements.txt`.
+- **Siap Deploy ke Vercel (Zero-Config)**:
+  - Didukung deployment bawaan (*native Zero-Configuration*) Flask di Vercel langsung melalui `app.py`, `.vercelignore`, dan `requirements.txt`.
 
 ---
 
