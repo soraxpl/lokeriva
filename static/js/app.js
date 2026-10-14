@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ==============================================================================
-// 1. PWA REGISTRATION & INSTALL PROMPT
+// 1. PWA REGISTRATION & INSTALL PROMPT BANNER
 // ==============================================================================
 function initPWA() {
   if ("serviceWorker" in navigator) {
@@ -44,31 +44,91 @@ function initPWA() {
     });
   }
 
-  // Menangkap event sebelum prompt install PWA muncul
+  // Cek apakah sudah berjalan di mode standalone (sudah terpasang)
+  const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  if (isStandalone) {
+    return;
+  }
+
+  const shouldShowBanner = () => {
+    const dismissedTime = localStorage.getItem("lokeriva_pwa_dismissed");
+    if (!dismissedTime) return true;
+    return Date.now() - parseInt(dismissedTime, 10) > 24 * 60 * 60 * 1000;
+  };
+
+  const dismissBanner = () => {
+    const banner = document.getElementById("pwaInstallBanner");
+    if (banner) banner.style.display = "none";
+    localStorage.setItem("lokeriva_pwa_dismissed", Date.now().toString());
+  };
+
+  const triggerInstall = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === "accepted") {
+        showToast("Aplikasi Lokeriva.id berhasil dipasang!");
+        dismissBanner();
+      }
+      deferredPrompt = null;
+      const installBtn = document.getElementById("btnInstallPwa");
+      if (installBtn) installBtn.style.display = "none";
+    } else {
+      showToast("Gunakan menu browser lalu pilih 'Tambahkan ke Layar Utama'");
+    }
+  };
+
+  // Pasang listener tombol tutup & nanti
+  const btnClose = document.getElementById("btnDismissPwa");
+  if (btnClose) btnClose.addEventListener("click", dismissBanner);
+  const btnLater = document.getElementById("btnDismissPwaLater");
+  if (btnLater) btnLater.addEventListener("click", dismissBanner);
+  const btnInstallBanner = document.getElementById("btnActionPwaInstall");
+  if (btnInstallBanner) btnInstallBanner.addEventListener("click", triggerInstall);
+
+  // Tombol di navbar
+  const installBtn = document.getElementById("btnInstallPwa");
+  if (installBtn) installBtn.addEventListener("click", triggerInstall);
+
+  // Menangkap event sebelum prompt install PWA muncul (Android, Chrome, Edge)
   window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    const installBtn = document.getElementById("btnInstallPwa");
-    if (installBtn) {
-      installBtn.style.display = "flex";
-      installBtn.addEventListener("click", async () => {
-        if (deferredPrompt) {
-          deferredPrompt.prompt();
-          const { outcome } = await deferredPrompt.userChoice;
-          if (outcome === "accepted") {
-            showToast("Aplikasi Lokeriva.id berhasil dipasang!");
-          }
-          deferredPrompt = null;
-          installBtn.style.display = "none";
-        }
-      });
+    if (installBtn) installBtn.style.display = "flex";
+
+    // Tampilkan banner mengambang dengan delay halus jika belum di-dismiss
+    if (shouldShowBanner()) {
+      setTimeout(() => {
+        const banner = document.getElementById("pwaInstallBanner");
+        if (banner) banner.style.display = "block";
+      }, 1500);
     }
   });
+
+  // Dukungan panduan khusus iOS Safari
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  if (isIOS && shouldShowBanner()) {
+    setTimeout(() => {
+      const banner = document.getElementById("pwaInstallBanner");
+      const title = document.getElementById("pwaBannerTitle");
+      const desc = document.getElementById("pwaBannerDesc");
+      const actionBtn = document.getElementById("btnActionPwaInstall");
+      if (banner && desc) {
+        banner.style.display = "block";
+        if (title) title.innerText = "Pasang Lokeriva di iPhone/iPad";
+        desc.innerHTML = "Ketuk ikon <b>Bagikan (Share)</b> <i class='fa-solid fa-arrow-up-from-bracket'></i> di Safari, lalu pilih <b>'Tambah ke Layar Utama'</b>.";
+        if (actionBtn) {
+          actionBtn.innerHTML = "<i class='fa-solid fa-check'></i> Saya Mengerti";
+          actionBtn.onclick = dismissBanner;
+        }
+      }
+    }, 2000);
+  }
 
   window.addEventListener("appinstalled", () => {
     showToast("Aplikasi Lokeriva.id telah terpasang di perangkat Anda.");
     deferredPrompt = null;
-    const installBtn = document.getElementById("btnInstallPwa");
+    dismissBanner();
     if (installBtn) installBtn.style.display = "none";
   });
 }

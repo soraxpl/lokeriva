@@ -286,6 +286,32 @@
         </div>
     </footer>
 
+    <!-- PWA INSTALL FLOATING BANNER -->
+    <aside id="pwaInstallBanner" class="pwa-banner" aria-label="Penawaran Pasang Aplikasi Lokeriva" style="display: none;">
+        <div class="pwa-banner-card">
+            <button class="pwa-close-btn" id="btnDismissPwa" title="Tutup">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="pwa-banner-content">
+                <div class="pwa-icon-box">
+                    <img src="{{ url_for('static', filename='icons/icon-96.png') }}" alt="Logo Lokeriva" width="48" height="48">
+                </div>
+                <div class="pwa-text-box">
+                    <h3 class="pwa-title" id="pwaBannerTitle">Pasang Aplikasi Lokeriva</h3>
+                    <p class="pwa-desc" id="pwaBannerDesc">
+                        Akses ribuan loker lebih cepat, hemat kuota, dan bisa dibuka offline langsung dari layar utama perangkat Anda!
+                    </p>
+                </div>
+            </div>
+            <div class="pwa-banner-actions">
+                <button class="btn-pwa-later" id="btnDismissPwaLater">Nanti Saja</button>
+                <button class="btn-pwa-install" id="btnActionPwaInstall">
+                    <i class="fa-solid fa-download"></i> Pasang Sekarang
+                </button>
+            </div>
+        </div>
+    </aside>
+
     <!-- TOAST NOTIFICATION -->
     <div id="toast" class="toast"><i class="fa-solid fa-circle-info"></i> <span id="toastMsg">Notifikasi</span></div>
 
