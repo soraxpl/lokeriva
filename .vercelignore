@@ -1,0 +1,10 @@
+.git
+.gitignore
+__pycache__
+*.pyc
+*.csv
+scratch
+.system_generated
+main.py
+Loker_Super_Lengkap.csv
+Portal_Loker_Interaktif.html

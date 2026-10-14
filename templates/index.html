@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lokeriva — Portal Lowongan Kerja Indonesia & WFH Global</title>
+    <meta name="description" content="Lokeriva.id — Platform agregator lowongan kerja otomatis dari 20+ portal karir di Indonesia (BUMN, Medis, Admin, Startup) dan Remote WFH Global terverifikasi. Created by Xnuvers007.">
+    <meta name="keywords" content="lowongan kerja, loker indonesia, loker bumn, loker wfh, lowongan remote, loker makassar, loker jakarta, loker bandung, loker surabaya, cari kerja, portal loker, lokeriva">
+    <meta name="author" content="Xnuvers007">
+    <meta name="publisher" content="Lokeriva.id">
+    
+    <!-- Robots & Crawler Directives -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large">
+    <meta name="bingbot" content="index, follow">
+    <link rel="canonical" href="{{ request.base_url }}">
+
+    <!-- Geo Metadata -->
+    <meta name="geo.region" content="ID">
+    <meta name="geo.placename" content="Indonesia">
+
+    <!-- Open Graph (Facebook / WhatsApp / LinkedIn) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Lokeriva.id">
+    <meta property="og:title" content="Lokeriva — Portal Lowongan Kerja Indonesia & WFH Global">
+    <meta property="og:description" content="Platform agregator lowongan kerja otomatis dari 20+ portal karir di Indonesia dan Remote WFH Global terverifikasi. Cari karir impian Anda di Lokeriva.id.">
+    <meta property="og:url" content="{{ request.base_url }}">
+    <meta property="og:image" content="{{ url_for('static', filename='icons/icon-512.png', _external=True) }}">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:locale" content="id_ID">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Lokeriva — Portal Lowongan Kerja Indonesia & WFH Global">
+    <meta name="twitter:description" content="Platform agregator lowongan kerja otomatis dari 20+ portal karir di Indonesia dan Remote WFH Global.">
+    <meta name="twitter:image" content="{{ url_for('static', filename='icons/icon-512.png', _external=True) }}">
+
+    <!-- Schema.org JSON-LD Structured Data for Google Indexing -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "{{ request.url_root }}#website",
+          "url": "{{ request.url_root }}",
+          "name": "Lokeriva.id",
+          "description": "Platform Agregator Lowongan Kerja Indonesia & Remote WFH Global",
+          "publisher": {
+            "@type": "Person",
+            "name": "Xnuvers007"
+          },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "{{ request.url_root }}?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          },
+          "inLanguage": "id-ID"
+        },
+        {
+          "@type": "Organization",
+          "@id": "{{ request.url_root }}#organization",
+          "name": "Lokeriva.id",
+          "url": "{{ request.url_root }}",
+          "logo": "{{ url_for('static', filename='icons/icon-512.png', _external=True) }}",
+          "founder": {
+            "@type": "Person",
+            "name": "Xnuvers007"
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- PWA Primary Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Lokeriva">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+    
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome 6 Free CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="brand-link">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-briefcase"></i>
+                </div>
+                <span>Lokeriva.id</span>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link active"><i class="fa-solid fa-list-check"></i> Lowongan</a>
+                <a href="/docs" class="nav-link"><i class="fa-solid fa-book-bookmark"></i> Dokumentasi API</a>
+                <button class="btn-icon" id="btnInstallPwa" style="display: none;" title="Pasang sebagai Aplikasi (PWA)">
+                    <i class="fa-solid fa-download"></i>
+                </button>
+                <button class="btn-icon" id="themeToggleBtn" title="Ganti Mode Gelap/Terang">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="container">
+        
+        <!-- HERO SECTION -->
+        <section class="hero-box">
+            <div class="hero-content">
+                <h1 class="hero-title">Temukan Peluang Karir Terbaik di Satu Tempat</h1>
+                <p class="hero-desc">
+                    Menggabungkan ratusan lowongan kerja aktif dari 20+ portal karir Indonesia (BUMN, Medis, Admin, Startup) dan platform Remote WFH Global terverifikasi.
+                </p>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-value" id="statTotalJobs">-</span>
+                        <span class="stat-label"><i class="fa-solid fa-briefcase"></i> Total Lowongan</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="statActiveSources">-</span>
+                        <span class="stat-label"><i class="fa-solid fa-globe"></i> Sumber Aktif</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="statRemoteJobs">-</span>
+                        <span class="stat-label"><i class="fa-solid fa-laptop-code"></i> WFH / Remote</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="statLocalJobs">-</span>
+                        <span class="stat-label"><i class="fa-solid fa-map-location-dot"></i> Loker Indonesia</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEARCH & CONTROLS -->
+        <section class="controls-card">
+            <!-- Search Bar -->
+            <div class="search-input-group">
+                <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="Cari berdasarkan posisi, perusahaan, atau keahlian (contoh: Makassar, Bidan, Admin, Python, BUMN)..." 
+                    autocomplete="off"
+                >
+            </div>
+
+            <!-- Filters Bar (Sumber, Tipe Lokasi, Daerah, Pengurutan) -->
+            <div class="filter-row">
+                <div class="filter-selects">
+                    <!-- Sumber Loker -->
+                    <select id="sourceSelect" class="custom-select" title="Filter Sumber Lowongan">
+                        <option value="">Semua Sumber Karir</option>
+                    </select>
+
+                    <!-- Filter Tipe Lokasi (Berdasarkan Lokasi Fisik / Remote) -->
+                    <select id="locationTypeSelect" class="custom-select" title="Tipe Lokasi Pekerjaan">
+                        <option value="all">Semua Tipe Lokasi</option>
+                        <option value="remote">WFH / Remote (Bebas Lokasi)</option>
+                        <option value="onsite">Di Tempat (On-Site / Kantor)</option>
+                    </select>
+
+                    <!-- Filter Wilayah / Kota Populer -->
+                    <select id="citySelect" class="custom-select" title="Pilih Kota / Wilayah">
+                        <option value="">Semua Wilayah</option>
+                        <option value="Makassar">Makassar & Sulsel</option>
+                        <option value="Jakarta">Jakarta & Jabodetabek</option>
+                        <option value="Bandung">Bandung & Jabar</option>
+                        <option value="Surabaya">Surabaya & Jatim</option>
+                        <option value="Jogja">Yogyakarta & Jateng</option>
+                        <option value="Bali">Bali & Sekitarnya</option>
+                        <option value="Medan">Medan & Sumatra</option>
+                    </select>
+
+                    <!-- Tombol Deteksi Lokasi Saya -->
+                    <button id="btnDetectLocation" class="custom-select" style="cursor: pointer; background: var(--primary-light); color: var(--primary); font-weight: 600;" title="Gunakan Lokasi GPS Saya">
+                        <i class="fa-solid fa-location-crosshairs"></i> Lokasi Saya
+                    </button>
+
+                    <!-- Pengurutan -->
+                    <select id="sortSelect" class="custom-select" title="Urutkan Lowongan">
+                        <option value="newest">Terbaru</option>
+                        <option value="title">Posisi (A-Z)</option>
+                        <option value="company">Perusahaan (A-Z)</option>
+                    </select>
+                </div>
+
+                <div class="results-info" id="lastUpdatedText">
+                    <i class="fa-solid fa-rotate"></i> Memuat status...
+                </div>
+            </div>
+
+            <!-- Quick Filter Pills -->
+            <div class="filter-pills">
+                <button class="pill-btn active" data-filter="all"><i class="fa-solid fa-fire"></i> Semua Lowongan</button>
+                <button class="pill-btn" data-filter="remote"><i class="fa-solid fa-laptop-code"></i> WFH / Remote</button>
+                <button class="pill-btn" data-filter="medis"><i class="fa-solid fa-hospital"></i> Medis & Bidan</button>
+                <button class="pill-btn" data-filter="admin"><i class="fa-solid fa-folder-open"></i> Admin & Office</button>
+                <button class="pill-btn" data-filter="bumn"><i class="fa-solid fa-landmark"></i> BUMN</button>
+                <button class="pill-btn" data-filter="tech"><i class="fa-solid fa-rocket"></i> Tech & Startup</button>
+                <button class="pill-btn" data-filter="bookmarks"><i class="fa-solid fa-star"></i> Favorit Saya</button>
+            </div>
+        </section>
+
+        <!-- ACTIONS & STATS BAR -->
+        <section class="actions-bar">
+            <div class="results-info" id="resultsInfoText">
+                <i class="fa-solid fa-spinner fa-spin"></i> Memuat lowongan kerja...
+            </div>
+            <div class="action-buttons">
+                <!-- Unduh PDF dengan link aktif -->
+                <a href="/export/pdf" id="btnExportPdf" class="btn-export btn-pdf" title="Unduh PDF dengan hyperlink yang dapat diklik langsung">
+                    <i class="fa-solid fa-file-pdf"></i> Unduh PDF (Link Aktif)
+                </a>
+                <a href="/export/csv" id="btnExportCsv" class="btn-export btn-csv" title="Unduh data dalam format CSV untuk Excel">
+                    <i class="fa-solid fa-file-csv"></i> Unduh CSV
+                </a>
+                
+                <!-- View Mode Toggle -->
+                <div class="view-toggle">
+                    <button class="toggle-btn active" id="btnGridView" title="Tampilan Kartu"><i class="fa-solid fa-grip"></i> Kartu</button>
+                    <button class="toggle-btn" id="btnTableView" title="Tampilan Tabel"><i class="fa-solid fa-table-list"></i> Tabel</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- JOBS GRID VIEW -->
+        <section class="jobs-grid" id="jobsGrid">
+            <!-- Diisi secara dinamis oleh app.js -->
+        </section>
+
+        <!-- JOBS TABLE VIEW (HIDDEN BY DEFAULT) -->
+        <section class="jobs-table-wrap" id="jobsTableWrap" style="display: none;">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 40px;">No</th>
+                        <th>Posisi</th>
+                        <th>Perusahaan</th>
+                        <th>Sumber</th>
+                        <th>Lokasi</th>
+                        <th style="width: 100px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Diisi secara dinamis oleh app.js -->
+                </tbody>
+            </table>
+        </section>
+
+        <!-- PAGINATION -->
+        <div class="pagination" id="pagination">
+            <!-- Diisi secara dinamis oleh app.js -->
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 Lokeriva.id • Created by <b>Xnuvers007</b> • Agregator Lowongan Kerja Otomatis Multi-Sumber (PWA Ready)</p>
+            <p style="margin-top: 4px; font-size: 0.75rem; color: var(--text-subtle);">
+                Data dikumpulkan secara agregat dari Kalibrr, Jobicy, Remotive, Himalayas, Arbeitnow, The Muse, Loker.id, Greenhouse ATS, dan Portal WordPress Terverifikasi.
+            </p>
+        </div>
+    </footer>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="toast"><i class="fa-solid fa-circle-info"></i> <span id="toastMsg">Notifikasi</span></div>
+
+    <!-- Script Logic -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

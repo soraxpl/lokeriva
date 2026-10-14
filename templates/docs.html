@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dokumentasi REST API — Lokeriva.id</title>
+    <meta name="description" content="Dokumentasi resmi REST API Lokeriva.id — Agregator Lowongan Kerja Multi-Sumber Real-Time Indonesia dan Remote Global. Created by Xnuvers007.">
+    <meta name="keywords" content="api loker, api lowongan kerja, rest api loker, lokeriva api, job scraper api, openapi loker">
+    <meta name="author" content="Xnuvers007">
+    
+    <!-- Robots Directives -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="{{ request.base_url }}">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Lokeriva.id">
+    <meta property="og:title" content="Dokumentasi REST API — Lokeriva.id">
+    <meta property="og:description" content="Dokumentasi resmi dan panduan penggunaan REST API Lokeriva.id untuk integrasi data lowongan kerja.">
+    <meta property="og:url" content="{{ request.base_url }}">
+    <meta property="og:image" content="{{ url_for('static', filename='icons/icon-512.png', _external=True) }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Dokumentasi REST API — Lokeriva.id">
+    <meta name="twitter:description" content="Integrasikan ribuan data lowongan kerja aktif ke aplikasi Anda dengan Lokeriva REST API.">
+    <meta name="twitter:image" content="{{ url_for('static', filename='icons/icon-512.png', _external=True) }}">
+
+    <!-- Schema.org JSON-LD for API Reference -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "Dokumentasi REST API Lokeriva.id",
+      "description": "Panduan resmi integrasi REST API Lokeriva untuk agregasi lowongan kerja di Indonesia dan global remote WFH.",
+      "author": {
+        "@type": "Person",
+        "name": "Xnuvers007"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Lokeriva.id",
+        "url": "{{ request.url_root }}"
+      },
+      "url": "{{ request.base_url }}"
+    }
+    </script>
+
+    <!-- PWA Primary Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#2563eb">
+
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome 6 Free CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <style>
+        .docs-container {
+            max-width: 1040px;
+            margin: 30px auto 60px auto;
+            padding: 0 20px;
+        }
+        .docs-header {
+            margin-bottom: 30px;
+        }
+        .docs-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+        .docs-badge {
+            background: #dbeafe;
+            color: #1e40af;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        .api-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            margin-bottom: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        .api-header {
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-main);
+            cursor: pointer;
+        }
+        .method-badge {
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            text-transform: uppercase;
+            font-family: 'Fira Code', monospace;
+        }
+        .method-get { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .method-post { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        
+        .endpoint-path {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-left: 12px;
+        }
+        .api-body {
+            padding: 24px;
+        }
+        .code-box {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.82rem;
+            overflow-x: auto;
+            margin: 12px 0;
+            border: 1px solid #1e293b;
+        }
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0;
+        }
+        .param-table th, .param-table td {
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+        .param-table th {
+            background: var(--bg-main);
+            font-weight: 600;
+        }
+        .try-box {
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--bg-main);
+            border-radius: var(--radius-md);
+            border: 1px dashed var(--border);
+        }
+        .try-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .try-btn:hover {
+            background: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="brand-link">
+                <div class="brand-icon"><i class="fa-solid fa-briefcase"></i></div>
+                <span>Lokeriva.id</span>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link"><i class="fa-solid fa-list-check"></i> Lowongan</a>
+                <a href="/docs" class="nav-link active"><i class="fa-solid fa-book-bookmark"></i> Dokumentasi API</a>
+                <a href="/api/openapi.json" target="_blank" class="nav-link"><i class="fa-solid fa-code"></i> OpenAPI Spec</a>
+                <button class="btn-icon" id="themeToggleBtn" title="Ganti Mode Gelap/Terang">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <div class="docs-container">
+        <header class="docs-header">
+            <span class="docs-badge"><i class="fa-solid fa-circle-check"></i> REST API v1.0.0 Public & Open</span>
+            <h1>Dokumentasi REST API Lokeriva.id</h1>
+            <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.6;">
+                Lokeriva.id API menyediakan akses langsung dan terbuka ke ribuan lowongan kerja teragregasi dari berbagai portal karir di Indonesia serta lowongan kerja remote WFH global. Bebas digunakan untuk aplikasi mobile, bot Telegram/Discord, skrip automasi, atau dashboard karir.
+            </p>
+        </header>
+
+        <!-- RATE LIMIT INFO -->
+        <div style="background: var(--bg-card); border-left: 4px solid var(--primary); padding: 16px 20px; border-radius: var(--radius-sm); margin-bottom: 28px; box-shadow: var(--shadow-sm);">
+            <h4 style="margin-bottom: 6px; color: var(--primary);"><i class="fa-solid fa-shield-halved"></i> Kebijakan Akses & Rate Limiting</h4>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0;">
+                API menggunakan rate limiting yang ramah dan bersahabat: <b>120 permintaan / menit</b> untuk penelusuran JSON, dan <b>30 permintaan / menit</b> untuk ekspor PDF. Jika limit terlampaui, server akan mengembalikan status <code>HTTP 429 Too Many Requests</code> dengan header <code>Retry-After</code>.
+            </p>
+        </div>
+
+        <!-- ENDPOINT 1: GET /api/jobs -->
+        <div class="api-card">
+            <div class="api-header">
+                <div>
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-path">/api/jobs</span>
+                </div>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Pencarian, Filter Lokasi & Loker</span>
+            </div>
+            <div class="api-body">
+                <p style="font-size: 0.9rem; margin-bottom: 12px;">
+                    Mengambil daftar lowongan kerja dengan dukungan kata kunci pencarian, filter sumber, kategori, lokasi spesifik, tipe lokasi (Remote vs On-site), serta pagination.
+                </p>
+
+                <h4 style="font-size: 0.9rem; margin-top: 14px;">Parameter Query (Opsional):</h4>
+                <table class="param-table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Tipe</th>
+                            <th>Default</th>
+                            <th>Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>q</code></td>
+                            <td>string</td>
+                            <td><em>kosong</em></td>
+                            <td>Kata kunci pencarian (misal: <code>Admin</code>, <code>Makassar</code>, <code>Bidan</code>, <code>Python</code>)</td>
+                        </tr>
+                        <tr>
+                            <td><code>location_type</code></td>
+                            <td>string</td>
+                            <td><code>all</code></td>
+                            <td>Tipe lokasi: <code>all</code> (semua), <code>remote</code> (khusus WFH), atau <code>onsite</code> (khusus kantor/di tempat)</td>
+                        </tr>
+                        <tr>
+                            <td><code>location</code></td>
+                            <td>string</td>
+                            <td><em>kosong</em></td>
+                            <td>Filter wilayah / kota (misal: <code>Makassar</code>, <code>Jakarta</code>, <code>Surabaya</code>, <code>Bandung</code>)</td>
+                        </tr>
+                        <tr>
+                            <td><code>source</code></td>
+                            <td>string</td>
+                            <td><em>kosong</em></td>
+                            <td>Filter sumber tertentu (misal: <code>Kalibrr Indonesia</code>, <code>Disnakerja (WP)</code>)</td>
+                        </tr>
+                        <tr>
+                            <td><code>category</code></td>
+                            <td>string</td>
+                            <td><em>kosong</em></td>
+                            <td>Filter kategori (misal: <code>Remote</code>, <code>Admin</code>, <code>Medis</code>)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sort</code></td>
+                            <td>string</td>
+                            <td><code>newest</code></td>
+                            <td>Urutan hasil: <code>newest</code>, <code>title</code>, atau <code>company</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>page</code></td>
+                            <td>integer</td>
+                            <td><code>1</code></td>
+                            <td>Nomor halaman yang ingin ditampilkan</td>
+                        </tr>
+                        <tr>
+                            <td><code>limit</code></td>
+                            <td>integer</td>
+                            <td><code>20</code></td>
+                            <td>Jumlah item per halaman (maksimal 100)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4 style="font-size: 0.9rem; margin-top: 16px;">Contoh Permintaan (cURL):</h4>
+                <div class="code-box">curl -X GET "https://your-domain.vercel.app/api/jobs?q=Admin&location=Makassar&limit=5"</div>
+
+                <h4 style="font-size: 0.9rem; margin-top: 16px;">Contoh Respon JSON (200 OK):</h4>
+                <div class="code-box">{
+  "status": "success",
+  "query": "Admin",
+  "filters": {
+    "source": "",
+    "category": "",
+    "location": "Makassar",
+    "location_type": "all",
+    "sort": "newest"
+  },
+  "pagination": {
+    "total_items": 45,
+    "total_pages": 9,
+    "current_page": 1,
+    "limit": 5,
+    "has_next": true,
+    "has_prev": false
+  },
+  "updated_at": "2026-10-14 13:40:00 WIB",
+  "data": [
+    {
+      "id": "kalibrr-273508",
+      "sumber": "Kalibrr Indonesia",
+      "kategori": "Loker Indo (Admin)",
+      "posisi": "Staff Administrasi Operasional",
+      "perusahaan": "PT Solusi Jaya",
+      "lokasi": "Makassar",
+      "tanggal": "2026-10-14",
+      "link": "https://www.kalibrr.com/c/company/jobs/273508/slug"
+    }
+  ]
+}</div>
+
+                <!-- Live Test -->
+                <div class="try-box">
+                    <button class="try-btn" onclick="testEndpoint('/api/jobs?limit=3', 'resJobs')"><i class="fa-solid fa-play"></i> Coba Live Request (GET /api/jobs)</button>
+                    <pre class="code-box" id="resJobs" style="display:none; margin-top: 12px;"></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- ENDPOINT 2: GET /api/stats -->
+        <div class="api-card">
+            <div class="api-header">
+                <div>
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-path">/api/stats</span>
+                </div>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Statistik Agregasi</span>
+            </div>
+            <div class="api-body">
+                <p style="font-size: 0.9rem; margin-bottom: 12px;">
+                    Mendapatkan ringkasan jumlah lowongan kerja, sumber aktif, rasio loker remote vs lokal, dan waktu pembaruan terakhir.
+                </p>
+                <div class="code-box">curl -X GET "https://your-domain.vercel.app/api/stats"</div>
+                <div class="try-box">
+                    <button class="try-btn" onclick="testEndpoint('/api/stats', 'resStats')"><i class="fa-solid fa-play"></i> Coba Live Request (GET /api/stats)</button>
+                    <pre class="code-box" id="resStats" style="display:none; margin-top: 12px;"></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- ENDPOINT 3: GET /api/sources -->
+        <div class="api-card">
+            <div class="api-header">
+                <div>
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-path">/api/sources</span>
+                </div>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Daftar Sumber Aktif</span>
+            </div>
+            <div class="api-body">
+                <p style="font-size: 0.9rem; margin-bottom: 12px;">
+                    Mendapatkan daftar semua portal loker, API, dan ATS yang saat ini aktif menyumbang data beserta jumlah itemnya.
+                </p>
+                <div class="try-box">
+                    <button class="try-btn" onclick="testEndpoint('/api/sources', 'resSources')"><i class="fa-solid fa-play"></i> Coba Live Request (GET /api/sources)</button>
+                    <pre class="code-box" id="resSources" style="display:none; margin-top: 12px;"></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- ENDPOINT 4: GET /export/pdf -->
+        <div class="api-card">
+            <div class="api-header">
+                <div>
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-path">/export/pdf</span>
+                </div>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Ekspor PDF dengan Link Aktif</span>
+            </div>
+            <div class="api-body">
+                <p style="font-size: 0.9rem; margin-bottom: 12px;">
+                    Menghasilkan file PDF terstruktur berformat A4 dengan hyperlink aktif yang dapat diklik langsung di viewer PDF manapun untuk melamar pekerjaan.
+                </p>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">
+                    Parameter opsional: <code>q</code> (kata kunci), <code>location</code> (wilayah), <code>location_type</code> (remote/onsite), dan <code>source</code>.
+                </p>
+                <div class="code-box">curl -O -J "https://your-domain.vercel.app/export/pdf?q=Admin&location=Makassar"</div>
+                <div style="margin-top: 14px;">
+                    <a href="/export/pdf?limit=10" class="try-btn" style="text-decoration:none; display:inline-flex;">
+                        <i class="fa-solid fa-file-pdf"></i> Unduh Contoh PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ENDPOINT 5: GET /export/csv -->
+        <div class="api-card">
+            <div class="api-header">
+                <div>
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-path">/export/csv</span>
+                </div>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Ekspor CSV untuk Excel</span>
+            </div>
+            <div class="api-body">
+                <p style="font-size: 0.9rem; margin-bottom: 12px;">
+                    Mengunduh data lowongan dalam format CSV dengan encoding UTF-8 BOM dan delimiter semicolon (<code>;</code>) sehingga rapi saat dibuka langsung di Microsoft Excel PC atau Android.
+                </p>
+                <div class="code-box">curl -O -J "https://your-domain.vercel.app/export/csv"</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer" style="margin-top: 40px; padding: 24px 0; border-top: 1px solid var(--border);">
+        <div class="container" style="text-align: center;">
+            <p>© 2026 Lokeriva.id • Created by <b>Xnuvers007</b> • Dokumentasi Resmi REST API Lowongan Kerja</p>
+        </div>
+    </footer>
+
+    <!-- SCRIPT FOR LIVE API TESTING & THEME -->
+    <script>
+        async function testEndpoint(url, targetId) {
+            const pre = document.getElementById(targetId);
+            pre.style.display = "block";
+            pre.innerText = "Mengambil data...";
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                pre.innerText = JSON.stringify(data, null, 2);
+            } catch (err) {
+                pre.innerText = "Error: " + err;
+            }
+        }
+
+        // Theme toggle
+        document.getElementById("themeToggleBtn").addEventListener("click", () => {
+            const cur = document.documentElement.getAttribute("data-theme") || "light";
+            const next = cur === "light" ? "dark" : "light";
+            document.documentElement.setAttribute("data-theme", next);
+            localStorage.setItem("loker_theme", next);
+            document.getElementById("themeToggleBtn").innerHTML = next === "dark" ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+        });
+        const saved = localStorage.getItem("loker_theme") || "light";
+        document.documentElement.setAttribute("data-theme", saved);
+        document.getElementById("themeToggleBtn").innerHTML = saved === "dark" ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+    </script>
+</body>
+</html>

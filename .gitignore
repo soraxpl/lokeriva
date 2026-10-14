@@ -1,0 +1,35 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+venv/
+env/
+.venv/
+ENV/
+
+# Local Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+
+# IDE & Editor files
+.vscode/
+.idea/
+.claude/
+*.swp
+*.swo
+
+# OS Generated Files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Output lokal hasil eksekusi scraping manual
+Loker_Super_Lengkap.csv
+Portal_Loker_Interaktif.html
+*.pdf
+*.csv
+!static/**/*.png
+!static/**/*.ico

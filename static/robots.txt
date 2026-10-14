@@ -1,0 +1,24 @@
+# ==============================================================================
+# robots.txt for Lokeriva.id - Platform Agregator Lowongan Kerja Indonesia & WFH
+# Created by Xnuvers007
+# ==============================================================================
+
+User-agent: *
+Allow: /
+Allow: /docs
+Allow: /api/openapi.json
+Allow: /api/jobs
+Allow: /api/sources
+Allow: /api/stats
+Allow: /static/
+Allow: /manifest.json
+
+# Batasi crawling pada file generator & refresh cache untuk efisiensi bot
+Disallow: /export/
+Disallow: /api/refresh
+
+# Crawl Delay yang wajar
+Crawl-delay: 1
+
+# Peta Situs Resmi (Sitemap)
+Sitemap: https://lokeriva.id/sitemap.xml
