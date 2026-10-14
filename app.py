@@ -4,9 +4,16 @@ import html
 import math
 import re
 import secrets
+import json
 import urllib.parse
+import urllib.request
 from datetime import datetime
-import requests
+
+try:
+    import requests
+except ImportError:
+    requests = None
+
 from flask import Flask, render_template, request, jsonify, make_response, send_file
 from scraper import cache_manager, sanitasi_link
 from pdf_generator import generate_jobs_pdf
@@ -442,7 +449,7 @@ TELEGRAM_BOT_TOKEN = "8983682440:AAHg3gz-Zap30_e8Qkt9tPmNJM9iH_ka3nQ"
 
 
 def send_telegram_message(chat_id, text, reply_markup=None):
-    """Kirim pesan ke pengguna Telegram via REST Bot API."""
+    """Kirim pesan ke pengguna Telegram via REST Bot API dengan fallback zero-dependency."""
     if not TELEGRAM_BOT_TOKEN:
         return False
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -454,11 +461,28 @@ def send_telegram_message(chat_id, text, reply_markup=None):
     }
     if reply_markup:
         payload["reply_markup"] = reply_markup
+    
+    # 1. Gunakan requests jika tersedia
+    if requests is not None:
+        try:
+            resp = requests.post(url, json=payload, timeout=8)
+            return resp.status_code == 200
+        except Exception as e:
+            print(f"Error sending telegram message (requests): {e}")
+            return False
+
+    # 2. Fallback zero-dependency menggunakan standard library urllib.request
     try:
-        resp = requests.post(url, json=payload, timeout=8)
-        return resp.status_code == 200
+        data = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(
+            url,
+            data=data,
+            headers={"Content-Type": "application/json", "User-Agent": "LokerivaBot/1.0"}
+        )
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            return resp.status == 200
     except Exception as e:
-        print(f"Error sending telegram message: {e}")
+        print(f"Error sending telegram message (urllib): {e}")
         return False
 
 
@@ -478,11 +502,18 @@ def telegram_webhook():
         user_name = cb.get("from", {}).get("first_name") or cb.get("from", {}).get("username") or "Kawan"
         # Acknowledge callback query to stop loading spinner in Telegram
         try:
-            requests.post(
-                f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/answerCallbackQuery",
-                json={"callback_query_id": cb.get("id")},
-                timeout=4
-            )
+            cb_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/answerCallbackQuery"
+            cb_payload = {"callback_query_id": cb.get("id")}
+            if requests is not None:
+                requests.post(cb_url, json=cb_payload, timeout=4)
+            else:
+                req = urllib.request.Request(
+                    cb_url,
+                    data=json.dumps(cb_payload).encode("utf-8"),
+                    headers={"Content-Type": "application/json", "User-Agent": "LokerivaBot/1.0"}
+                )
+                with urllib.request.urlopen(req, timeout=4):
+                    pass
         except Exception:
             pass
     elif "message" in update:
