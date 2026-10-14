@@ -307,6 +307,27 @@ function setupEventListeners() {
 
   // Theme toggle
   document.getElementById("themeToggleBtn").addEventListener("click", toggleTheme);
+
+  // Social Share Modal Event Listeners
+  const btnCloseModal = document.getElementById("btnCloseShareModal");
+  if (btnCloseModal) btnCloseModal.addEventListener("click", closeShareModal);
+
+  const shareModal = document.getElementById("shareModal");
+  if (shareModal) {
+    shareModal.addEventListener("click", (e) => {
+      if (e.target === shareModal) closeShareModal();
+    });
+  }
+
+  const btnNativeShare = document.getElementById("shareNativeBtn");
+  if (btnNativeShare) btnNativeShare.addEventListener("click", triggerNativeShare);
+
+  const btnCopyShare = document.getElementById("btnCopyShareUrl");
+  if (btnCopyShare) btnCopyShare.addEventListener("click", copyShareUrl);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeShareModal();
+  });
 }
 
 // ==============================================================================
@@ -611,7 +632,10 @@ function renderJobs(jobs) {
           <button class="btn-bookmark ${isBookmarked ? "active" : ""}" title="Simpan ke Favorit">
             <i class="${isBookmarked ? "fa-solid fa-star" : "fa-regular fa-star"}"></i>
           </button>
-          <button class="btn-icon btn-copy-link" style="width: 32px; height: 32px;" title="Salin Tautan">
+          <button class="btn-share-wa" title="Bagikan ke WhatsApp">
+            <i class="fa-brands fa-whatsapp"></i>
+          </button>
+          <button class="btn-share-more" title="Bagikan ke Media Sosial Lainnya">
             <i class="fa-solid fa-share-nodes"></i>
           </button>
           <a href="${safeLink}" target="_blank" rel="noopener noreferrer" class="btn-apply">
@@ -627,9 +651,20 @@ function renderJobs(jobs) {
       btnBookmark.addEventListener("click", () => toggleBookmark(job));
     }
 
-    const btnCopy = card.querySelector(".btn-copy-link");
-    if (btnCopy) {
-      btnCopy.addEventListener("click", () => copyLink(safeLink));
+    const btnShareWa = card.querySelector(".btn-share-wa");
+    if (btnShareWa) {
+      btnShareWa.addEventListener("click", (e) => {
+        e.stopPropagation();
+        shareToWhatsApp(job);
+      });
+    }
+
+    const btnShareMore = card.querySelector(".btn-share-more");
+    if (btnShareMore) {
+      btnShareMore.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openShareModal(job);
+      });
     }
 
     grid.appendChild(card);
@@ -643,11 +678,29 @@ function renderJobs(jobs) {
       <td><span class="badge badge-source">${escapeHtml(job.sumber)}</span></td>
       <td><i class="fa-solid fa-location-dot" style="color: var(--accent);"></i> ${escapeHtml(job.lokasi)}</td>
       <td>
-        <a href="${safeLink}" target="_blank" rel="noopener noreferrer" class="btn-apply" style="padding: 4px 10px; font-size: 0.75rem;">
-          Lamar <i class="fa-solid fa-arrow-up-right-from-square"></i>
-        </a>
+        <div style="display: flex; gap: 6px; align-items: center;">
+          <button class="btn-share-wa btn-share-wa-table" style="width: 28px; height: 28px; font-size: 0.82rem;" title="Bagikan ke WhatsApp">
+            <i class="fa-brands fa-whatsapp"></i>
+          </button>
+          <button class="btn-share-more btn-share-more-table" style="width: 28px; height: 28px; font-size: 0.78rem;" title="Bagikan ke Media Sosial">
+            <i class="fa-solid fa-share-nodes"></i>
+          </button>
+          <a href="${safeLink}" target="_blank" rel="noopener noreferrer" class="btn-apply" style="padding: 4px 10px; font-size: 0.75rem;">
+            Lamar <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+        </div>
       </td>
     `;
+
+    const trWa = tr.querySelector(".btn-share-wa-table");
+    if (trWa) {
+      trWa.addEventListener("click", () => shareToWhatsApp(job));
+    }
+    const trMore = tr.querySelector(".btn-share-more-table");
+    if (trMore) {
+      trMore.addEventListener("click", () => openShareModal(job));
+    }
+
     tableBody.appendChild(tr);
   });
 }
@@ -756,4 +809,125 @@ function escapeAttr(str) {
   return String(str)
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+
+// ==============================================================================
+// 7. FITUR SOCIAL SHARE (WHATSAPP, FACEBOOK, MESSENGER, TELEGRAM, LINKEDIN, SMS, INSTAGRAM)
+// ==============================================================================
+let currentShareJob = null;
+
+function buildJobShareMessage(job) {
+  const title = job.posisi || "Lowongan Kerja";
+  const company = job.perusahaan || "Perusahaan";
+  const link = job.link && job.link !== "#" ? job.link : "https://lokeriva.vercel.app/";
+  return `Halo! Cek lowongan ${title} di ${company} ini: ${link}\n\nLihat info karir lainnya di Lokeriva: https://lokeriva.vercel.app/`;
+}
+
+function shareToWhatsApp(job) {
+  if (!job) return;
+  const msg = buildJobShareMessage(job);
+  const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+  window.open(waUrl, "_blank", "noopener,noreferrer");
+}
+
+function openShareModal(job) {
+  if (!job) return;
+  currentShareJob = job;
+  const title = job.posisi || "Lowongan Kerja";
+  const company = job.perusahaan || "Lokeriva.id";
+  const msg = buildJobShareMessage(job);
+  const link = job.link && job.link !== "#" ? job.link : "https://lokeriva.vercel.app/";
+
+  const modal = document.getElementById("shareModal");
+  const titleEl = document.getElementById("shareJobTitle");
+  const companyEl = document.getElementById("shareJobCompany");
+  const msgEl = document.getElementById("shareMessagePreview");
+  const urlInput = document.getElementById("shareUrlInput");
+
+  if (titleEl) titleEl.innerText = title;
+  if (companyEl) companyEl.innerText = company;
+  if (msgEl) msgEl.innerText = msg;
+  if (urlInput) urlInput.value = link;
+
+  // 1. WhatsApp
+  const shareWa = document.getElementById("shareWaBtn");
+  if (shareWa) shareWa.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+
+  // 2. Facebook
+  const shareFb = document.getElementById("shareFbBtn");
+  if (shareFb) shareFb.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}&quote=${encodeURIComponent(msg)}`;
+
+  // 3. Messenger
+  const shareMsgr = document.getElementById("shareMessengerBtn");
+  if (shareMsgr) {
+    shareMsgr.href = `https://www.facebook.com/dialog/send?link=${encodeURIComponent(link)}&app_id=291494419107518&redirect_uri=${encodeURIComponent("https://lokeriva.vercel.app/")}`;
+    shareMsgr.onclick = (e) => {
+      if (/Android|iPhone|iPad/i.test(navigator.userAgent)) {
+        window.location.href = `fb-messenger://share/?link=${encodeURIComponent(link)}`;
+        e.preventDefault();
+      }
+    };
+  }
+
+  // 4. Telegram
+  const shareTg = document.getElementById("shareTgBtn");
+  if (shareTg) shareTg.href = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(msg)}`;
+
+  // 5. LinkedIn
+  const shareLi = document.getElementById("shareLiBtn");
+  if (shareLi) shareLi.href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(link)}`;
+
+  // 6. SMS
+  const shareSms = document.getElementById("shareSmsBtn");
+  if (shareSms) shareSms.href = `sms:?body=${encodeURIComponent(msg)}`;
+
+  if (modal) {
+    modal.style.display = "flex";
+    modal.setAttribute("aria-hidden", "false");
+  }
+}
+
+function closeShareModal() {
+  const modal = document.getElementById("shareModal");
+  if (modal) {
+    modal.style.display = "none";
+    modal.setAttribute("aria-hidden", "true");
+  }
+  currentShareJob = null;
+}
+
+function triggerNativeShare() {
+  if (!currentShareJob) return;
+  const title = currentShareJob.posisi || "Lowongan Kerja";
+  const msg = buildJobShareMessage(currentShareJob);
+  const link = currentShareJob.link || "https://lokeriva.vercel.app/";
+
+  if (navigator.share) {
+    navigator.share({
+      title: `${title} - Lokeriva`,
+      text: msg,
+      url: link
+    }).catch((err) => {
+      if (err.name !== "AbortError") {
+        copyLink(link);
+      }
+    });
+  } else {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(msg).then(() => {
+        showToast("Teks lowongan disalin! Silakan tempel (paste) ke Instagram DM / Story atau aplikasi lain.");
+      }).catch(() => {
+        copyLink(link);
+      });
+    } else {
+      copyLink(link);
+    }
+  }
+}
+
+function copyShareUrl() {
+  const urlInput = document.getElementById("shareUrlInput");
+  if (urlInput && urlInput.value) {
+    copyLink(urlInput.value);
+  }
 }

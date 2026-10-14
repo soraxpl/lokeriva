@@ -553,6 +553,51 @@ body {
   background: rgba(245, 158, 11, 0.1);
 }
 
+.btn-share-wa {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: #25d366;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.95rem;
+}
+
+.btn-share-wa:hover {
+  background: #25d366;
+  color: white;
+  border-color: #25d366;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(37, 211, 102, 0.25);
+}
+
+.btn-share-more {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.88rem;
+}
+
+.btn-share-more:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: var(--primary-light);
+  transform: translateY(-1px);
+}
+
 .btn-apply {
   background: var(--accent);
   color: white;
@@ -858,4 +903,248 @@ tr:hover td {
   .jobs-grid { grid-template-columns: 1fr; }
   .filter-row { flex-direction: column; align-items: stretch; }
   .actions-bar { flex-direction: column; align-items: stretch; }
+}
+
+/* ==============================================================================
+ * SOCIAL SHARE MODAL & ANIMATIONS
+ * ============================================================================== */
+@keyframes fadeInModal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUpModal {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.share-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 16px;
+  animation: fadeInModal 0.2s ease-out;
+}
+
+.share-modal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 480px;
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  animation: slideUpModal 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.share-modal-header {
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-main);
+}
+
+.share-header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.share-header-title i {
+  font-size: 1.25rem;
+  color: var(--primary);
+  background: var(--primary-light);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.share-header-title h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.3;
+}
+
+.share-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.share-modal-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: var(--transition);
+}
+
+.share-modal-close:hover {
+  background: var(--border);
+  color: var(--text-main);
+}
+
+.share-modal-body {
+  padding: 20px 22px;
+}
+
+.share-preview-box {
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-bottom: 18px;
+}
+
+.share-preview-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.share-preview-text {
+  font-size: 0.84rem;
+  color: var(--text-main);
+  line-height: 1.5;
+  word-break: break-word;
+  max-height: 70px;
+  overflow-y: auto;
+}
+
+.share-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 420px) {
+  .share-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.share-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  text-decoration: none;
+  color: var(--text-main);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.share-item .share-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  transition: var(--transition);
+}
+
+/* Platform Brand Colors */
+.share-wa .share-icon { background: rgba(37, 211, 102, 0.12); color: #25d366; }
+.share-wa:hover { border-color: #25d366; background: rgba(37, 211, 102, 0.06); }
+.share-wa:hover .share-icon { background: #25d366; color: white; }
+
+.share-fb .share-icon { background: rgba(24, 119, 242, 0.12); color: #1877f2; }
+.share-fb:hover { border-color: #1877f2; background: rgba(24, 119, 242, 0.06); }
+.share-fb:hover .share-icon { background: #1877f2; color: white; }
+
+.share-msgr .share-icon { background: rgba(0, 132, 255, 0.12); color: #0084ff; }
+.share-msgr:hover { border-color: #0084ff; background: rgba(0, 132, 255, 0.06); }
+.share-msgr:hover .share-icon { background: #0084ff; color: white; }
+
+.share-tg .share-icon { background: rgba(34, 158, 217, 0.12); color: #229ed9; }
+.share-tg:hover { border-color: #229ed9; background: rgba(34, 158, 217, 0.06); }
+.share-tg:hover .share-icon { background: #229ed9; color: white; }
+
+.share-li .share-icon { background: rgba(10, 102, 194, 0.12); color: #0a66c2; }
+.share-li:hover { border-color: #0a66c2; background: rgba(10, 102, 194, 0.06); }
+.share-li:hover .share-icon { background: #0a66c2; color: white; }
+
+.share-sms .share-icon { background: rgba(16, 185, 129, 0.12); color: #10b981; }
+.share-sms:hover { border-color: #10b981; background: rgba(16, 185, 129, 0.06); }
+.share-sms:hover .share-icon { background: #10b981; color: white; }
+
+.share-native .share-icon {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  color: white;
+}
+.share-native:hover {
+  border-color: #e1306c;
+  background: rgba(225, 48, 108, 0.06);
+}
+
+.share-copy-container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.share-input {
+  flex: 1;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-size: 0.82rem;
+  outline: none;
+}
+
+.share-input:focus {
+  border-color: var(--primary);
+}
+
+.btn-copy-action {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+}
+
+.btn-copy-action:hover {
+  background: var(--primary-hover);
 }

@@ -318,6 +318,79 @@
         </div>
     </aside>
 
+    <!-- SOCIAL SHARE MODAL -->
+    <div id="shareModal" class="share-modal-overlay" style="display: none;" aria-hidden="true" role="dialog" aria-labelledby="shareJobTitle">
+        <div class="share-modal-card">
+            <div class="share-modal-header">
+                <div class="share-header-title">
+                    <i class="fa-solid fa-share-nodes"></i>
+                    <div>
+                        <h3 id="shareJobTitle">Bagikan Lowongan Kerja</h3>
+                        <p id="shareJobCompany" class="share-subtitle">Lokeriva.id</p>
+                    </div>
+                </div>
+                <button class="share-modal-close" id="btnCloseShareModal" title="Tutup">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="share-modal-body">
+                <!-- Preview Pesan -->
+                <div class="share-preview-box">
+                    <label class="share-preview-label"><i class="fa-solid fa-quote-left"></i> Pesan yang Dibagikan:</label>
+                    <p id="shareMessagePreview" class="share-preview-text"></p>
+                </div>
+
+                <!-- Opsi Media Sosial -->
+                <div class="share-grid">
+                    <!-- WhatsApp -->
+                    <a id="shareWaBtn" href="#" target="_blank" rel="noopener noreferrer" class="share-item share-wa">
+                        <div class="share-icon"><i class="fa-brands fa-whatsapp"></i></div>
+                        <span>WhatsApp</span>
+                    </a>
+                    <!-- Facebook -->
+                    <a id="shareFbBtn" href="#" target="_blank" rel="noopener noreferrer" class="share-item share-fb">
+                        <div class="share-icon"><i class="fa-brands fa-facebook-f"></i></div>
+                        <span>Facebook</span>
+                    </a>
+                    <!-- Messenger -->
+                    <a id="shareMessengerBtn" href="#" target="_blank" rel="noopener noreferrer" class="share-item share-msgr">
+                        <div class="share-icon"><i class="fa-brands fa-facebook-messenger"></i></div>
+                        <span>Messenger</span>
+                    </a>
+                    <!-- Telegram -->
+                    <a id="shareTgBtn" href="#" target="_blank" rel="noopener noreferrer" class="share-item share-tg">
+                        <div class="share-icon"><i class="fa-brands fa-telegram"></i></div>
+                        <span>Telegram</span>
+                    </a>
+                    <!-- LinkedIn -->
+                    <a id="shareLiBtn" href="#" target="_blank" rel="noopener noreferrer" class="share-item share-li">
+                        <div class="share-icon"><i class="fa-brands fa-linkedin-in"></i></div>
+                        <span>LinkedIn</span>
+                    </a>
+                    <!-- SMS -->
+                    <a id="shareSmsBtn" href="#" class="share-item share-sms">
+                        <div class="share-icon"><i class="fa-solid fa-comment-sms"></i></div>
+                        <span>SMS</span>
+                    </a>
+                    <!-- Instagram & Aplikasi Lain (Web Share API) -->
+                    <button type="button" id="shareNativeBtn" class="share-item share-native">
+                        <div class="share-icon"><i class="fa-brands fa-instagram"></i></div>
+                        <span>Instagram / Lainnya</span>
+                    </button>
+                </div>
+
+                <!-- Input Salin Tautan Cepat -->
+                <div class="share-copy-container">
+                    <input type="text" id="shareUrlInput" readonly class="share-input" placeholder="Tautan lowongan" />
+                    <button type="button" id="btnCopyShareUrl" class="btn-copy-action">
+                        <i class="fa-solid fa-copy"></i> Salin
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- TOAST NOTIFICATION -->
     <div id="toast" class="toast"><i class="fa-solid fa-circle-info"></i> <span id="toastMsg">Notifikasi</span></div>
 
