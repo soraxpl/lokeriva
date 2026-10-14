@@ -512,7 +512,7 @@
         </div>
     </div>
 
-    <!-- COVER LETTER & COLD EMAIL BUILDER MODAL -->
+    <!-- COVER LETTER & COLD EMAIL BUILDER MODAL (CUSTOMIZABLE) -->
     <div id="coverLetterModal" class="share-modal-overlay" style="display: none;" aria-hidden="true" role="dialog" aria-labelledby="coverLetterTitle">
         <div class="share-modal-card letter-modal-card">
             <div class="share-modal-header letter-modal-header">
@@ -522,7 +522,7 @@
                     </div>
                     <div>
                         <h3 id="coverLetterTitle">Generator Surat Lamaran & Email Kerja</h3>
-                        <p class="share-subtitle">Draft profesional siap kirim dalam hitungan detik (Indonesia & English)</p>
+                        <p class="share-subtitle">Draft profesional siap kirim dengan kebebasan kustomisasi penuh (Indonesia & English)</p>
                     </div>
                 </div>
                 <button class="share-modal-close" id="btnCloseCoverLetterModal" type="button" title="Tutup">
@@ -534,13 +534,16 @@
                 <!-- Tab Buttons Format -->
                 <div class="letter-tabs-bar">
                     <button type="button" class="letter-tab-btn active" data-tab="cold_email">
-                        <i class="fa-solid fa-envelope"></i> <span>Email Lamaran (Cold Email)</span>
+                        <i class="fa-solid fa-envelope"></i> <span>Cold Email</span>
                     </button>
                     <button type="button" class="letter-tab-btn" data-tab="formal_id">
-                        <i class="fa-solid fa-file-lines"></i> <span>Surat Formal (Bahasa Indonesia)</span>
+                        <i class="fa-solid fa-file-lines"></i> <span>Surat Formal (ID)</span>
                     </button>
                     <button type="button" class="letter-tab-btn" data-tab="english_cl">
-                        <i class="fa-solid fa-earth-americas"></i> <span>Cover Letter (English)</span>
+                        <i class="fa-solid fa-earth-americas"></i> <span>Cover Letter (EN)</span>
+                    </button>
+                    <button type="button" class="letter-tab-btn" data-tab="custom_template">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Kustom Bebas</span>
                     </button>
                 </div>
 
@@ -586,6 +589,10 @@
                         </div>
                         <div class="letter-form-row">
                             <div class="letter-form-group">
+                                <label for="clRecipientName">Penerima / Nama HRD (Opsional)</label>
+                                <input type="text" id="clRecipientName" class="letter-input" placeholder="Contoh: Tim HRD / Bapak Anton / Hiring Team">
+                            </div>
+                            <div class="letter-form-group">
                                 <label for="clExperienceLevel">Tingkat Pengalaman</label>
                                 <select id="clExperienceLevel" class="letter-input">
                                     <option value="fresh">Fresh Graduate / Lulusan Baru</option>
@@ -593,11 +600,51 @@
                                     <option value="senior">Profesional / Berpengalaman 3+ Tahun</option>
                                 </select>
                             </div>
+                        </div>
+                        <div class="letter-form-row">
                             <div class="letter-form-group">
-                                <label for="clSkills">Keahlian Utama / Portofolio Singkat</label>
-                                <input type="text" id="clSkills" class="letter-input" placeholder="Misal: Microsoft Excel, Analisis Data, Komunikasi">
+                                <label for="clTone">Gaya Bahasa (Tone)</label>
+                                <select id="clTone" class="letter-input">
+                                    <option value="formal">Formal & Sopan (Standar BUMN / Korporat)</option>
+                                    <option value="confident">Percaya Diri & Dinamis (Startup / Tech)</option>
+                                    <option value="concise">Singkat & Padat (To-the-point)</option>
+                                </select>
+                            </div>
+                            <div class="letter-form-group">
+                                <label for="clSkills">Keahlian / Skill Utama</label>
+                                <input type="text" id="clSkills" class="letter-input" placeholder="Misal: Microsoft Excel, Python, Komunikasi">
                             </div>
                         </div>
+                        <div class="letter-form-group">
+                            <label for="clAchievements">Pencapaian / Keunggulan Khusus (Opsional)</label>
+                            <input type="text" id="clAchievements" class="letter-input" placeholder="Contoh: IPK 3.85, Menaikkan omzet 20%, Sertifikasi Google Cloud">
+                        </div>
+
+                        <!-- Panel Bantuan Template Kustom (Muncul di Tab Kustom Bebas) -->
+                        <div id="clCustomTemplateHelper" class="custom-tags-container" style="display: none;">
+                            <label class="custom-tags-label"><i class="fa-solid fa-code"></i> Klik variabel untuk memasukkan ke template:</label>
+                            <div class="custom-tags-chips">
+                                <button type="button" class="tag-chip" data-tag="{nama}">{nama}</button>
+                                <button type="button" class="tag-chip" data-tag="{posisi}">{posisi}</button>
+                                <button type="button" class="tag-chip" data-tag="{perusahaan}">{perusahaan}</button>
+                                <button type="button" class="tag-chip" data-tag="{penerima}">{penerima}</button>
+                                <button type="button" class="tag-chip" data-tag="{kota}">{kota}</button>
+                                <button type="button" class="tag-chip" data-tag="{pendidikan}">{pendidikan}</button>
+                                <button type="button" class="tag-chip" data-tag="{skills}">{skills}</button>
+                                <button type="button" class="tag-chip" data-tag="{pencapaian}">{pencapaian}</button>
+                                <button type="button" class="tag-chip" data-tag="{email}">{email}</button>
+                                <button type="button" class="tag-chip" data-tag="{telepon}">{telepon}</button>
+                            </div>
+                            <div class="custom-template-actions">
+                                <button type="button" id="btnSaveCustomTemplate" class="btn-custom-save">
+                                    <i class="fa-solid fa-bookmark"></i> Simpan Template Kustom Saya
+                                </button>
+                                <button type="button" id="btnLoadDefaultCustomTemplate" class="btn-custom-load">
+                                    <i class="fa-solid fa-rotate-left"></i> Contoh Template
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="letter-form-actions-inline">
                             <button type="button" id="btnResetLetterForm" class="btn-letter-reset">
                                 <i class="fa-solid fa-arrow-rotate-left"></i> Reset Form
@@ -609,15 +656,24 @@
                     <!-- Right Column: Live Output & Action Toolbar -->
                     <div class="letter-preview-column">
                         <div class="letter-preview-header">
-                            <span class="letter-section-subtitle"><i class="fa-solid fa-eye"></i> Pratinjau Teks (Live Preview)</span>
-                            <span class="letter-badge-format" id="clFormatBadge">Email Lamaran</span>
+                            <div class="preview-header-left">
+                                <span class="letter-section-subtitle"><i class="fa-solid fa-eye"></i> Pratinjau Teks</span>
+                                <span class="letter-badge-format" id="clFormatBadge">Cold Email</span>
+                                <span class="letter-badge-editable" title="Anda bebas mengetik atau mengubah kata-kata langsung pada kotak teks di bawah">
+                                    <i class="fa-solid fa-pen-to-square"></i> Bisa Diedit Bebas
+                                </span>
+                            </div>
+                            <button type="button" id="btnRegenerateLetter" class="btn-letter-regen" title="Generate ulang teks surat dari form">
+                                <i class="fa-solid fa-rotate"></i> <span>Reset Teks</span>
+                            </button>
                         </div>
                         
                         <div class="letter-preview-box">
                             <div id="clSubjectLineRow" class="letter-subject-line">
-                                <b>Subjek:</b> <span id="clSubjectLineText">-</span>
+                                <label for="clSubjectInput"><b>Subjek:</b></label>
+                                <input type="text" id="clSubjectInput" class="letter-input-subject" placeholder="Subjek email..." />
                             </div>
-                            <textarea id="clOutputText" class="letter-textarea-preview" readonly spellcheck="false"></textarea>
+                            <textarea id="clOutputText" class="letter-textarea-preview" placeholder="Tulis atau edit surat lamaran kustom Anda di sini secara langsung..." spellcheck="false"></textarea>
                         </div>
 
                         <div class="letter-actions-bar">

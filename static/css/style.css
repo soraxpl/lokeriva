@@ -2266,6 +2266,98 @@ tr:hover td {
   gap: 5px;
 }
 
+/* Custom Template Tags & Actions */
+.custom-tags-container {
+  background: var(--bg-main);
+  border: 1px dashed rgba(99, 102, 241, 0.4);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.custom-tags-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #6366f1;
+}
+
+[data-theme="dark"] .custom-tags-label {
+  color: #818cf8;
+}
+
+.custom-tags-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag-chip {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  font-family: monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.tag-chip:hover {
+  background: #6366f1;
+  color: white;
+  border-color: #6366f1;
+  transform: translateY(-1px);
+}
+
+.custom-template-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.btn-custom-save {
+  background: #6366f1;
+  color: white;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+}
+
+.btn-custom-save:hover {
+  background: #4f46e5;
+}
+
+.btn-custom-load {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+}
+
+.btn-custom-load:hover {
+  color: var(--text-main);
+  background: var(--bg-card);
+}
+
 /* Preview Column */
 .letter-preview-column {
   display: flex;
@@ -2277,6 +2369,14 @@ tr:hover td {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
+}
+
+.preview-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .letter-badge-format {
@@ -2286,6 +2386,39 @@ tr:hover td {
   border-radius: var(--radius-sm);
   background: rgba(99, 102, 241, 0.12);
   color: #6366f1;
+}
+
+.letter-badge-editable {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.12);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-letter-regen {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: var(--transition);
+}
+
+.btn-letter-regen:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: var(--primary-light);
 }
 
 .letter-preview-box {
@@ -2300,28 +2433,53 @@ tr:hover td {
 }
 
 .letter-subject-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-radius: var(--radius-sm);
   font-size: 0.78rem;
   color: var(--text-main);
-  word-break: break-word;
+}
+
+.letter-input-subject {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.8rem;
+  color: var(--text-main);
+  font-weight: 500;
+  font-family: inherit;
+}
+
+.letter-input-subject:focus {
+  color: #2563eb;
 }
 
 .letter-textarea-preview {
   width: 100%;
   min-height: 280px;
   flex: 1;
-  background: transparent;
-  border: none;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
   outline: none;
   color: var(--text-main);
-  font-size: 0.82rem;
-  line-height: 1.6;
+  font-size: 0.84rem;
+  line-height: 1.65;
   font-family: inherit;
   resize: vertical;
   white-space: pre-wrap;
+  transition: var(--transition);
+}
+
+.letter-textarea-preview:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
 
 /* Action Toolbar */

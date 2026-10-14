@@ -1021,9 +1021,30 @@ function closeDonateModal() {
 }
 
 // ==============================================================================
-// 10. GENERATOR SURAT LAMARAN & COLD EMAIL BUILDER
+// 10. GENERATOR SURAT LAMARAN & COLD EMAIL BUILDER (CUSTOMIZABLE)
 // ==============================================================================
 let currentLetterTab = "cold_email";
+let isCustomizedManually = false;
+
+const DEFAULT_CUSTOM_TEMPLATE = `Kepada Yth. {penerima}
+{perusahaan}
+di {kota}
+
+Dengan hormat,
+
+Perkenalkan, nama saya {nama}, berdomisili di {kota} dan merupakan lulusan dari {pendidikan}. Melalui surat ini, saya bermaksud untuk mengajukan lamaran pekerjaan untuk posisi {posisi} di {perusahaan} sebagaimana informasi yang saya temukan di portal Lokeriva.
+
+Saya memiliki keahlian utama dalam {skills}. {pencapaian}
+
+Saya sangat antusias untuk bergabung dan membawa kontribusi nyata dalam mencapai visi dan target {perusahaan}. Saya siap untuk mendiskusikan lebih lanjut kualifikasi saya dalam sesi wawancara.
+
+Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih yang sebesar-besarnya.
+
+Hormat saya,
+
+{nama}
+WhatsApp : {telepon}
+Email    : {email}`;
 
 function initCoverLetterGenerator() {
   // Muat data pelamar yang tersimpan di localStorage
@@ -1034,6 +1055,9 @@ function initCoverLetterGenerator() {
   const savedEdu = localStorage.getItem("lokeriva_cl_edu") || "";
   const savedSkills = localStorage.getItem("lokeriva_cl_skills") || "";
   const savedExp = localStorage.getItem("lokeriva_cl_exp") || "fresh";
+  const savedRecipient = localStorage.getItem("lokeriva_cl_recipient") || "";
+  const savedTone = localStorage.getItem("lokeriva_cl_tone") || "formal";
+  const savedAchievements = localStorage.getItem("lokeriva_cl_achievements") || "";
 
   const nameInput = document.getElementById("clApplicantName");
   const emailInput = document.getElementById("clApplicantEmail");
@@ -1042,6 +1066,9 @@ function initCoverLetterGenerator() {
   const eduInput = document.getElementById("clApplicantEdu");
   const skillsInput = document.getElementById("clSkills");
   const expSelect = document.getElementById("clExperienceLevel");
+  const recipientInput = document.getElementById("clRecipientName");
+  const toneSelect = document.getElementById("clTone");
+  const achInput = document.getElementById("clAchievements");
 
   if (nameInput && savedName) nameInput.value = savedName;
   if (emailInput && savedEmail) emailInput.value = savedEmail;
@@ -1050,8 +1077,11 @@ function initCoverLetterGenerator() {
   if (eduInput && savedEdu) eduInput.value = savedEdu;
   if (skillsInput && savedSkills) skillsInput.value = savedSkills;
   if (expSelect && savedExp) expSelect.value = savedExp;
+  if (recipientInput && savedRecipient) recipientInput.value = savedRecipient;
+  if (toneSelect && savedTone) toneSelect.value = savedTone;
+  if (achInput && savedAchievements) achInput.value = savedAchievements;
 
-  // Real-time update listeners saat mengetik
+  // Real-time update listeners saat mengetik di input form
   const allInputs = [
     "clApplicantName",
     "clApplicantEmail",
@@ -1060,8 +1090,11 @@ function initCoverLetterGenerator() {
     "clApplicantEdu",
     "clJobPosition",
     "clJobCompany",
+    "clRecipientName",
     "clSkills",
-    "clExperienceLevel"
+    "clAchievements",
+    "clExperienceLevel",
+    "clTone"
   ];
 
   allInputs.forEach((id) => {
@@ -1069,24 +1102,100 @@ function initCoverLetterGenerator() {
     if (el) {
       el.addEventListener("input", () => {
         saveApplicantData();
-        updateCoverLetterPreview();
+        if (!isCustomizedManually || currentLetterTab === "custom_template") {
+          updateCoverLetterPreview();
+        }
       });
       el.addEventListener("change", () => {
         saveApplicantData();
-        updateCoverLetterPreview();
+        if (!isCustomizedManually || currentLetterTab === "custom_template") {
+          updateCoverLetterPreview();
+        }
       });
     }
   });
 
-  // Tab switching (Cold Email vs Surat Formal ID vs Cover Letter EN)
+  // Listener untuk Textarea Preview (Pengguna bebas mengetik / mengedit langsung)
+  const outputText = document.getElementById("clOutputText");
+  if (outputText) {
+    outputText.addEventListener("input", () => {
+      isCustomizedManually = true;
+      updateMailtoLink();
+    });
+  }
+
+  // Listener untuk Subjek Email jika diedit manual
+  const subjectInput = document.getElementById("clSubjectInput");
+  if (subjectInput) {
+    subjectInput.addEventListener("input", () => {
+      updateMailtoLink();
+    });
+  }
+
+  // Tombol Reset Teks / Generate Ulang ke default template
+  const btnRegen = document.getElementById("btnRegenerateLetter");
+  if (btnRegen) {
+    btnRegen.addEventListener("click", () => {
+      isCustomizedManually = false;
+      updateCoverLetterPreview();
+      showToast("Teks surat di-generate ulang dari form.");
+    });
+  }
+
+  // Tab switching (Cold Email vs Surat Formal ID vs Cover Letter EN vs Kustom Bebas)
   document.querySelectorAll(".letter-tab-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       document.querySelectorAll(".letter-tab-btn").forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       currentLetterTab = btn.dataset.tab;
+      isCustomizedManually = false;
+
+      // Tampilkan helper variabel jika di tab Kustom Bebas
+      const helper = document.getElementById("clCustomTemplateHelper");
+      if (helper) {
+        helper.style.display = currentLetterTab === "custom_template" ? "block" : "none";
+      }
+
       updateCoverLetterPreview();
     });
   });
+
+  // Chip variabel untuk memasukkan placeholder ke textarea saat di tab Kustom Bebas
+  document.querySelectorAll(".tag-chip").forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const tag = chip.dataset.tag;
+      if (!tag) return;
+      insertTagIntoTextarea(tag);
+    });
+  });
+
+  // Tombol Simpan Template Kustom Saya
+  const btnSaveCustom = document.getElementById("btnSaveCustomTemplate");
+  if (btnSaveCustom) {
+    btnSaveCustom.addEventListener("click", () => {
+      const text = document.getElementById("clOutputText")?.value || "";
+      if (!text.trim()) {
+        showToast("Teks template masih kosong.");
+        return;
+      }
+      localStorage.setItem("lokeriva_cl_custom_template", text);
+      showToast("Template kustom Anda berhasil disimpan!");
+    });
+  }
+
+  // Tombol Muat Contoh Template Kustom
+  const btnLoadCustom = document.getElementById("btnLoadDefaultCustomTemplate");
+  if (btnLoadCustom) {
+    btnLoadCustom.addEventListener("click", () => {
+      const output = document.getElementById("clOutputText");
+      if (output) {
+        output.value = DEFAULT_CUSTOM_TEMPLATE;
+        isCustomizedManually = true;
+        updateMailtoLink();
+        showToast("Contoh template kustom berhasil dimuat.");
+      }
+    });
+  }
 
   // Reset form button
   const btnReset = document.getElementById("btnResetLetterForm");
@@ -1100,6 +1209,9 @@ function initCoverLetterGenerator() {
         localStorage.removeItem("lokeriva_cl_edu");
         localStorage.removeItem("lokeriva_cl_skills");
         localStorage.removeItem("lokeriva_cl_exp");
+        localStorage.removeItem("lokeriva_cl_recipient");
+        localStorage.removeItem("lokeriva_cl_tone");
+        localStorage.removeItem("lokeriva_cl_achievements");
 
         if (nameInput) nameInput.value = "";
         if (emailInput) emailInput.value = "";
@@ -1107,12 +1219,16 @@ function initCoverLetterGenerator() {
         if (cityInput) cityInput.value = "";
         if (eduInput) eduInput.value = "";
         if (skillsInput) skillsInput.value = "";
+        if (recipientInput) recipientInput.value = "";
+        if (achInput) achInput.value = "";
         const jobPos = document.getElementById("clJobPosition");
         const jobComp = document.getElementById("clJobCompany");
         if (jobPos) jobPos.value = "";
         if (jobComp) jobComp.value = "";
         if (expSelect) expSelect.value = "fresh";
+        if (toneSelect) toneSelect.value = "formal";
 
+        isCustomizedManually = false;
         updateCoverLetterPreview();
         showToast("Form berhasil di-reset.");
       }
@@ -1162,6 +1278,19 @@ function initCoverLetterGenerator() {
   }
 }
 
+function insertTagIntoTextarea(tag) {
+  const ta = document.getElementById("clOutputText");
+  if (!ta) return;
+  const start = ta.selectionStart || 0;
+  const end = ta.selectionEnd || 0;
+  const val = ta.value;
+  ta.value = val.substring(0, start) + tag + val.substring(end);
+  ta.focus();
+  ta.selectionStart = ta.selectionEnd = start + tag.length;
+  isCustomizedManually = true;
+  updateMailtoLink();
+}
+
 function saveApplicantData() {
   const getVal = (id) => (document.getElementById(id)?.value || "").trim();
   localStorage.setItem("lokeriva_cl_name", getVal("clApplicantName"));
@@ -1171,6 +1300,9 @@ function saveApplicantData() {
   localStorage.setItem("lokeriva_cl_edu", getVal("clApplicantEdu"));
   localStorage.setItem("lokeriva_cl_skills", getVal("clSkills"));
   localStorage.setItem("lokeriva_cl_exp", getVal("clExperienceLevel"));
+  localStorage.setItem("lokeriva_cl_recipient", getVal("clRecipientName"));
+  localStorage.setItem("lokeriva_cl_tone", getVal("clTone") || "formal");
+  localStorage.setItem("lokeriva_cl_achievements", getVal("clAchievements"));
 }
 
 function openCoverLetterGenerator(posisi = "", perusahaan = "") {
@@ -1183,6 +1315,7 @@ function openCoverLetterGenerator(posisi = "", perusahaan = "") {
   if (jobPosInput && posisi) jobPosInput.value = posisi;
   if (jobCompInput && perusahaan) jobCompInput.value = perusahaan;
 
+  isCustomizedManually = false;
   updateCoverLetterPreview();
 
   modal.style.display = "flex";
@@ -1204,6 +1337,9 @@ function getLetterData() {
     return v || fallback;
   };
 
+  const comp = getVal("clJobCompany", "Perusahaan");
+  const customRecipient = getVal("clRecipientName", "");
+
   return {
     name: getVal("clApplicantName", "[Nama Lengkap Anda]"),
     email: getVal("clApplicantEmail", "[Email Anda]"),
@@ -1211,9 +1347,13 @@ function getLetterData() {
     city: getVal("clApplicantCity", "Indonesia"),
     edu: getVal("clApplicantEdu", "Pendidikan Terakhir"),
     posisi: getVal("clJobPosition", "Posisi Lowongan"),
-    perusahaan: getVal("clJobCompany", "Perusahaan"),
+    perusahaan: comp,
+    recipient: customRecipient || `Tim Rekrutmen / HRD ${comp}`,
+    recipientEng: customRecipient || `Hiring Team / HR Department of ${comp}`,
     skills: getVal("clSkills", "komunikasi profesional, kerja sama tim, dan keahlian terkait"),
-    exp: document.getElementById("clExperienceLevel")?.value || "fresh"
+    achievements: getVal("clAchievements", ""),
+    exp: document.getElementById("clExperienceLevel")?.value || "fresh",
+    tone: document.getElementById("clTone")?.value || "formal"
   };
 }
 
@@ -1227,19 +1367,32 @@ function generateLetterContent() {
   let subject = "";
   let body = "";
 
+  // Kalimat opsional pencapaian / highlight
+  const achSentIndo = d.achievements ? ` Selain itu, saya memiliki pencapaian signifikan yaitu ${d.achievements}, yang mencerminkan dedikasi saya dalam memberikan hasil kerja optimal.` : "";
+  const achSentEng = d.achievements ? ` Notably, ${d.achievements}, demonstrating my commitment to delivering measurable results and excellence.` : "";
+
   if (currentLetterTab === "cold_email") {
     subject = `Lamaran Pekerjaan: ${d.posisi} - ${d.name}`;
 
+    let openingGreeting = `Yth. ${d.recipient},`;
+
     let expParagraph = "";
-    if (d.exp === "fresh") {
-      expParagraph = `Sebagai lulusan dari ${d.edu} yang berdedikasi dan memiliki latar belakang relevan, saya memiliki pemahaman yang baik serta keahlian dalam ${d.skills}. Saya terbiasa belajar dengan cepat, adaptif dalam menghadapi tantangan baru, serta memiliki komitmen tinggi untuk memberikan kontribusi terbaik bagi kemajuan ${d.perusahaan}.`;
-    } else if (d.exp === "junior") {
-      expParagraph = `Dengan pengalaman kerja profesional selama 1–2 tahun di bidang terkait, saya telah mengasah kemampuan dalam ${d.skills}. Saya terbiasa menjalankan tanggung jawab dengan berorientasi pada pencapaian target, ketelitian, serta kolaborasi tim yang solid.`;
+    if (d.tone === "confident") {
+      expParagraph = `Dengan latar belakang kuat di bidang ${d.edu} serta penguasaan aktif dalam ${d.skills}, saya terbiasa menciptakan dampak nyata dan menyelesaikan tantangan dengan solusi yang inovatif.${achSentIndo} Saya sangat tertarik dengan pertumbuhan pesat ${d.perusahaan} dan yakin energi serta inisiatif saya dapat mempercepat pencapaian target tim Bapak/Ibu.`;
+    } else if (d.tone === "concise") {
+      expParagraph = `Saya memiliki kompetensi inti dalam ${d.skills}${d.achievements ? ` dengan rekam jejak ${d.achievements}` : ""}. Saya terbiasa bekerja tangkas, fokus pada efisiensi kerja, dan siap langsung berkontribusi pada posisi ${d.posisi}.`;
     } else {
-      expParagraph = `Dengan rekam jejak profesional lebih dari 3 tahun, saya memiliki keahlian mendalam dalam ${d.skills}. Saya berpengalaman memimpin alur kerja, meningkatkan efisiensi operasional, serta menyelesaikan proyek strategis dengan hasil yang terukur.`;
+      // formal (default)
+      if (d.exp === "fresh") {
+        expParagraph = `Sebagai lulusan dari ${d.edu} yang berdedikasi dan memiliki latar belakang relevan, saya memiliki pemahaman yang baik serta keahlian dalam ${d.skills}.${achSentIndo} Saya terbiasa belajar dengan cepat, adaptif dalam menghadapi tantangan baru, serta memiliki komitmen tinggi untuk memberikan kontribusi terbaik bagi kemajuan ${d.perusahaan}.`;
+      } else if (d.exp === "junior") {
+        expParagraph = `Dengan pengalaman kerja profesional selama 1–2 tahun di bidang terkait, saya telah mengasah kemampuan dalam ${d.skills}.${achSentIndo} Saya terbiasa menjalankan tanggung jawab dengan berorientasi pada pencapaian target, ketelitian, serta kolaborasi tim yang solid.`;
+      } else {
+        expParagraph = `Dengan rekam jejak profesional lebih dari 3 tahun, saya memiliki keahlian mendalam dalam ${d.skills}.${achSentIndo} Saya berpengalaman memimpin alur kerja, meningkatkan efisiensi operasional, serta menyelesaikan proyek strategis dengan hasil yang terukur.`;
+      }
     }
 
-    body = `Yth. Tim Rekrutmen / HRD ${d.perusahaan},
+    body = `${openingGreeting}
 
 Perkenalkan, nama saya ${d.name}, berdomisili di ${d.city}. Melalui email ini, saya bermaksud untuk mengajukan lamaran pekerjaan untuk posisi ${d.posisi} di ${d.perusahaan} sebagaimana informasi lowongan yang saya temukan melalui platform Lokeriva.
 
@@ -1260,12 +1413,19 @@ Domisili     : ${d.city}`;
     subject = `Surat Lamaran Pekerjaan — ${d.posisi} — ${d.name}`;
 
     let expDetail = "";
-    if (d.exp === "fresh") {
-      expDetail = `Sebagai lulusan baru, saya memiliki semangat kerja yang tinggi, integritas, dan penguasaan dalam ${d.skills}. Selama masa studi, saya aktif mengembangkan keahlian praktis dan memiliki daya adaptasi yang sangat baik dalam lingkungan kerja yang dinamis.`;
-    } else if (d.exp === "junior") {
-      expDetail = `Berbekal pengalaman kerja di bidang terkait selama 1–2 tahun, saya memiliki pemahaman yang kuat mengenai alur kerja dan keahlian di bidang ${d.skills}. Saya terbiasa bekerja mandiri maupun dalam tim dengan mengedepankan efektivitas dan ketepatan waktu.`;
+    if (d.tone === "confident") {
+      expDetail = `Saya memiliki dorongan kuat untuk menghadirkan nilai tambah bagi perusahaan melalui penguasaan ${d.skills}.${achSentIndo} Dengan gaya kerja yang proaktif dan orientasi pada solusi, saya siap mengambil peran strategis demi kemajuan ${d.perusahaan}.`;
+    } else if (d.tone === "concise") {
+      expDetail = `Kualifikasi utama saya mencakup penguasaan ${d.skills}.${achSentIndo} Saya mengedepankan ketepatan waktu, ketelitian kerja, dan efektivitas dalam mengeksekusi setiap tanggung jawab.`;
     } else {
-      expDetail = `Berbekal pengalaman lebih dari 3 tahun di industri, saya terbiasa mengemban tanggung jawab strategis, mengoptimalkan proses kerja, dan menguasai ${d.skills}. Saya siap membawa nilai tambah dan kontribusi nyata bagi pertumbuhan ${d.perusahaan}.`;
+      // formal (default)
+      if (d.exp === "fresh") {
+        expDetail = `Sebagai lulusan baru, saya memiliki semangat kerja yang tinggi, integritas, dan penguasaan dalam ${d.skills}.${achSentIndo} Selama masa studi, saya aktif mengembangkan keahlian praktis dan memiliki daya adaptasi yang sangat baik dalam lingkungan kerja yang dinamis.`;
+      } else if (d.exp === "junior") {
+        expDetail = `Berbekal pengalaman kerja di bidang terkait selama 1–2 tahun, saya memiliki pemahaman yang kuat mengenai alur kerja dan keahlian di bidang ${d.skills}.${achSentIndo} Saya terbiasa bekerja mandiri maupun dalam tim dengan mengedepankan efektivitas dan ketepatan waktu.`;
+      } else {
+        expDetail = `Berbekal pengalaman lebih dari 3 tahun di industri, saya terbiasa mengemban tanggung jawab strategis, mengoptimalkan proses kerja, dan menguasai ${d.skills}.${achSentIndo} Saya siap membawa nilai tambah dan kontribusi nyata bagi pertumbuhan ${d.perusahaan}.`;
+      }
     }
 
     body = `${d.city}, ${dateIndo}
@@ -1274,7 +1434,7 @@ Hal      : Lamaran Pekerjaan — ${d.posisi}
 Lampiran : 1 (Satu) Berkas
 
 Kepada Yth.
-Bapak/Ibu HRD / Pimpinan Perusahaan
+${d.recipient}
 ${d.perusahaan}
 di Tempat
 
@@ -1307,27 +1467,33 @@ Hormat saya,
 
 ${d.name}`;
 
-  } else {
-    // english_cl
+  } else if (currentLetterTab === "english_cl") {
     subject = `Job Application: ${d.posisi} - ${d.name}`;
 
     let expEng = "";
-    if (d.exp === "fresh") {
-      expEng = `As an enthusiastic graduate with a background in ${d.edu}, I have developed a strong foundation and practical capability in ${d.skills}. I am an eager learner, highly adaptable to fast-paced environments, and dedicated to delivering high-quality work for ${d.perusahaan}.`;
-    } else if (d.exp === "junior") {
-      expEng = `With 1-2 years of professional experience in related roles, I have honed my competencies in ${d.skills}. I am accustomed to meeting deadlines, solving problems proactively, and collaborating across multidisciplinary teams to achieve shared objectives.`;
+    if (d.tone === "confident") {
+      expEng = `With proven expertise in ${d.skills} and an agile problem-solving approach, I specialize in transforming operational challenges into impactful outcomes.${achSentEng} I am excited by ${d.perusahaan}'s trajectory and am confident that my drive and skill set will deliver immediate value to your organization.`;
+    } else if (d.tone === "concise") {
+      expEng = `My background spans core competencies in ${d.skills}.${achSentEng} I thrive in high-paced environments, communicate clearly, and take full ownership of delivering high-quality deliverables on schedule.`;
     } else {
-      expEng = `Bringing over 3 years of progressive professional experience, I offer specialized domain expertise in ${d.skills}. I have a proven track record of optimizing workflows, executing high-impact initiatives, and driving quantifiable value.`;
+      // formal (default)
+      if (d.exp === "fresh") {
+        expEng = `As an enthusiastic graduate with a background in ${d.edu}, I have developed a strong foundation and practical capability in ${d.skills}.${achSentEng} I am an eager learner, highly adaptable to fast-paced environments, and dedicated to delivering high-quality work for ${d.perusahaan}.`;
+      } else if (d.exp === "junior") {
+        expEng = `With 1-2 years of professional experience in related roles, I have honed my competencies in ${d.skills}.${achSentEng} I am accustomed to meeting deadlines, solving problems proactively, and collaborating across multidisciplinary teams to achieve shared objectives.`;
+      } else {
+        expEng = `Bringing over 3 years of progressive professional experience, I offer specialized domain expertise in ${d.skills}.${achSentEng} I have a proven track record of optimizing workflows, executing high-impact initiatives, and driving quantifiable value.`;
+      }
     }
 
     body = `${dateEng}
 
-Hiring Team / HR Department
+${d.recipientEng}
 ${d.perusahaan}
 
 Subject: Application for ${d.posisi} Position
 
-Dear Hiring Team,
+Dear ${d.recipientEng},
 
 I am writing to express my strong enthusiasm for the ${d.posisi} position at ${d.perusahaan}, as advertised on Lokeriva. Given my background in ${d.edu} and my hands-on experience, I am confident in my ability to make an immediate and meaningful contribution to your organization.
 
@@ -1343,6 +1509,24 @@ ${d.name}
 Phone/WhatsApp : ${d.phone}
 Email          : ${d.email}
 Location       : ${d.city}, Indonesia`;
+
+  } else {
+    // custom_template
+    subject = `Lamaran Pekerjaan: ${d.posisi} — ${d.name}`;
+
+    const savedTemplate = localStorage.getItem("lokeriva_cl_custom_template") || DEFAULT_CUSTOM_TEMPLATE;
+
+    body = savedTemplate
+      .replace(/\{nama\}/g, d.name)
+      .replace(/\{posisi\}/g, d.posisi)
+      .replace(/\{perusahaan\}/g, d.perusahaan)
+      .replace(/\{penerima\}/g, d.recipient)
+      .replace(/\{kota\}/g, d.city)
+      .replace(/\{pendidikan\}/g, d.edu)
+      .replace(/\{skills\}/g, d.skills)
+      .replace(/\{pencapaian\}/g, d.achievements || "")
+      .replace(/\{email\}/g, d.email)
+      .replace(/\{telepon\}/g, d.phone);
   }
 
   return { subject, body };
@@ -1352,36 +1536,45 @@ function updateCoverLetterPreview() {
   const { subject, body } = generateLetterContent();
 
   const subjectRow = document.getElementById("clSubjectLineRow");
-  const subjectText = document.getElementById("clSubjectLineText");
+  const subjectInput = document.getElementById("clSubjectInput");
   const outputText = document.getElementById("clOutputText");
   const badgeEl = document.getElementById("clFormatBadge");
-  const mailtoBtn = document.getElementById("btnMailtoCoverLetter");
 
-  if (subjectRow && subjectText) {
+  if (subjectRow && subjectInput) {
     if (currentLetterTab === "formal_id") {
       subjectRow.style.display = "none";
     } else {
-      subjectRow.style.display = "block";
-      subjectText.innerText = subject;
+      subjectRow.style.display = "flex";
+      if (!isCustomizedManually || !subjectInput.value.trim()) {
+        subjectInput.value = subject;
+      }
     }
   }
 
-  if (outputText) {
+  if (outputText && (!isCustomizedManually || currentLetterTab === "custom_template")) {
     outputText.value = body;
   }
 
   if (badgeEl) {
-    if (currentLetterTab === "cold_email") badgeEl.innerText = "Email Lamaran";
+    if (currentLetterTab === "cold_email") badgeEl.innerText = "Cold Email";
     else if (currentLetterTab === "formal_id") badgeEl.innerText = "Surat Formal (ID)";
-    else badgeEl.innerText = "Cover Letter (EN)";
+    else if (currentLetterTab === "english_cl") badgeEl.innerText = "Cover Letter (EN)";
+    else badgeEl.innerText = "Kustom Bebas";
   }
 
-  // Update Mailto Link
-  if (mailtoBtn) {
-    const encSubject = encodeURIComponent(subject);
-    const encBody = encodeURIComponent(body);
-    mailtoBtn.href = `mailto:?subject=${encSubject}&body=${encBody}`;
-  }
+  updateMailtoLink();
+}
+
+function updateMailtoLink() {
+  const mailtoBtn = document.getElementById("btnMailtoCoverLetter");
+  if (!mailtoBtn) return;
+
+  const subject = document.getElementById("clSubjectInput")?.value || "";
+  const body = document.getElementById("clOutputText")?.value || "";
+
+  const encSubject = encodeURIComponent(subject);
+  const encBody = encodeURIComponent(body);
+  mailtoBtn.href = `mailto:?subject=${encSubject}&body=${encBody}`;
 }
 
 function copyCoverLetter() {
@@ -1415,7 +1608,8 @@ function fallbackCopyText(text) {
 }
 
 function downloadCoverLetterTxt() {
-  const { subject, body } = generateLetterContent();
+  const output = document.getElementById("clOutputText");
+  const body = output ? output.value : "";
   const d = getLetterData();
   const safeName = d.name.replace(/[^a-zA-Z0-9]/g, "_") || "Pelamar";
   const safePos = d.posisi.replace(/[^a-zA-Z0-9]/g, "_") || "Loker";
