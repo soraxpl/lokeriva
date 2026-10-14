@@ -21,4 +21,4 @@ Disallow: /api/refresh
 Crawl-delay: 1
 
 # Peta Situs Resmi (Sitemap)
-Sitemap: https://lokeriva.id/sitemap.xml
+Sitemap: https://lokeriva.vercel.app/sitemap.xml

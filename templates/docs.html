@@ -10,21 +10,21 @@
     
     <!-- Robots Directives -->
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-    <link rel="canonical" href="{{ request.base_url }}">
+    <link rel="canonical" href="{{ canonical_url }}">
 
     <!-- Open Graph -->
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="Lokeriva.id">
     <meta property="og:title" content="Dokumentasi REST API — Lokeriva.id">
     <meta property="og:description" content="Dokumentasi resmi dan panduan penggunaan REST API Lokeriva.id untuk integrasi data lowongan kerja.">
-    <meta property="og:url" content="{{ request.base_url }}">
-    <meta property="og:image" content="{{ url_for('static', filename='icons/icon-512.png', _external=True) }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ site_url }}/static/icons/icon-512.png">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Dokumentasi REST API — Lokeriva.id">
     <meta name="twitter:description" content="Integrasikan ribuan data lowongan kerja aktif ke aplikasi Anda dengan Lokeriva REST API.">
-    <meta name="twitter:image" content="{{ url_for('static', filename='icons/icon-512.png', _external=True) }}">
+    <meta name="twitter:image" content="{{ site_url }}/static/icons/icon-512.png">
 
     <!-- Schema.org JSON-LD for API Reference -->
     <script type="application/ld+json">
@@ -40,9 +40,9 @@
       "publisher": {
         "@type": "Organization",
         "name": "Lokeriva.id",
-        "url": "{{ request.url_root }}"
+        "url": "{{ site_url }}/"
       },
-      "url": "{{ request.base_url }}"
+      "url": "{{ canonical_url }}"
     }
     </script>
 

@@ -76,6 +76,21 @@ def clean_csv_cell(val):
     return text
 
 
+@app.context_processor
+def inject_site_meta():
+    """Injeksi metadata domain resmi https://lokeriva.vercel.app untuk SEO & Canonical."""
+    host = request.host.lower() if request.host else ""
+    if "localhost" in host or "127.0.0.1" in host:
+        site_root = request.url_root.rstrip("/")
+    else:
+        site_root = "https://lokeriva.vercel.app"
+
+    return {
+        "site_url": site_root,
+        "canonical_url": f"{site_root}{request.path}"
+    }
+
+
 # ==============================================================================
 # PWA & WEB UI ROUTES
 # ==============================================================================
@@ -111,7 +126,11 @@ def robots_txt():
 @app.route("/sitemap.xml")
 def sitemap_xml():
     """Menghasilkan XML Sitemap resmi untuk indexing mesin pencari."""
-    base_url = request.url_root.rstrip("/")
+    host = request.host.lower() if request.host else ""
+    if "localhost" in host or "127.0.0.1" in host:
+        base_url = request.url_root.rstrip("/")
+    else:
+        base_url = "https://lokeriva.vercel.app"
     now_str = datetime.now().strftime("%Y-%m-%d")
     sitemap_content = f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -428,7 +447,10 @@ def openapi_spec():
                 "name": "Xnuvers007"
             }
         },
-        "servers": [{"url": "/", "description": "Current Server"}],
+        "servers": [
+            {"url": "https://lokeriva.vercel.app", "description": "Production Server (Vercel)"},
+            {"url": "/", "description": "Local / Current Server"}
+        ],
         "paths": {
             "/api/jobs": {
                 "get": {
@@ -493,7 +515,7 @@ if __name__ == "__main__":
     print("=" * 60)
     print("🚀 MENJALANKAN LOKERIVA.ID FLASK SERVER")
     print("=" * 60)
-    print("Akses Website  : http://localhost:5000")
+    print("Akses Website  : http://localhost:5000 (Production: https://lokeriva.vercel.app)")
     print("Dokumentasi API: http://localhost:5000/docs")
     print("REST API Jobs  : http://localhost:5000/api/jobs")
     print("=" * 60)

@@ -13,7 +13,7 @@
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large">
     <meta name="bingbot" content="index, follow">
-    <link rel="canonical" href="{{ request.base_url }}">
+    <link rel="canonical" href="{{ canonical_url }}">
 
     <!-- Geo Metadata -->
     <meta name="geo.region" content="ID">
@@ -24,8 +24,8 @@
     <meta property="og:site_name" content="Lokeriva.id">
     <meta property="og:title" content="Lokeriva — Portal Lowongan Kerja Indonesia & WFH Global">
     <meta property="og:description" content="Platform agregator lowongan kerja otomatis dari 20+ portal karir di Indonesia dan Remote WFH Global terverifikasi. Cari karir impian Anda di Lokeriva.id.">
-    <meta property="og:url" content="{{ request.base_url }}">
-    <meta property="og:image" content="{{ url_for('static', filename='icons/icon-512.png', _external=True) }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ site_url }}/static/icons/icon-512.png">
     <meta property="og:image:width" content="512">
     <meta property="og:image:height" content="512">
     <meta property="og:locale" content="id_ID">
@@ -34,7 +34,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Lokeriva — Portal Lowongan Kerja Indonesia & WFH Global">
     <meta name="twitter:description" content="Platform agregator lowongan kerja otomatis dari 20+ portal karir di Indonesia dan Remote WFH Global.">
-    <meta name="twitter:image" content="{{ url_for('static', filename='icons/icon-512.png', _external=True) }}">
+    <meta name="twitter:image" content="{{ site_url }}/static/icons/icon-512.png">
 
     <!-- Schema.org JSON-LD Structured Data for Google Indexing -->
     <script type="application/ld+json">
@@ -43,8 +43,8 @@
       "@graph": [
         {
           "@type": "WebSite",
-          "@id": "{{ request.url_root }}#website",
-          "url": "{{ request.url_root }}",
+          "@id": "{{ site_url }}/#website",
+          "url": "{{ site_url }}/",
           "name": "Lokeriva.id",
           "description": "Platform Agregator Lowongan Kerja Indonesia & Remote WFH Global",
           "publisher": {
@@ -55,7 +55,7 @@
             "@type": "SearchAction",
             "target": {
               "@type": "EntryPoint",
-              "urlTemplate": "{{ request.url_root }}?q={search_term_string}"
+              "urlTemplate": "{{ site_url }}/?q={search_term_string}"
             },
             "query-input": "required name=search_term_string"
           },
@@ -63,10 +63,10 @@
         },
         {
           "@type": "Organization",
-          "@id": "{{ request.url_root }}#organization",
+          "@id": "{{ site_url }}/#organization",
           "name": "Lokeriva.id",
-          "url": "{{ request.url_root }}",
-          "logo": "{{ url_for('static', filename='icons/icon-512.png', _external=True) }}",
+          "url": "{{ site_url }}/",
+          "logo": "{{ site_url }}/static/icons/icon-512.png",
           "founder": {
             "@type": "Person",
             "name": "Xnuvers007"

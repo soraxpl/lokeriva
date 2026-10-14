@@ -1,5 +1,6 @@
 # 💼 Lokeriva.id — Platform Agregator Lowongan Kerja Modern (Flask & Vercel)
-> **Created by Xnuvers007**
+> **Created by Xnuvers007**  
+> 🌐 **Live Website**: [https://lokeriva.vercel.app/](https://lokeriva.vercel.app/) • **API Docs**: [https://lokeriva.vercel.app/docs](https://lokeriva.vercel.app/docs)
 
 Website dan REST API agregasi lowongan kerja otomatis multi-sumber dari portal karir Indonesia (BUMN, Medis, Admin, Startup) serta lowongan remote WFH global terverifikasi.
 
