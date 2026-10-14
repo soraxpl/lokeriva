@@ -23,6 +23,10 @@ from rate_limiter import rate_limit
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 
+# Aliasing untuk WSGI/ASGI/Vercel runtime
+application = app
+handler = app
+
 # Vercel Services Binding: Base URL internal service API (diinjeksi otomatis oleh Vercel via env API_URL)
 INTERNAL_API_URL = os.environ.get("API_URL", "").rstrip("/")
 
