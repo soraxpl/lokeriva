@@ -7,6 +7,7 @@ import secrets
 import json
 import urllib.parse
 import urllib.request
+import os
 from datetime import datetime
 
 try:
@@ -21,6 +22,9 @@ from rate_limiter import rate_limit
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
+
+# Vercel Services Binding: Base URL internal service API (diinjeksi otomatis oleh Vercel via env API_URL)
+INTERNAL_API_URL = os.environ.get("API_URL", "").rstrip("/")
 
 # Random Build Hash untuk Service Worker cache versioning (dibuat otomatis per startup/redeploy)
 SW_BUILD_HASH = secrets.token_hex(4)
