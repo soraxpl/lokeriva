@@ -3,8 +3,13 @@
  * Created by Xnuvers007
  */
 
-const STATIC_CACHE = 'lokeriva-static-v2';
-const DATA_CACHE = 'lokeriva-data-v2';
+// Build hash acak yang diinjeksikan secara otomatis oleh server (tanpa perlu diubah manual)
+const BUILD_HASH = '{{SW_BUILD_HASH}}'.startsWith('{{')
+  ? 'auto-random'
+  : '{{SW_BUILD_HASH}}';
+
+const STATIC_CACHE = `lokeriva-static-${BUILD_HASH}`;
+const DATA_CACHE = `lokeriva-data-${BUILD_HASH}`;
 
 // Aset inti yang wajib di-precache saat Service Worker dipasang
 const CORE_ASSETS = [

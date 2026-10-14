@@ -2,6 +2,7 @@ import io
 import csv
 import math
 import re
+import secrets
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify, make_response, send_file
 from scraper import cache_manager, sanitasi_link
@@ -10,6 +11,9 @@ from rate_limiter import rate_limit
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
+
+# Random Build Hash untuk Service Worker cache versioning (dibuat otomatis per startup/redeploy)
+SW_BUILD_HASH = secrets.token_hex(4)
 
 # ==============================================================================
 # SECURITY HEADERS & CORS MIDDLEWARE
@@ -83,10 +87,19 @@ def manifest():
 
 @app.route("/sw.js")
 def service_worker():
-    """Menyajikan Service Worker dengan scope root '/'."""
-    resp = make_response(send_file("static/sw.js", mimetype="application/javascript"))
-    resp.headers["Service-Worker-Allowed"] = "/"
-    return resp
+    """Menyajikan Service Worker dengan random cache version otomatis per deployment/startup."""
+    try:
+        with open("static/sw.js", "r", encoding="utf-8") as f:
+            content = f.read()
+        # Injeksi random hash ke dalam script Service Worker
+        content = content.replace("{{SW_BUILD_HASH}}", SW_BUILD_HASH)
+        resp = make_response(content)
+        resp.headers["Content-Type"] = "application/javascript"
+        resp.headers["Service-Worker-Allowed"] = "/"
+        resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        return resp
+    except Exception:
+        return send_file("static/sw.js", mimetype="application/javascript")
 
 
 @app.route("/robots.txt")
@@ -292,11 +305,14 @@ def get_stats():
 @rate_limit(limit=15, per=60)
 def refresh_cache():
     """Memperbarui pool cache lowongan kerja secara manual (Rate limit: 15/menit)."""
+    global SW_BUILD_HASH
+    SW_BUILD_HASH = secrets.token_hex(4)
     jobs, updated_at = cache_manager.get_all_jobs(force_refresh=True)
     return jsonify({
         "status": "success",
         "message": f"Cache berhasil diperbarui. Total {len(jobs)} lowongan terkumpul.",
         "total_jobs": len(jobs),
+        "sw_cache_version": SW_BUILD_HASH,
         "updated_at": datetime.fromtimestamp(updated_at).strftime("%Y-%m-%d %H:%M:%S WIB")
     })
 
