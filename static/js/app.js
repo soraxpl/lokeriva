@@ -356,10 +356,24 @@ function setupEventListeners() {
     });
   }
 
+  // Mobile Drawer Menu Event Listeners
+  const btnMobileMenuToggle = document.getElementById("btnMobileMenuToggle");
+  if (btnMobileMenuToggle) btnMobileMenuToggle.addEventListener("click", openMobileMenu);
+
+  const bnavMenu = document.getElementById("bnavMenu");
+  if (bnavMenu) bnavMenu.addEventListener("click", openMobileMenu);
+
+  const btnCloseMobileMenu = document.getElementById("btnCloseMobileMenu");
+  if (btnCloseMobileMenu) btnCloseMobileMenu.addEventListener("click", closeMobileMenu);
+
+  const mobileMenuBackdrop = document.getElementById("mobileMenuBackdrop");
+  if (mobileMenuBackdrop) mobileMenuBackdrop.addEventListener("click", closeMobileMenu);
+
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       closeShareModal();
       closeDonateModal();
+      closeMobileMenu();
       window.closeCoverLetterModal();
     }
   });
@@ -1032,6 +1046,40 @@ function closeDonateModal() {
     modal.setAttribute("aria-hidden", "true");
   }
 }
+
+// ==============================================================================
+// 9.1 MOBILE NAVIGATION DRAWER
+// ==============================================================================
+window.openMobileMenu = function() {
+  const drawer = document.getElementById("mobileMenuDrawer");
+  const backdrop = document.getElementById("mobileMenuBackdrop");
+  if (drawer && backdrop) {
+    drawer.style.display = "flex";
+    backdrop.style.display = "block";
+    requestAnimationFrame(() => {
+      drawer.classList.add("open");
+      backdrop.classList.add("show");
+    });
+    document.body.style.overflow = "hidden";
+  }
+};
+
+window.closeMobileMenu = function() {
+  const drawer = document.getElementById("mobileMenuDrawer");
+  const backdrop = document.getElementById("mobileMenuBackdrop");
+  if (drawer && backdrop) {
+    drawer.classList.remove("open");
+    backdrop.classList.remove("show");
+    setTimeout(() => {
+      drawer.style.display = "none";
+      backdrop.style.display = "none";
+      document.body.style.overflow = "";
+    }, 280);
+  }
+};
+
+const openMobileMenu = window.openMobileMenu;
+const closeMobileMenu = window.closeMobileMenu;
 
 // ==============================================================================
 // 10. GENERATOR SURAT LAMARAN & COLD EMAIL BUILDER (CUSTOMIZABLE)

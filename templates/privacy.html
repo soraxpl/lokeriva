@@ -115,8 +115,114 @@
                 <button class="btn-icon" id="themeToggleBtn" title="Ganti Mode Gelap/Terang">
                     <i class="fa-solid fa-moon"></i>
                 </button>
+                <button class="btn-icon btn-hamburger" id="btnMobileMenuToggle" type="button" aria-label="Buka Menu" title="Menu Navigasi">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
         </div>
+    </nav>
+
+    <!-- MOBILE MENU DRAWER & BACKDROP -->
+    <div id="mobileMenuBackdrop" class="mobile-menu-backdrop" style="display: none;"></div>
+    <aside id="mobileMenuDrawer" class="mobile-menu-drawer" aria-label="Menu Navigasi Mobile" style="display: none;">
+        <div class="mobile-menu-header">
+            <a href="/" class="brand-link">
+                <div class="brand-icon"><i class="fa-solid fa-briefcase"></i></div>
+                <span class="brand-name">Lokeriva</span><span class="brand-domain">.vercel.app</span>
+            </a>
+            <button class="mobile-menu-close" id="btnCloseMobileMenu" aria-label="Tutup Menu">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="mobile-menu-body">
+            <div class="mobile-menu-group-label">Navigasi Utama</div>
+            <a href="/" class="mobile-menu-item">
+                <div class="mobile-menu-icon" style="background: rgba(37, 99, 235, 0.12); color: #2563eb;">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <div class="mobile-menu-text">
+                    <div class="mobile-menu-title">Semua Lowongan Kerja</div>
+                    <div class="mobile-menu-desc">Cari lowongan aktif & remote WFH</div>
+                </div>
+            </a>
+            <a href="/?modal=cover_letter" class="mobile-menu-item">
+                <div class="mobile-menu-icon" style="background: rgba(99, 102, 241, 0.15); color: #6366f1;">
+                    <i class="fa-solid fa-file-signature"></i>
+                </div>
+                <div class="mobile-menu-text">
+                    <div class="mobile-menu-title">
+                        Generator Surat Lamaran
+                        <span class="badge-tag-new">Baru</span>
+                    </div>
+                    <div class="mobile-menu-desc">Buat surat lamaran & email otomatis</div>
+                </div>
+            </a>
+            <a href="https://t.me/lokeriva_bot" target="_blank" rel="noopener noreferrer" class="mobile-menu-item">
+                <div class="mobile-menu-icon" style="background: rgba(34, 158, 217, 0.15); color: #229ed9;">
+                    <i class="fa-brands fa-telegram"></i>
+                </div>
+                <div class="mobile-menu-text">
+                    <div class="mobile-menu-title">
+                        Bot Telegram @lokeriva_bot
+                        <span class="badge-tag-official">Resmi</span>
+                    </div>
+                    <div class="mobile-menu-desc">Cari & notifikasi loker via Telegram</div>
+                </div>
+            </a>
+
+            <div class="mobile-menu-group-label">Developer & Layanan</div>
+            <a href="/docs" class="mobile-menu-item">
+                <div class="mobile-menu-icon" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                </div>
+                <div class="mobile-menu-text">
+                    <div class="mobile-menu-title">Dokumentasi REST API</div>
+                    <div class="mobile-menu-desc">Spesifikasi OpenAPI & integrasi developer</div>
+                </div>
+            </a>
+            <a href="/privacy" class="mobile-menu-item active">
+                <div class="mobile-menu-icon" style="background: rgba(100, 116, 139, 0.12); color: #64748b;">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="mobile-menu-text">
+                    <div class="mobile-menu-title">Kebijakan Privasi</div>
+                    <div class="mobile-menu-desc">Transparansi bebas pelacakan & privasi data</div>
+                </div>
+            </a>
+        </div>
+        <div class="mobile-menu-footer">
+            <div class="mobile-menu-footer-info">
+                <span>© 2026 Lokeriva</span>
+                <span>Privasi Terjamin</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MOBILE BOTTOM NAVIGATION BAR -->
+    <nav class="mobile-bottom-bar" aria-label="Navigasi Bawah Layar">
+        <a href="/" class="bottom-nav-item">
+            <i class="fa-solid fa-briefcase"></i>
+            <span>Loker</span>
+        </a>
+        <a href="/?modal=cover_letter" class="bottom-nav-item">
+            <div class="bnav-icon-wrapper">
+                <i class="fa-solid fa-file-signature"></i>
+                <span class="bnav-dot"></span>
+            </div>
+            <span>Surat</span>
+        </a>
+        <a href="https://t.me/lokeriva_bot" target="_blank" rel="noopener noreferrer" class="bottom-nav-item">
+            <i class="fa-brands fa-telegram"></i>
+            <span>Bot</span>
+        </a>
+        <a href="/docs" class="bottom-nav-item">
+            <i class="fa-solid fa-book-bookmark"></i>
+            <span>Docs</span>
+        </a>
+        <button type="button" class="bottom-nav-item" id="bnavMenu">
+            <i class="fa-solid fa-bars"></i>
+            <span>Menu</span>
+        </button>
     </nav>
 
     <!-- CONTENT -->
@@ -217,6 +323,42 @@
                 themeBtn.innerHTML = next === "dark" ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
             });
         }
+
+        // Mobile Drawer Menu Handlers
+        const btnMobileMenuToggle = document.getElementById("btnMobileMenuToggle");
+        const btnCloseMobileMenu = document.getElementById("btnCloseMobileMenu");
+        const mobileMenuBackdrop = document.getElementById("mobileMenuBackdrop");
+        const mobileMenuDrawer = document.getElementById("mobileMenuDrawer");
+        const bnavMenu = document.getElementById("bnavMenu");
+
+        const openMobileMenuPrivacy = () => {
+            if (mobileMenuDrawer && mobileMenuBackdrop) {
+                mobileMenuDrawer.style.display = "flex";
+                mobileMenuBackdrop.style.display = "block";
+                requestAnimationFrame(() => {
+                    mobileMenuDrawer.classList.add("open");
+                    mobileMenuBackdrop.classList.add("show");
+                });
+                document.body.style.overflow = "hidden";
+            }
+        };
+
+        const closeMobileMenuPrivacy = () => {
+            if (mobileMenuDrawer && mobileMenuBackdrop) {
+                mobileMenuDrawer.classList.remove("open");
+                mobileMenuBackdrop.classList.remove("show");
+                setTimeout(() => {
+                    mobileMenuDrawer.style.display = "none";
+                    mobileMenuBackdrop.style.display = "none";
+                    document.body.style.overflow = "";
+                }, 280);
+            }
+        };
+
+        if (btnMobileMenuToggle) btnMobileMenuToggle.addEventListener("click", openMobileMenuPrivacy);
+        if (bnavMenu) bnavMenu.addEventListener("click", openMobileMenuPrivacy);
+        if (btnCloseMobileMenu) btnCloseMobileMenu.addEventListener("click", closeMobileMenuPrivacy);
+        if (mobileMenuBackdrop) mobileMenuBackdrop.addEventListener("click", closeMobileMenuPrivacy);
     </script>
 </body>
 </html>
