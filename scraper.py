@@ -508,7 +508,8 @@ class JobCacheManager:
                     data = json.load(f)
                     if isinstance(data, list) and len(data) > 0:
                         self.cache_pool = data
-                        self.last_updated = os.path.getmtime(SEED_CACHE_PATH)
+                        mtime = os.path.getmtime(SEED_CACHE_PATH)
+                        self.last_updated = mtime if (time.time() - mtime < 86400) else time.time()
             except Exception as e:
                 print(f"[CACHE] Gagal membaca seed cache: {e}")
 

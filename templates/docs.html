@@ -519,6 +519,104 @@
             right: 10px;
             z-index: 2;
         }
+
+        /* ==============================================================================
+         * RESPONSIVE STYLES FOR DOCS (TABLETS & SMARTPHONES)
+         * ============================================================================== */
+        @media (max-width: 768px) {
+            .docs-container {
+                padding: 0 12px;
+                margin: 18px auto 40px auto;
+            }
+            .docs-header h1 {
+                font-size: 1.45rem;
+                line-height: 1.3;
+            }
+            .console-card {
+                border-radius: var(--radius-md);
+            }
+            .console-header {
+                padding: 14px 16px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .console-title h2 {
+                font-size: 1.1rem;
+            }
+            .console-body {
+                padding: 14px;
+            }
+            .console-input-row {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .console-method-select {
+                width: 100%;
+            }
+            .console-btn-send {
+                width: 100%;
+                justify-content: center;
+                padding: 12px;
+            }
+            .console-presets {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                gap: 6px;
+                padding-bottom: 6px;
+                margin-right: -14px;
+                margin-left: -14px;
+                padding-left: 14px;
+                padding-right: 14px;
+                scrollbar-width: none;
+            }
+            .console-presets::-webkit-scrollbar {
+                display: none;
+            }
+            .preset-chip {
+                white-space: nowrap;
+                flex-shrink: 0;
+                font-size: 0.74rem;
+                padding: 5px 10px;
+            }
+            .console-response-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                padding: 10px 12px;
+            }
+            .response-meta {
+                justify-content: space-between;
+                width: 100%;
+            }
+            .response-actions {
+                width: 100%;
+                display: flex;
+                gap: 8px;
+            }
+            .btn-copy-code {
+                flex: 1;
+                justify-content: center;
+            }
+            .code-box-wrapper .btn-copy-code {
+                position: static;
+                margin-bottom: 8px;
+                width: 100%;
+            }
+            .code-box-wrapper .code-box {
+                padding-right: 14px;
+            }
+            .api-header {
+                padding: 12px 14px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .api-body {
+                padding: 14px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -528,12 +626,12 @@
         <div class="container nav-container">
             <a href="/" class="brand-link">
                 <div class="brand-icon"><i class="fa-solid fa-briefcase"></i></div>
-                <span>Lokeriva.vercel.app</span>
+                <span class="brand-name">Lokeriva</span><span class="brand-domain">.vercel.app</span>
             </a>
             <div class="nav-links">
-                <a href="/" class="nav-link"><i class="fa-solid fa-list-check"></i> Lowongan</a>
-                <a href="/docs" class="nav-link active"><i class="fa-solid fa-book-bookmark"></i> Dokumentasi API</a>
-                <a href="/api/openapi.json" target="_blank" class="nav-link"><i class="fa-solid fa-code"></i> OpenAPI Spec</a>
+                <a href="/" class="nav-link"><i class="fa-solid fa-list-check"></i> <span class="nav-text-full">Lowongan</span><span class="nav-text-short">Loker</span></a>
+                <a href="/docs" class="nav-link active"><i class="fa-solid fa-book-bookmark"></i> <span class="nav-text-full">Dokumentasi API</span><span class="nav-text-short">Docs</span></a>
+                <a href="/api/openapi.json" target="_blank" class="nav-link nav-link-openapi"><i class="fa-solid fa-code"></i> <span class="nav-text-full">OpenAPI Spec</span><span class="nav-text-short">Spec</span></a>
                 <button class="btn-donate-nav" id="btnOpenDonateModal" type="button" title="Dukung Developer & Server">
                     <i class="fa-solid fa-heart"></i> <span>Donasi</span>
                 </button>

@@ -113,6 +113,34 @@ body {
   color: var(--text-main);
   font-weight: 700;
   font-size: 1.15rem;
+  letter-spacing: -0.2px;
+}
+
+.brand-name {
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.brand-domain {
+  font-weight: 500;
+  color: var(--primary);
+  font-size: 0.88rem;
+}
+
+.nav-text-short {
+  display: none;
+}
+
+.nav-text-full {
+  display: inline;
+}
+
+.export-text-short {
+  display: none;
+}
+
+.export-text-full {
+  display: inline;
 }
 
 .brand-icon {
@@ -1008,16 +1036,6 @@ tr:hover td {
   transform: translateY(-1px);
 }
 
-@media (max-width: 640px) {
-  .pwa-banner {
-    bottom: 16px;
-    right: 16px;
-    left: 16px;
-    width: auto;
-  }
-}
-
-
 /* LOADING SKELETON */
 .skeleton-card {
   height: 180px;
@@ -1033,10 +1051,50 @@ tr:hover td {
   100% { background-position: -200% 0; }
 }
 
-@media (max-width: 768px) {
-  .hero-title { font-size: 1.5rem; }
-  .jobs-grid { grid-template-columns: 1fr; }
-  .filter-row { flex-direction: column; align-items: stretch; }
+/* ==============================================================================
+ * COMPREHENSIVE RESPONSIVE DESIGN SYSTEM (ALL DEVICES)
+ * ============================================================================== */
+
+/* 1. TABLETS & NARROW SCREENS (<= 900px) */
+@media (max-width: 900px) {
+  .container {
+    padding: 0 16px;
+  }
+  .nav-container {
+    height: 60px;
+  }
+  .nav-links {
+    gap: 8px;
+  }
+  .nav-link {
+    padding: 7px 10px;
+    font-size: 0.84rem;
+  }
+  .hero-box {
+    padding: 28px 20px;
+    margin-top: 18px;
+    margin-bottom: 20px;
+  }
+  .hero-title {
+    font-size: 1.6rem;
+  }
+  .hero-desc {
+    font-size: 0.88rem;
+    margin-bottom: 20px;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .jobs-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .filter-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
   .actions-bar {
     flex-direction: column;
     align-items: stretch;
@@ -1066,6 +1124,343 @@ tr:hover td {
     justify-content: center;
     padding: 8px 12px;
   }
+}
+
+/* 2. STANDARD SMARTPHONES (<= 680px) */
+@media (max-width: 680px) {
+  .container {
+    padding: 0 12px;
+  }
+  .nav-container {
+    height: 56px;
+    padding: 0 10px;
+  }
+  .brand-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+    border-radius: var(--radius-sm);
+  }
+  .brand-domain {
+    display: none !important;
+  }
+  .brand-name {
+    font-size: 1.05rem;
+  }
+  .nav-links {
+    gap: 5px;
+  }
+  .nav-link {
+    padding: 6px 8px;
+    font-size: 0.78rem;
+    gap: 5px;
+  }
+  .nav-link i {
+    font-size: 0.85rem;
+  }
+  .nav-text-full {
+    display: none !important;
+  }
+  .nav-text-short {
+    display: inline !important;
+  }
+  .nav-link-openapi {
+    display: none !important;
+  }
+  .btn-donate-nav {
+    padding: 6px 9px;
+    font-size: 0.76rem;
+    gap: 5px;
+  }
+  .btn-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 0.82rem;
+  }
+
+  /* Hero Banner */
+  .hero-box {
+    padding: 18px 14px;
+    margin-top: 12px;
+    margin-bottom: 14px;
+    border-radius: var(--radius-md);
+  }
+  .hero-title {
+    font-size: 1.3rem;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .hero-desc {
+    font-size: 0.82rem;
+    line-height: 1.45;
+    margin-bottom: 16px;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .stat-card {
+    padding: 9px 11px;
+    border-radius: var(--radius-sm);
+  }
+  .stat-value {
+    font-size: 1.2rem;
+  }
+  .stat-label {
+    font-size: 0.7rem;
+  }
+
+  /* Controls & Search */
+  .controls-card {
+    padding: 14px 12px;
+    margin-bottom: 14px;
+    border-radius: var(--radius-md);
+  }
+  .search-input-group {
+    margin-bottom: 12px;
+  }
+  .search-icon {
+    left: 12px;
+    font-size: 0.95rem;
+  }
+  .search-input {
+    padding: 11px 14px 11px 36px;
+    font-size: 0.86rem;
+    border-radius: var(--radius-sm);
+  }
+  .filter-selects {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+  }
+  #sourceSelect {
+    grid-column: span 2;
+  }
+  .custom-select {
+    width: 100%;
+    font-size: 0.8rem;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+  }
+  #btnDetectLocation {
+    font-size: 0.78rem;
+    padding: 8px 10px;
+    text-align: center;
+    justify-content: center;
+  }
+  .results-info {
+    font-size: 0.76rem;
+    text-align: center;
+    width: 100%;
+  }
+
+  /* Filter Pills Swipe Bar */
+  .filter-pills {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 6px;
+    margin: 12px -12px 0 -12px;
+    padding: 2px 12px 6px 12px;
+    scrollbar-width: none;
+  }
+  .filter-pills::-webkit-scrollbar {
+    display: none;
+  }
+  .pill-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 6px 12px;
+    font-size: 0.76rem;
+  }
+
+  /* Export Button Texts */
+  .export-text-full {
+    display: none !important;
+  }
+  .export-text-short {
+    display: inline !important;
+  }
+
+  /* Job Cards */
+  .jobs-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .job-card {
+    padding: 14px;
+    border-radius: var(--radius-md);
+  }
+  .company-avatar {
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
+    border-radius: var(--radius-sm);
+  }
+  .job-title {
+    font-size: 0.95rem;
+    line-height: 1.35;
+  }
+  .company-name {
+    font-size: 0.8rem;
+  }
+  .job-badges {
+    gap: 5px;
+    margin-bottom: 12px;
+  }
+  .badge {
+    font-size: 0.68rem;
+    padding: 2px 7px;
+  }
+  .job-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding-top: 10px;
+  }
+  .job-date {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.72rem;
+  }
+  .job-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+  }
+  .btn-bookmark, .btn-share-wa, .btn-share-more {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+  }
+  .btn-apply {
+    flex: 1;
+    justify-content: center;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+
+  /* Native Mobile App PWA Bottom Sheet */
+  .pwa-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 9999;
+    padding: 0;
+    margin: 0;
+  }
+  .pwa-banner-card {
+    border-radius: 18px 18px 0 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    padding: 14px 16px;
+    box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.28);
+    background: var(--bg-card);
+  }
+  .pwa-banner-content {
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .pwa-icon-box img {
+    width: 38px;
+    height: 38px;
+  }
+  .pwa-title {
+    font-size: 0.92rem;
+  }
+  .pwa-desc {
+    font-size: 0.76rem;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .pwa-banner-actions {
+    gap: 8px;
+  }
+  .btn-pwa-later, .btn-pwa-install {
+    padding: 7px 12px;
+    font-size: 0.78rem;
+  }
+
+  /* Modals as Bottom Sheets on Mobile */
+  .share-modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+  .share-modal-card {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 20px 20px 0 0;
+    border-bottom: none;
+    max-height: 85vh;
+    animation: slideUpMobileModal 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .share-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .share-item {
+    padding: 10px 4px;
+    font-size: 0.74rem;
+  }
+  .share-icon {
+    font-size: 1.3rem;
+  }
+
+  /* Footer on mobile */
+  .footer {
+    padding: 24px 0 20px 0;
+  }
+  .footer-quote {
+    font-size: 0.82rem;
+  }
+  .footer-badges {
+    gap: 6px;
+  }
+  .footer-badge {
+    font-size: 0.72rem;
+    padding: 4px 9px;
+  }
+}
+
+/* 3. EXTRA COMPACT SMARTPHONES (<= 400px) */
+@media (max-width: 400px) {
+  .nav-container {
+    padding: 0 8px;
+  }
+  .brand-name {
+    font-size: 0.96rem;
+  }
+  .nav-links {
+    gap: 3px;
+  }
+  .nav-link {
+    padding: 5px 6px;
+    font-size: 0.74rem;
+  }
+  .btn-donate-nav span {
+    display: none !important;
+  }
+  .btn-donate-nav {
+    padding: 6px 8px;
+  }
+  .share-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@keyframes slideUpMobileModal {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
 }
 
 /* ==============================================================================
